@@ -4,9 +4,14 @@ import { useContext } from 'react';
 import { TaskInterfaceContext } from '../TaskContext';
 
 const Settings = ({canvas}) => {
-    const {selectedObject, setSelectedObject, properties, setProperty, clearSettings, 
+    const {
+        selectedObject, setSelectedObject, properties, setProperty, clearSettings, 
         onFocus, setOnFocus, questionType, isChoosingDropZone, dropZones, addDropZone, 
-        setIsChoosingDropZone, isLinkingDnd, setIsLinkingDnd, links, setLinks} = useContext(TaskInterfaceContext);
+        setIsChoosingDropZone, isLinkingDnd, 
+        setIsLinkingDnd, links, setLinks, isClickingLogic, 
+        setIsClickingLogic, correctClickImage, setCorrectClickImage,
+        isChoosingInputZone, setIsChoosingInputZone, inputZones, setInputZones
+    } = useContext(TaskInterfaceContext);
     const colorRef = useRef();
     const {width, height, color, diameter} = properties;
     console.log(isChoosingDropZone, isLinkingDnd)
@@ -53,7 +58,7 @@ const Settings = ({canvas}) => {
             // });
 
         }
-    }, [canvas, isChoosingDropZone, isLinkingDnd, links]);
+    }, [canvas, isChoosingDropZone, isLinkingDnd, links, isClickingLogic, isChoosingInputZone]);
 
     fabric.Object.prototype.toObject = (function (toObject) {
         return function () {
@@ -97,7 +102,7 @@ const Settings = ({canvas}) => {
         };
     })(fabric.IText.prototype.toObject);
 
-      
+
 
     const handleObjectSelection = (object) => {
         if (isChoosingDropZone){
@@ -137,6 +142,27 @@ const Settings = ({canvas}) => {
                     setIsLinkingDnd(false);
                 }
             }
+        }else if (isClickingLogic){
+            console.log(isClickingLogic, 12341234)
+            object["metadata"]= {
+                isClick: true,
+            }
+            setIsClickingLogic(false);
+            setCorrectClickImage(object.id);
+        }else if (isChoosingInputZone){
+            object["metadata"]= {
+                isInput: true,
+            }
+            console.log(isChoosingInputZone, 123412341234)
+            console.log(inputZones, object.id);
+            setIsChoosingInputZone(false);
+            setInputZones(prev => {
+                const foundIndex = prev.findIndex(zone => zone.item === object.id);
+                if (foundIndex === -1) {
+                  return [...prev, { item: object.id, answers: [''] }];
+                }
+                return prev;
+            });
         }
 
         console.log(object, isChoosingDropZone);
@@ -156,6 +182,7 @@ const Settings = ({canvas}) => {
             setProperty("height", "");
         }
     };
+    console.log(inputZones);
 
     useEffect(()=>{
         if (selectedObject){

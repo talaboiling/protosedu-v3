@@ -1,19 +1,29 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, NavLink, useNavigate, useSearchParams } from "react-router-dom";
 import "../../tailwind.css";  // Import Tailwind CSS
+import Superside from "./Superside";
+import { capitalizeFirstLetter } from "../../lib/helperFunctions";
+import TestCreationModal from "./tests/TestCreationModal";
+import { fetchTests } from "../../utils/apiService";
 
-// Fake API
-const fetchTests = async () => [
-    { id: 1, title: "Sample Test 1", description: "Description 1", test_type: "modo" },
-    { id: 2, title: "Sample Test 2", description: "Description 2", test_type: "modo" },
-];
 const createTest = async (test) => console.log("Test Created:", test);
+const featuredTypes = ["modo", "ent"];
 
 const TestsPage = () => {
     const [tests, setTests] = useState([]);
     const [newTest, setNewTest] = useState({ title: "", description: "" });
     const [loading, setLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);  // Modal state
+
+    const [searchParams, setSearchParams] = useSearchParams();
+    const [type, setType] = useState(null);
+    useEffect(()=>{
+        if (searchParams && searchParams.get('type')){
+            setType(searchParams.get('type'));
+        }
+    }, [searchParams]);
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         const loadTests = async () => {
@@ -40,79 +50,88 @@ const TestsPage = () => {
         );
     }
 
+    console.log(tests);
+
+    let filteredTests = [...tests];
+
+    if (type && featuredTypes.includes(type)){
+        filteredTests = filteredTests.filter(test=>test.test_type==type)
+    }else if (type){
+        filteredTests = filteredTests.filter(test=>!featuredTypes.includes(test.test_type))
+    }
+
+    function navigateToTest(testId){
+        navigate(`${testId}`);
+    }
+
+    function handleClose(){
+        setIsModalOpen(false);
+    }
+
     return (
-        <div className="bg-gradient-to-b from-blue-50 to-white min-h-screen py-10">
-            <div className="bg-white shadow-2xl rounded-xl p-8 max-w-4xl mx-auto">
-                <h2 className="text-4xl font-extrabold mb-8 text-center text-blue-700">Manage Tests</h2>
-
-                <div className="flex justify-between items-center mb-6">
-                    <h3 className="text-2xl font-semibold text-gray-800">Test List</h3>
-                    <button
-                        onClick={() => setIsModalOpen(true)}
-                        className="bg-blue-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-blue-700 transition duration-200 shadow-md hover:shadow-lg"
-                    >
-                        + Add New Test
-                    </button>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-12">
-                    {tests.map((test) => (
-                        <Link
-                            to={`/tests/${test.id}/questions`}
-                            key={test.id}
-                            className="bg-white border border-gray-200 rounded-lg p-6 shadow-md hover:shadow-lg transform hover:-translate-y-1 transition duration-300"
-                        >
-                            <p className="text-xl font-semibold text-gray-800 mb-2">{test.title}</p>
-                            <p className="text-gray-600">Type: {test.test_type}</p>
-                        </Link>
-                    ))}
-                </div>
-
-                {/* Modal for Adding New Test */}
-                {isModalOpen && (
-                    <>
-                        {/* Transparent Backdrop */}
-                        <div className="fixed inset-0 bg-blue bg-opacity-50 z-40"></div>
-
-                        {/* Modal Window */}
-                        <div className="fixed inset-0 flex items-center justify-center z-50">
-                            <div className="bg-white rounded-lg shadow-xl p-8 max-w-md w-full relative">
-                                <button
-                                    onClick={() => setIsModalOpen(false)}
-                                    className="absolute top-2 right-2 text-gray-500 hover:text-gray-800"
-                                >
-                                    ✕
-                                </button>
-                                <h3 className="text-3xl font-semibold text-gray-800 mb-6 text-center">Create a New Test</h3>
-                                <div className="mb-6">
-                                    <input
-                                        type="text"
-                                        placeholder="Test Title"
-                                        value={newTest.title}
-                                        onChange={(e) => setNewTest({ ...newTest, title: e.target.value })}
-                                        className="w-full border border-gray-300 rounded-lg p-3 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-                                    />
-                                    <textarea
-                                        placeholder="Test Description"
-                                        value={newTest.description}
-                                        onChange={(e) => setNewTest({ ...newTest, description: e.target.value })}
-                                        className="w-full border border-gray-300 rounded-lg p-3 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500 transition resize-none"
-                                        rows="4"
-                                    />
-                                </div>
-                                <button
-                                    onClick={handleTestCreate}
-                                    className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
-                                >
-                                    Create Test
-                                </button>
-                            </div>
-                        </div>
-                    </>
-                )}
+        <div className="spdash">
+          <Superside />
+          <div className="superMain">
+            <Link to={"/login"}>
+              <button
+                style={{
+                  border: "none",
+                  borderRadius: "4px",
+                  backgroundColor: "transparent",
+                  color: "#444",
+                  fontSize: "large",
+                  float: "right",
+                }}
+              >
+                Выйти
+              </button>
+            </Link>
+    
+            <p style={{ fontSize: "x-large", fontWeight: "500", color: "#666" }}>
+              Мои тесты 
+            </p>
+            <div style={{width: "100%", display: "flex", justifyContent: "space-between", marginBottom: "20px"}}>
+                <ul style={{display: "flex", gap: 8, fontSize: "20px"}}>
+                    <li style={{backgroundColor: type=="modo" ? "orange" : "", padding: "5px", borderRadius: "10px"  }}><NavLink to="?type=modo">Модо</NavLink></li>
+                    <li style={{backgroundColor: type=="ent" ? "orange" : "", padding: "5px", borderRadius: "10px" }}><NavLink to="?type=ent">Ент</NavLink></li>
+                    <li style={{backgroundColor: type=="others" ? "orange" : "", padding: "5px", borderRadius: "10px"  }}><NavLink to="?type=others">Другие</NavLink></li>
+                </ul>
+                <button onClick={()=>setIsModalOpen(true)}>
+                    Создать тест
+                </button>
             </div>
+            <div className="superCont" style={{display: "flex", gap: "1rem"}}>
+              {filteredTests.length>0 && filteredTests.map(test=>(
+                <div key={test.id} className="addedCourses" style={{width: "200px", cursor: "pointer"}} onClick={()=>navigateToTest(test.id)}>
+                    <div
+                        style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            gap: "0.5rem",
+                        }}
+                    >
+                        <h3
+                            className="defaultStyle"
+                            style={{ fontSize: "x-large", color: "black" }}
+                        >
+                            {test.title}
+                        </h3>
+                        <p className="defaultStyle" style={{ color: "#666" }}>
+                            {test.description}
+                        </p>
+                        <p className="defaultStyle" style={{ color: "#666" }}>
+                            Test type: {capitalizeFirstLetter(test.test_type)}
+                        </p>
+                    </div>
+                </div>
+              ))}
+            </div>
+            {isModalOpen && <TestCreationModal onClose={handleClose}/>}
+          </div>
+    
         </div>
-    );
+      );
 };
 
 export default TestsPage;

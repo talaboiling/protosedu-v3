@@ -45,6 +45,8 @@ import TestsPage from "./pages/admin_components/TestsPage.jsx";
 import QuestionsPage from "./pages/admin_components/QuestionsPage.jsx";
 import QuestionDetailPage from "./pages/admin_components/QuestionDetailPage.jsx";
 import TestsChild from "./pages/dashboard_sections/TestsChild.jsx";
+import AdminTestPage from "./pages/admin_components/tests/AdminTestPage.jsx";
+import TestChild from "./pages/dashboard_sections/tests/TestChild.jsx";
 
 const router = createBrowserRouter([
   { path: "/", element: <App /> },
@@ -135,6 +137,15 @@ const router = createBrowserRouter([
     ),
   },
   {
+    path: "/dashboard/tests/:testId",
+    element: (
+      <AuthRoute
+        element={<TestChild />}
+        allowedRoles={["student", "parent"]}
+      />
+    ),
+  },
+  {
     path: "/admindashboard",
     element: (
       <AuthRoute element={<Superdash />} allowedRoles={["superadmin"]} />
@@ -149,6 +160,18 @@ const router = createBrowserRouter([
   {
     path: "/admindashboard/tasks",
     element: <AuthRoute element={<Tasks />} allowedRoles={["superadmin"]} />,
+  },
+  {
+    path: "/admindashboard/tests",
+    element: (
+      <AuthRoute element={<TestsPage />} allowedRoles={["superadmin"]} />
+    ),
+  },
+  {
+    path: "/admindashboard/tests/:testId",
+    element: (
+      <AuthRoute element={<AdminTestPage />} allowedRoles={["superadmin"]} />
+    ),
   },
   {
     path: "/schools/:schoolId",

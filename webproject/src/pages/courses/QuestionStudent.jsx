@@ -2,24 +2,49 @@ import React, {useState, useRef, useEffect} from 'react';
 import classes from "./TaskModal.module.css";
 import DnDquestion from './DragAndDrop/DnDquestion';
 import Outside from './Outside';
+import correctlion from "../../assets/lion_correct.webp";
+import wronglion from "../../assets/lion_incorrect.webp";
+import { useTranslation } from 'react-i18next';
 
 const QuestionStudent = ({currentQuestion, showFeedback, handleSubmit, 
-    selectedOption, setSelectedOption, handleOptionClick}) => {
-
+    selectedOption, setSelectedOption, handleOptionClick, 
+    feedbackMessage, handleIncorrect, currentQuestionIndex, volume, handleVolumeChange}) => {
+    
+    const { t } = useTranslation();
     const [content, setContent] = useState(null);
     const [canvas, setCanvas] = useState(null);
     const canvasRef = useRef(null);
     const [dropZones, setDropZones] = useState(null);
     const [outsideElements, setOutsideElements] = useState([]);
+    const [userInputs, setUserInputs] = useState([]);
 
     console.log(currentQuestion);
 
     function isProblemSolved(userAnswers) {
         if (currentQuestion.question_type==="drag_and_drop_images"){
-            const currentCorrectAnswers = currentQuestion.content.correctAnswer;
-            return currentCorrectAnswers.every(correct => {
-            const userMapping = userAnswers.find(userAnswer => userAnswer.item === correct.item);
-            return userMapping && userMapping.answer === correct.answer;
+            let currentCorrectAnswers;
+            if (currentQuestion.question_type==="drag_and_drop_images"){
+                currentCorrectAnswers = currentQuestion.content.correctAnswer;
+                return currentCorrectAnswers.every(correct => {
+                    const userMapping = userAnswers.find(userAnswer => userAnswer.item === correct.item);
+                    return userMapping && userMapping.answer === correct.answer;
+                });
+            }else if (currentQuestion.question_type==="drag_and_drop_text"){
+                currentCorrectAnswers = currentQuestion.correct_answer;
+                return userAnswers == currentCorrectAnswers.answer;
+            }
+        }else if (currentQuestion.question_type==="click_image"){
+            let currentCorrectAnswers = currentQuestion.correct_answer;
+            return userAnswers == currentCorrectAnswers.answer;
+        }else if (currentQuestion.question_type==="drag_and_drop_text"){
+            let currentCorrectAnswers = currentQuestion.correct_answer;
+            console.log(userAnswers, currentCorrectAnswers)
+            return userAnswers[1].answer == currentCorrectAnswers.answer.answer;
+        }else if (currentQuestion.question_type=="input_text"){
+            console.log(currentQuestion.correct_answer.answer, userInputs);
+            return currentQuestion.correct_answer.answer.every(correctAnswer=>{
+                const userMapping = userInputs.find(userInput => userInput.item === correctAnswer.item);
+                return userMapping && correctAnswer.answers.includes(userMapping.answer) ;
             });
         }
     }
@@ -29,13 +54,38 @@ const QuestionStudent = ({currentQuestion, showFeedback, handleSubmit,
         console.log(solved);
         if (solved){
             handleSubmit();
+        }else{
+            handleIncorrect();
         }
     }
+
+    function handleBlurInput(){
+        console.log(userInputs, currentQuestion.correct_answer.answer);
+        if (userInputs.length==currentQuestion.correct_answer.answer.length){
+            checkCorrectAnswer([...userInputs]);
+        }
+    }
+
+    function handleUserInput(inputId, value){
+        const currentUserInputs = [...userInputs];
+        const index = currentUserInputs.findIndex(userInput=>userInput.item==inputId);
+        console.log(index, inputId, value)
+        if (index==-1){
+            setUserInputs(prev=>[...prev, {item: inputId, answer: value}]);
+        }else{
+            currentUserInputs[index] = {...currentUserInputs[index], answer: value};
+            setUserInputs(currentUserInputs);
+        }
+    };
+
+    console.log(userInputs);
 
     useEffect(()=>{
         if (currentQuestion){
           setContent(currentQuestion.content);
-          loadCanvas(currentQuestion.content.canvasData, currentQuestion.content.dropZones);
+          if (currentQuestion.content){
+            loadCanvas(currentQuestion.content.canvasData, currentQuestion.content.dropZones);
+          }
         }
     
         return () => {
@@ -74,8 +124,8 @@ const QuestionStudent = ({currentQuestion, showFeedback, handleSubmit,
             }
           }
         );
-        const currentOutsideElements = canvasJson.objects.filter(obj=>obj.hasOwnProperty('metadata') && (obj.metadata.isDrop || obj.metadata.isDrag));
-        
+        const currentOutsideElements = canvasJson.objects.filter(obj=>obj.hasOwnProperty('metadata') && (obj.metadata.isDrop || obj.metadata.isDrag || obj.metadata.isClick || obj.metadata.isInput));
+
         setOutsideElements([...currentOutsideElements]);
         const filteredCanvasJson = { ...canvasJson, objects: nonDropZoneObjects };
         
@@ -120,13 +170,25 @@ const QuestionStudent = ({currentQuestion, showFeedback, handleSubmit,
                     checkCorrectAnswer={checkCorrectAnswer}
                 />
             </div>}
+            {currentQuestion.question_type==="click_image" && <div id="upper-content" style={{position:"absolute", width:"100%", height:"100%"}}>
+                {outsideElements.map(outsideElement=>{
+                    return <Outside element={outsideElement} handleClick={checkCorrectAnswer} handleUserInput={handleUserInput}/>
+                })}
+            </div>}
 
-            {currentQuestion.question_type.startsWith("multiple_choice_text") && <div className={classes["overlay-content"]} id="overlay-content">
+            {currentQuestion.question_type==="input_text" && <div id="upper-content" style={{position:"absolute", width:"100%", height:"100%"}}>
+                {outsideElements.map(outsideElement=>{
+                    return <Outside element={outsideElement} handleClick={checkCorrectAnswer} handleUserInput={handleUserInput} onBlur={handleBlurInput}/>
+                })}
+            </div>}
+
+            {(currentQuestion.question_type==="multiple_choice_text" || showFeedback) && <div className={classes["overlay-content"]} id="overlay-content" style={{zIndex: 15}}>
                 {showFeedback && (
                 <div
-                className={`feedbackMessage ${
-                    feedbackMessage === "Correct!" ? "fbmcorrect" : "fbmincorrect"
-                }`}
+                    className={`feedbackMessage ${
+                        feedbackMessage === "Correct!" ? "fbmcorrect" : "fbmincorrect"
+                    
+                    }`}
                 >
                 <div className="feedbackContent">
                     <img
@@ -196,7 +258,7 @@ const QuestionStudent = ({currentQuestion, showFeedback, handleSubmit,
                     }}
                 >
                     <li>
-                    {/* <span
+                    {!currentQuestion.content &&<span
                         style={{
                         display: "flex",
                         flexDirection: "column",
@@ -239,7 +301,7 @@ const QuestionStudent = ({currentQuestion, showFeedback, handleSubmit,
                         }}
                         >
                         
-                        <input
+                        {/* <input
                             type="range"
                             id="volumeControl"
                             min="0"
@@ -248,9 +310,9 @@ const QuestionStudent = ({currentQuestion, showFeedback, handleSubmit,
                             value={volume}
                             onChange={handleVolumeChange}
                             style={{ scale: "0.6" }}
-                        />
+                        /> */}
                         </div>
-                    </span> */}
+                    </span>}
                     {(
                         <ul
                             className={
@@ -259,7 +321,7 @@ const QuestionStudent = ({currentQuestion, showFeedback, handleSubmit,
                                 : "studTaskImgs"
                             }
                         >
-                        {currentQuestion.options.map((option, idx) => (
+                        {currentQuestion.options && currentQuestion.options.map((option, idx) => (
                             <li
                             key={idx}
                             className={

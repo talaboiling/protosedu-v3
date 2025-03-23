@@ -1,40 +1,44 @@
 import React, { useState } from "react";
 import styles from "./QuestionsCreator.module.css";
 
-const QuestionsCreator = () => {
-  const [questions, setQuestions] = useState([
-    {
-      heading: "",
-      image: "",
-      answerType: "text", // can be "text" or "image"
-      answers: ["", "", ""],
-      order:1
-    },
-    {
-        heading: "",
-        image: "",
-        answerType: "text", // can be "text" or "image"
-        answers: ["", "", ""],
-        order:2
-    }  
-  ]);
+const QuestionsCreator = ({questions, setQuestions}) => {
 
   const handleQuestionChange = (qIndex, field, value) => {
     const newQuestions = [...questions];
     newQuestions[qIndex][field] = value;
+    console.log(qIndex, field, value);
+    if (field==="answerType"){
+      if (value==="image"){
+        newQuestions[qIndex].answers = newQuestions[qIndex].answers.map(answer=>({image:"", answerType:"image", is_correct: false}));
+      }else{
+        newQuestions[qIndex].answers = newQuestions[qIndex].answers.map(answer=>({text:"", answerType:"text", is_correct: false}));
+      }
+    }
     setQuestions(newQuestions);
   };
 
+
   const handleAnswerChange = (qIndex, aIndex, value) => {
     const newQuestions = [...questions];
-    newQuestions[qIndex].answers[aIndex] = value;
+    newQuestions[qIndex].answers[aIndex].text = value;
     setQuestions(newQuestions);
   };
 
   const addQuestion = () => {
     setQuestions([
       ...questions,
-      { heading: "", image: "", answerType: "text", answers: ["", "", ""] },
+      {
+        title: "",
+        image: "",
+        answerType: "text", // can be "text" or "image"
+        answers: [
+          {text:"", answerType:"text", is_correct: false}, 
+          {text:"", answerType:"text", is_correct: false}, 
+          {text:"", answerType:"text", is_correct: false},
+          {text:"", answerType:"text", is_correct: false}
+        ],
+        order:questions.length+1
+      }  ,
     ]);
   };
 
@@ -54,6 +58,15 @@ const QuestionsCreator = () => {
     }
   };
 
+  const handleAnswerCorrect = (qIndex, aIndex)=>{
+    const newQuestions = [...questions];
+    newQuestions[qIndex].answers=newQuestions[qIndex].answers.map(answer=>({...answer, is_correct: false}));
+    newQuestions[qIndex].answers[aIndex].is_correct = true;
+    setQuestions(newQuestions);
+  }
+
+  console.log(questions);
+
   return (
     <div className={styles.questionsList}>
       {questions.map((question, qIndex) => (
@@ -61,10 +74,10 @@ const QuestionsCreator = () => {
           <p>Question {qIndex+1}</p>
           <input
             type="text"
-            placeholder="Question heading"
+            placeholder="Question title"
             value={question.heading}
             onChange={(e) =>
-              handleQuestionChange(qIndex, "heading", e.target.value)
+              handleQuestionChange(qIndex, "title", e.target.value)
             }
             className={styles.questionHeading}
           />
@@ -100,12 +113,12 @@ const QuestionsCreator = () => {
 
           <div className={styles.answers}>
             {[0, 1, 2, 3].map((aIndex) => (
-              <div key={aIndex} className={styles.answer}>
+              <div key={aIndex} className={styles.answer} onClick={()=>handleAnswerCorrect(qIndex, aIndex)} style={{backgroundColor: questions[qIndex].answers[aIndex].is_correct ? "green" : ""}}>
                 {question.answerType === "text" ? (
                   <input
                     type="text"
                     placeholder={`Answer ${aIndex + 1}`}
-                    value={question.answers[aIndex]}
+                    value={question.answers[aIndex].text}
                     onChange={(e) =>
                       handleAnswerChange(qIndex, aIndex, e.target.value)
                     }
@@ -121,9 +134,9 @@ const QuestionsCreator = () => {
                       }
                       className={styles.answerImageInput}
                     />
-                    {question.answers[aIndex] && (
+                    {question.answers[aIndex].image && (
                       <img
-                        src={question.answers[aIndex]}
+                        src={question.answers[aIndex].image}
                         alt={`Answer ${aIndex + 1}`}
                         className={styles.answerPreview}
                       />
@@ -136,9 +149,14 @@ const QuestionsCreator = () => {
         </div>
       ))}
 
-      <button type="button" onClick={addQuestion}>
-        Add Question
-      </button>
+      <div style={{display: "flex", gap:"1rem"}}>
+        <button type="button" onClick={addQuestion}>
+          Add Question
+        </button>
+        {/* <button type="button" onClick={addContent}>
+          Add Content
+        </button> */}
+      </div>
     </div>
   );
 };

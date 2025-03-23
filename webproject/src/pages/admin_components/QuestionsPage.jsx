@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import "../../tailwind.css";  // Import Tailwind CSS
 
-// Fake API
+
 const fetchQuestions = async () => [
     { id: 1, title: "What is 2+2?", testId: 1 },
     { id: 2, title: "What is 3+3?", testId: 1 },

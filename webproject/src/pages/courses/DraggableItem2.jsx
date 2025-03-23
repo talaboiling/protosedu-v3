@@ -37,7 +37,7 @@ const DraggableItem2 = ({element, id}) => {
         width: bounds.width,
         height: bounds.height,
         backgroundColor: isDragging ? 'lightblue' : 'white',
-        zIndex: 10,
+        zIndex: 12,
         // Apply rotation if provided.
         transform: element.angle ? `rotate(${element.angle}deg)` : undefined,
         transformOrigin: element.angle ? 'center' : undefined,

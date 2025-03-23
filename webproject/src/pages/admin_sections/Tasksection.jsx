@@ -259,6 +259,10 @@ const Tasksection = () => {
       formData.append("correct_answer", currentQuestion.correct_answer);
     }
 
+    if (currentQuestion.question_type === "click_image" || currentQuestion.question_type === "input_text") {
+      formData.append("correct_answer", JSON.stringify({answer: currentQuestion.correct_answer}));
+    }
+
     if (currentQuestion.question_type === "drag_and_drop_text") {
       const options = currentQuestion.options.map((option, idx) => ({
         id: idx + 1,
@@ -277,7 +281,7 @@ const Tasksection = () => {
         .filter((answer) => answer !== null)
         .sort((a, b) => a.order - b.order)
         .map((answer) => answer.id);
-      formData.append("correct_answer", JSON.stringify(filteredDragAnswers));
+      formData.append("correct_answer", JSON.stringify({answer: currentQuestion.correct_answer}));
     }
 
     if (currentQuestion.question_type === "drag_and_drop_images") {

@@ -1,12 +1,10 @@
 import React from 'react'
-import shuffle from '../assets/shuffle'
 
 const Answers = ({answers,selectedAnswer,answerState, onSelect}) => {
-    answers = shuffle(answers)
     return (
         <ul id='answers'>
             {answers.map(answer=>{
-                const isSelected = selectedAnswer ===answer
+                const isSelected = selectedAnswer === answer.text
                 let cssClasses = ''
                 if (answerState==='answered' && isSelected){
                     cssClasses = 'selected'
@@ -16,8 +14,8 @@ const Answers = ({answers,selectedAnswer,answerState, onSelect}) => {
                 }
 
                 return (<li key={answer} className='answer'>
-                    <button onClick={()=>onSelect(answer)} className={cssClasses}>
-                        {answer}
+                    <button key={answer.id} onClick={()=>onSelect(answer)} className={cssClasses}>
+                        {answer.text}
                     </button>
                 </li>)
                     })}

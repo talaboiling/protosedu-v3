@@ -5,6 +5,7 @@ import { initializeFabric, handleCanvasMouseDown, handleResize } from '../../../
 import {fabric} from "fabric";
 import Settings from './canvas/Settings'
 import TaskInterfaceProvider from './TaskContext'
+import ToolsBar2 from './ToolsBar2';
 
 
 const TaskInterface = ({
@@ -82,6 +83,7 @@ const TaskInterface = ({
     return (
         <div className="taskCreationHeader">
             <TaskInterfaceProvider handleCorrectAnswer={handleCorrectAnswer} setContent={setContent} canvas={canvas} currentQuestion={currentQuestion} content={content}>
+                <ToolsBar2 canvas={canvas} />
                 <Canvas onBackspace={onBackspace} canvasRef={canvasRef} currentQuestion={currentQuestion} handleSelectCorrectAnswer={handleSelectCorrectAnswer}/>
                 <ToolsBar canvas={canvas} functions={{addRectangle, addCircle}} />
             </TaskInterfaceProvider>

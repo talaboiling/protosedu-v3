@@ -131,7 +131,7 @@ const ChapterContent = () => {
                     {t("completedTasks2")}
                     {chapter.total_tasks} {t("completedTasks3")}
                   </p>
-                  <progress value={chapter.percentage_completed} />
+                  <progress value={chapter.percentage_completed/100} />
                 </div>
                 <Link
                   to={`/dashboard/courses/${courseId}/sections/${sectionId}/chapters/${chapter.id}/lessons`}

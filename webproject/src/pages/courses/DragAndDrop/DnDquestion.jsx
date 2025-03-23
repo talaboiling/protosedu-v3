@@ -55,6 +55,7 @@ const DnDquestion = ({currentQuestion, drags, drops, checkCorrectAnswer}) => {
             }
             const activeEl = document.getElementById(active.id);
             const overEl = document.getElementById(over.id);
+            activeEl.style.zIndex = 11;
             if (!activeEl || !overEl) return;
 
             const parent = activeEl.parentElement;
@@ -91,7 +92,7 @@ const DnDquestion = ({currentQuestion, drags, drops, checkCorrectAnswer}) => {
     }; 
 
     useEffect(()=>{
-        if (answers){
+        if (answers && answers.length>0){
             checkCorrectAnswer([...answers]);
         }
     }, [answers]);
@@ -104,6 +105,7 @@ const DnDquestion = ({currentQuestion, drags, drops, checkCorrectAnswer}) => {
                 {drops.length>0 && drops.map((drop) => {
                     console.log(drop);
                     const answer= answers.filter(ans=>ans.item==drop.id)[0];
+                    console.log(answer)
                     return <DroppablePlaceholder
                         index={drop.id}
                         id={drop.id}

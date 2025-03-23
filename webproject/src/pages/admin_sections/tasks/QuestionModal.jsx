@@ -22,23 +22,24 @@ const QuestionModal = ({
   function handleCorrectAnswer(answer){
     setCurrentQuestion(prev=>({...prev, correct_answer: answer}));
   }
+
+  console.log(currentQuestion);
   
   return (
     <dialog
           open={showQuestionModal}
           onClose={() => setShowQuestionModal(false)}
           className="modal supermodal"
-          style={{ }}
         >
           {loading ? (<Loader />) : (
-          <div className="modal-content" style={{width:"90vw", height:"80%"}}>
+          <div className="modal-content">
             <button
               style={{
                 border: "none",
                 float: "right",
                 backgroundColor: "transparent",
                 boxShadow: "none",
-                padding: "0",
+                padding: "0"
               }}
               onClick={() => setShowQuestionModal(false)}
             >
@@ -49,13 +50,13 @@ const QuestionModal = ({
                 ? "Редактировать вопрос"
                 : "Добавить вопрос"}
             </h2>
-            <div className="taskConstructor">
+            <div className="taskConstructor" style={{height: "100%"}}>
               <TaskInterface setContent={setContent} currentQuestion={currentQuestion} 
                 handleSelectCorrectAnswer={handleSelectCorrectAnswer} handleCorrectAnswer={handleCorrectAnswer}
                 content={content}
                 />
 
-              <div className="taskDetails">
+              <div className="taskDetails" style={{width: "80%"}}>
                 <form onSubmit={(e)=> handleQuestionSubmit(e, content)}>
                   <div className="formConstructor">
                     <div
@@ -104,6 +105,12 @@ const QuestionModal = ({
                           </option>
                           <option value="drag_and_drop_images">
                             Драг н дроп рисунки
+                          </option>
+                          <option value="click_image">
+                            Нажатие по картинке
+                          </option>
+                          <option value="input_text">
+                            Ввести значение
                           </option>
                         </select>
                       </div>
@@ -429,6 +436,24 @@ const QuestionModal = ({
                               />
                             </div>
                           ))}
+                        </div>
+                        <div>
+                          <h3 className="defaultStyle" style={{ color: "#666" }}>
+                            Правильный ответ
+                          </h3>
+                          <input
+                                type="text"
+                                placeholder={`Ответ`}
+                                value={currentQuestion.correct_answer.answer}
+                                onChange={(e) => {
+                                  const answer = e.target.value
+                                  setCurrentQuestion({
+                                    ...currentQuestion,
+                                    correct_answer: {answer: answer},
+                                  });
+                                }}
+                                style={{ width: "100px", marginTop: "5px" }}
+                              />
                         </div>
                       </>
                     )}

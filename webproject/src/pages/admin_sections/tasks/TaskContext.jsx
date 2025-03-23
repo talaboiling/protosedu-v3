@@ -17,7 +17,11 @@ const TaskInterfaceProvider = ({children, canvas, setCanvas, currentQuestion, se
     const [isChoosingDropZone, setIsChoosingDropZone] = useState(null);
     const [dropZones, setDropZones] = useState(new Map());
     const [isLinkingDnd, setIsLinkingDnd] = useState(false);
+    const [isClickingLogic, setIsClickingLogic] = useState(null);
     const [links, setLinks] = useState([]);
+    const [correctClickImage, setCorrectClickImage] = useState(null);
+    const [isChoosingInputZone, setIsChoosingInputZone] = useState(null);
+    const [inputZones, setInputZones] = useState([]);
 
     const addDropZone = (object) => {
         setDropZones(prev => {
@@ -168,6 +172,23 @@ const TaskInterfaceProvider = ({children, canvas, setCanvas, currentQuestion, se
                 correctAnswer: [...correctLinks]
             });
             handleCorrectAnswer([...correctLinks]);
+        }else if (questionType=="click_image"){
+
+            canvas._objects.forEach(item => {
+                if (item.type === "image") {
+                    console.log(item.type, item.id);
+                    item.metadata = { isClick: true };
+                }
+            });
+            setContent({
+                canvasData: canvas,
+            });
+            handleCorrectAnswer(correctClickImage);
+        }else if (questionType=="input_text"){
+            setContent({
+                canvasData: canvas,
+            });
+            handleCorrectAnswer([...inputZones]);
         }else{
             setContent({
                 canvasData: canvas,
@@ -193,7 +214,9 @@ const TaskInterfaceProvider = ({children, canvas, setCanvas, currentQuestion, se
                 onFocus, setOnFocus, questionDetails, questionType, 
                 setQuestionType, isChoosingDropZone, setIsChoosingDropZone,
                 dropZones, addDropZone, handleSaveClick, addImage, removeObject,
-                isLinkingDnd, setIsLinkingDnd, links, setLinks
+                isLinkingDnd, setIsLinkingDnd, links, setLinks,
+                isClickingLogic, setIsClickingLogic, correctClickImage, setCorrectClickImage,
+                isChoosingInputZone, setIsChoosingInputZone, inputZones, setInputZones
             }}
         >
             {children}

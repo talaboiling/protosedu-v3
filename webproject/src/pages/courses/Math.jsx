@@ -23,6 +23,7 @@ import VideoModal from "./VideoModal";
 import TaskModal from "./TaskModal";
 import SubscriptionErrorModal from "./SubscriptionErrorModal";
 import LessonProgress from "./LessonProgress";
+import { useNavigate } from "react-router-dom";
 
 const Math = () => {
   const { t } = useTranslation();
@@ -69,6 +70,12 @@ const Math = () => {
     backgroundAudioRef.current.volume = 0.2; // Set volume to 50%
   }
 
+  const navigate = useNavigate();
+
+  if (currentQuestionIndex==questions.length){
+    navigate("");
+  }
+
   const loadData = async () => {
     setLoading(true);
     try {
@@ -93,6 +100,7 @@ const Math = () => {
       setChapter(chapterData);
       setSection(sectionData);
       setCourse(courseData);
+
       setUser(userData);
       setHasSubscription(userData.has_subscription);
       setIsFreeTrial(userData.is_free_trial);
@@ -227,45 +235,45 @@ const Math = () => {
     const currentQuestion = questions[currentQuestionIndex];
 
     // Check if the user has provided an answer
-    if (
-      (currentQuestion.question_type.startsWith("drag_and_drop") && !droppedOrder.length) ||
-      (!currentQuestion.question_type.startsWith("drag_and_drop") && selectedOption === null)
-    ) {
-      setFeedbackMessage("Please answer the question before proceeding.");
-      setShowFeedback(true);
-      setTimeout(() => {
-        setShowFeedback(false);
-        setIsButtonDisabled(false);
-      }, 1500);
-      return;
-    }
+    // if (
+    //   (currentQuestion.question_type.startsWith("drag_and_drop") && !droppedOrder.length) ||
+    //   (!currentQuestion.question_type.startsWith("drag_and_drop") && selectedOption === null)
+    // ) {
+    //   setFeedbackMessage("Please answer the question before proceeding.");
+    //   setShowFeedback(true);
+    //   setTimeout(() => {
+    //     setShowFeedback(false);
+    //     setIsButtonDisabled(false);
+    //   }, 1500);
+    //   return;
+    // }
 
-    let isCorrect;
+    // let isCorrect;
 
-    if (currentQuestion.question_type.startsWith("drag_and_drop")) {
-      isCorrect =
-        JSON.stringify(droppedOrder) ===
-        JSON.stringify(currentQuestion.correct_answer);
-    } else {
-      isCorrect = selectedOption === currentQuestion.correct_answer;
-    }
+    // if (currentQuestion.question_type.startsWith("drag_and_drop")) {
+    //   isCorrect =
+    //     JSON.stringify(droppedOrder) ===
+    //     JSON.stringify(currentQuestion.correct_answer);
+    // } else {
+    //   isCorrect = selectedOption === currentQuestion.correct_answer;
+    // }
 
-    if (!isCorrect && !isAttempted) {
-      setIsAttempted(true);
-      setFeedbackMessage("Try Again");
-      setShowFeedback(true);
-      if (incorrectSoundRef.current) {
-        incorrectSoundRef.current.play();
-      }
+    // if (!isCorrect && !isAttempted) {
+    //   setIsAttempted(true);
+    //   setFeedbackMessage("Try Again");
+    //   setShowFeedback(true);
+    //   if (incorrectSoundRef.current) {
+    //     incorrectSoundRef.current.play();
+    //   }
 
-      setTimeout(() => {
-        setShowFeedback(false);
-        setIsButtonDisabled(false);
-      }, 1500);
-      return;
-    }
-    setFeedbackMessage(isCorrect ? "Correct!" : "Incorrect!");
-    setShowFeedback(true);
+    //   setTimeout(() => {
+    //     setShowFeedback(false);
+    //     setIsButtonDisabled(false);
+    //   }, 1500);
+    //   return;
+    // }
+    // setFeedbackMessage(isCorrect ? "Correct!" : "Incorrect!");
+    // setShowFeedback(true);
 
     if (isCorrect && correctSoundRef.current) {
       correctSoundRef.current.play();
@@ -306,6 +314,22 @@ const Math = () => {
       setIsButtonDisabled(false);
     }
   };
+
+  const handleIncorrect = () => {
+    console.log(13241234);
+    setIsButtonDisabled(true);
+    setIsAttempted(true);
+    setFeedbackMessage("Try Again");
+    setShowFeedback(true);
+    if (incorrectSoundRef.current) {
+      incorrectSoundRef.current.play();
+    }
+    setTimeout(() => {
+      setShowFeedback(false);
+      setIsButtonDisabled(false);
+    }, 1500);
+    return;
+  }
 
   const handleSubmit = async () => {
     setIsButtonDisabled(true);
@@ -361,7 +385,7 @@ const Math = () => {
 
     try {
       setIsAttempted(false);
-      await answerQuestion(
+      const responseData = await answerQuestion(
         courseId,
         sectionId,
         taskContent.chapter,
@@ -370,18 +394,36 @@ const Math = () => {
         childId
       );
 
+      let isCorrect;
+
+      if (responseData.is_correct==true){
+        isCorrect=true;
+
+      }else{
+        isCorrect = false;
+      }
+
+      if (isCorrect && correctSoundRef.current) {
+        correctSoundRef.current.play();
+      } else if (!isCorrect && incorrectSoundRef.current) {
+        incorrectSoundRef.current.play();
+      }
+
+      setFeedbackMessage(isCorrect ? "Correct!" : "Incorrect!");
+      setShowFeedback(true);
+
       setTimeout(async () => {
         setShowFeedback(false);
-        setShowTaskModal(false);
         if (backgroundAudioRef.current) {
           backgroundAudioRef.current.pause();
           backgroundAudioRef.current.currentTime = 0;
           setIsBackgroundAudioPlaying(false);
         }
         setIsButtonDisabled(false);
+        setCurrentQuestionIndex(prev=>prev+1)
       }, 1500);
 
-      await loadData();
+      // await loadData();
     } catch (error) {
       console.error("Error answering question:", error);
       alert(
@@ -534,6 +576,7 @@ const Math = () => {
           user={user}
           questions={questions}
           currentQuestionIndex={currentQuestionIndex}
+          setCurrentQuestionIndex={setCurrentQuestionIndex}
           feedbackMessage={feedbackMessage}
           showFeedback={showFeedback}
           toggleAudio={toggleAudio}
@@ -551,6 +594,7 @@ const Math = () => {
           isButtonDisabled={isButtonDisabled}
           audioRef={audioRef}
           setIsAudioPlaying={setIsAudioPlaying}
+          handleIncorrect={handleIncorrect}
         />
       )}
 

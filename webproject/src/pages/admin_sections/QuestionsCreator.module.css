@@ -1,6 +1,6 @@
 /* Container for the entire questions list */
 .questionsList {
-    margin-top: 1.5rem;
+  margin-top: 1.5rem;
 }
   
 .questionItem {
@@ -13,9 +13,10 @@
 }
   
 .questionHeading {
-font-size: 1.25rem;
-font-weight: bold;
-margin-bottom: 0.75rem;
+  font-size: 1rem;
+  font-weight: bold;
+  margin-bottom: 0.75rem;
+  width: 80%;
 }
   
   /* Styling for the question image */

@@ -70,6 +70,7 @@ export const fetchUserData = async (childId) => {
     const response = await instance.get(endpoint);
     return childId ? response.data : response.data.user;
   } catch (error) {
+    console.log(error);
     throw new Error(error.message || "Something went wrong");
   }
 };
@@ -157,6 +158,38 @@ export const fetchCourse = async (courseId, child_id) => {
     throw new Error(error || "Something went wrong");
   }
 };
+
+export const fetchTests = async () => {
+  try {
+    const endpoint = 'modo/tests/';
+    const response = await instance.get(endpoint);
+    return response.data;
+  } catch (error) {
+    throw new Error(error || "Something went wrong");
+  }
+};
+
+export const fetchTest = async (testId) => {
+  try {
+    const endpoint = `modo/tests/${testId}`;
+    const response = await instance.get(endpoint);
+    return response.data;
+  } catch (error) {
+    throw new Error(error || "Something went wrong");
+  }
+};
+
+export const createTest = async (testData) => {
+  try {
+    const endpoint = 'modo/tests/';
+    const response = await instance.post(endpoint, testData);
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    throw new Error(error || "Something went wrong");
+  }
+};
+
 
 export const createCourse = async (courseData) => {
   try {
@@ -603,6 +636,7 @@ export const createQuestion = async (
     const response = await instance.post(endpoint, updatedData, { headers });
     return response.data;
   } catch (error) {
+    console.log(error);
     throw new Error(error.message || "Something went wrong");
   }
 };

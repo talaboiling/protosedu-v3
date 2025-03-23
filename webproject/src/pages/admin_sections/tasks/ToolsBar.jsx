@@ -3,7 +3,7 @@ import Dimensions from './tools/Dimensions'
 import Text from './tools/Text'
 import Color from './tools/Color'
 import Export from './tools/Export'
-import {Square, MousePointer2, Cable} from "lucide-react"
+import {Square, MousePointer2, Cable, MousePointer} from "lucide-react"
 import { Circle } from 'lucide-react'
 import { CaseSensitive } from 'lucide-react'
 import Settings from './canvas/Settings'
@@ -15,11 +15,16 @@ import DropZones from './DropZones'
 import { ImageUp } from 'lucide-react'
 import ImageGrid from './canvas/ImageGrid'
 import { Trash2 } from 'lucide-react'
+
 const ToolsBar = ({functions, canvas}) => {
   const {addRectangle, addCircle} = functions;
-  const {onFocus, setOnFocus, questionType, setIsChoosingDropZone, 
+  const {
+    onFocus, setOnFocus, questionType, setIsChoosingDropZone, 
     isChoosingDropZone, handleSaveClick, addImage, removeObject,
-    isLinkingDnd, setIsLinkingDnd} = useContext(TaskInterfaceContext);
+    isLinkingDnd, setIsLinkingDnd, isClickingLogic, 
+    setIsClickingLogic, isChoosingInputZone, setIsChoosingInputZone
+  } = useContext(TaskInterfaceContext);
+
   console.log(questionType)
 
   const fileInputRef = useRef(null);
@@ -95,6 +100,18 @@ const ToolsBar = ({functions, canvas}) => {
         <div className='taskToolsBar_dropzone_options' style={{color: isLinkingDnd ? "orange" : "inherit"}} onClick={()=>setIsLinkingDnd(true)}>
           <Cable/>
           <p>Связать</p>
+        </div>
+      }
+      {questionType==="click_image" && 
+        <div className='taskToolsBar_dropzone_options' style={{color: isClickingLogic ? "green" : "inherit"}} onClick={()=>setIsClickingLogic(true)}>
+          <MousePointer/>
+          <p>Правильная картинка</p>
+        </div>
+      }
+      {questionType==="input_text" && 
+        <div className='taskToolsBar_dropzone_options' style={{color: isChoosingInputZone ? "purple" : "inherit"}} onClick={()=>setIsChoosingInputZone(true)}>
+          <MousePointer/>
+          <p>Выбрать Зону Ввода</p>
         </div>
       }
       <Settings canvas={canvas}/>

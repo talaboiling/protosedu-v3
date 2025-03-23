@@ -56,7 +56,6 @@ function LayerList({canvas}){
         if (!object.id){
             const timestamp = new Date().getTime();
             object.id = `${object.type}_${timestamp}`;
-
         }
     }
 

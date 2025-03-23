@@ -459,7 +459,7 @@
   border-radius: 20px;
   margin-top: 20px;
   overflow-y: scroll;
-  max-height: 500px;
+  max-height: 560px;
   margin-top: 20px;
 }
 
@@ -476,8 +476,7 @@
   box-sizing: border-box;
   background: #ececec;
   height: 100%;
-  flex: 1.5;
-  width: 180px;
+  flex: 1.2;
   display: flex;
   justify-content: start;
   padding: 10px 0;

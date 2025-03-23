@@ -42,7 +42,7 @@ const Parentdash = () => {
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [childToDelete, setChildToDelete] = useState(null);
-  const [loading, setLoading] = useState(true); // Add loading state
+  const [loading, setLoading] = useState(false); // Add loading state
   const [imageLoading, setImageLoading] = useState(true);
   const [checked, setChecked] = useState(i18next.language === "ru");
   const [isOpen, setIsOpen] = useState(false);
@@ -61,10 +61,15 @@ const Parentdash = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [userData, childrenData] = await Promise.all([
-          fetchUserData(),
-          fetchChildren(),
-        ]);
+        if (loading) return;
+        setLoading(true);
+        console.log(1);
+        const userData = await fetchUserData();
+        const childrenData = await fetchChildren()
+        // const [userData, childrenData] = await Promise.all([
+        //   fetchUserData(),
+        //   fetchChildren(),
+        // ]);
 
         setUser(userData);
         setChildren(childrenData);
@@ -77,6 +82,8 @@ const Parentdash = () => {
 
     fetchData();
   }, []);
+
+  console.log(user, children)
 
   const handleFileChange = (file) => {
     setFile(file);

@@ -59,6 +59,8 @@ const CourseContent = () => {
     }
   };
 
+  console.log(sections);
+
   if (loading) {
     return <Loader />; // Display loader while fetching data
   }
@@ -112,7 +114,7 @@ const CourseContent = () => {
                     {t("completedTasks2")}
                     {section.total_tasks} {t("completedTasks3")}
                   </p>
-                  <progress value={section.percentage_completed} />
+                  <progress value={section.percentage_completed/100} />
                 </div>
                 <Link
                   to={`/dashboard/courses/${courseId}/sections/${section.id}/chapters`}

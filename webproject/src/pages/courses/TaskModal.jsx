@@ -6,8 +6,7 @@ import DroppablePlaceholder from './DroppablePlaceholder';
 import CustomDragLayer from './CustomDragLayer';
 import staricon from "../../assets/navStars.webp";
 import cupicon from "../../assets/navCups.webp";
-import correctlion from "../../assets/lion_correct.webp";
-import wronglion from "../../assets/lion_incorrect.webp";
+
 import audioOn from "../../assets/taskaudio_new.svg";
 import audioOff from "../../assets/notaskaudio.svg";
 import bgmusicOn from "../../assets/bgmusic_new.svg";
@@ -23,6 +22,7 @@ const TaskModal = ({
   user,
   questions,
   currentQuestionIndex,
+  setCurrentQuestionIndex,
   feedbackMessage,
   toggleAudio,
   isAudioPlaying,
@@ -38,13 +38,14 @@ const TaskModal = ({
   isButtonDisabled,
   audioRef,
   setIsAudioPlaying,
+  showFeedback,
+  handleIncorrect
 }) => {
   const currentQuestion = questions[currentQuestionIndex];
+  console.log(questions);
   const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
 
   console.log(currentQuestion);
-
-  const [showFeedback, setShowFeedback] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
 
   const clickSoundRef = useRef();
@@ -56,6 +57,8 @@ const TaskModal = ({
     }
     if (optionId==currentQuestion.correct_answer){
       handleSubmit();
+    }else{
+      handleIncorrect();
     }
   };
 
@@ -148,6 +151,11 @@ const TaskModal = ({
           selectedOption={selectedOption}
           setSelectedOption={setSelectedOption}
           handleOptionClick={handleOptionClick}
+          feedbackMessage={feedbackMessage}
+          handleIncorrect={handleIncorrect}
+          currentQuestionIndex={currentQuestionIndex}
+          volume={volume}
+          handleVolumeChange={handleVolumeChange}
           />
         <div className="navigationButtons">
           <span

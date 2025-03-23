@@ -34,7 +34,7 @@ const DraggableItem = ({ option, idx }) => {
       ref={setNodeRef}
       {...listeners}
       {...attributes}
-      style={{...style, zIndex: 11}}
+      style={{...style, zIndex: 12}}
     >
       {option.isImage ? (
         <img

@@ -7,7 +7,7 @@ const CourseCard = ({ course, t }) => {
     <div className="courseItem" key={course.id}>
       <div className="courseItemLeft">
         <p style={{ margin: "0" }}>{course.name}</p>
-        <progress value={course.percentage_completed} />
+        <progress value={course.percentage_completed/100} />
         <p className="defaultStyle">
           {t("completedTasks1")}
           {course.completed_tasks}
