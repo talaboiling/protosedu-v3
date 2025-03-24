@@ -72,9 +72,11 @@ const Math = () => {
 
   const navigate = useNavigate();
 
-  if (currentQuestionIndex==questions.length){
-    navigate("");
-  }
+  useEffect(()=>{
+    if (currentQuestionIndex==questions.length){
+      navigate("");
+    }
+  }, [currentQuestionIndex]);
 
   const loadData = async () => {
     setLoading(true);
