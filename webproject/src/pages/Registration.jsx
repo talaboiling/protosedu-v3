@@ -231,7 +231,7 @@ function Registration() {
                 type="text"
                 id="username"
                 name="username"
-                placeholder="Bekturgyn123"
+                placeholder="maqsat.bekturgyn"
                 value={formData.username}
                 onChange={handleInputChange}
                 required

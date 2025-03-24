@@ -146,7 +146,7 @@ function Login() {
                 type="text"
                 id="username"
                 name="username"
-                placeholder="maksat01@example.com"
+                placeholder="maqsat.bekturgyn"
                 value={formData.username}
                 onChange={handleInputChange}
                 required

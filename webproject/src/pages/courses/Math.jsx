@@ -62,6 +62,8 @@ const Math = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAttempted, setIsAttempted] = useState(false);
 
+  console.log(questions, chapter, section);
+
   useEffect(() => {
     loadData();
   }, [courseId, sectionId, chapterId]);
