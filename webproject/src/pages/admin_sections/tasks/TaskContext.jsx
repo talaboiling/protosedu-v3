@@ -3,7 +3,8 @@ export const TaskInterfaceContext = createContext(null);
 import { handleObjectMoving, clearGuidelines } from "./canvas/snappingHelpers";
 import { fabric } from "fabric";
 
-const TaskInterfaceProvider = ({children, canvas, setCanvas, currentQuestion, setContent,handleCorrectAnswer,content}) => {
+const TaskInterfaceProvider = ({children, canvas, setCanvas, currentQuestion, 
+    setContent,handleCorrectAnswer,content, setCurrentQuestion}) => {
     const [selectedObject, setSelectedObject] = useState(null);
     const [properties, setProperties] = useState({
         width: "",
@@ -22,6 +23,7 @@ const TaskInterfaceProvider = ({children, canvas, setCanvas, currentQuestion, se
     const [correctClickImage, setCorrectClickImage] = useState(null);
     const [isChoosingInputZone, setIsChoosingInputZone] = useState(null);
     const [inputZones, setInputZones] = useState([]);
+    const [canvasImages, setCanvasImages] = useState([]);
 
     const addDropZone = (object) => {
         setDropZones(prev => {
@@ -71,7 +73,9 @@ const TaskInterfaceProvider = ({children, canvas, setCanvas, currentQuestion, se
             console.log(guidelines);
             canvas.renderAll();
         }
-    }, [guidelines])
+    }, [guidelines]);
+
+    console.log(canvasImages);
 
     const setProperty = (name, value) => {
         setProperties(prev=>({...prev, [name]:value}));
@@ -88,29 +92,34 @@ const TaskInterfaceProvider = ({children, canvas, setCanvas, currentQuestion, se
     //     }
     // }, [canvas, selectedObject]);
 
-    function addImage(imageSrc){   
+    function addImage(imageSrc, type="thirdPartyImage", file=null){   
         console.log(imageSrc, canvas);
         if (canvas) {
             fabric.Image.fromURL(imageSrc, (img) => {
-              img.scaleToWidth(100);
-              img.scaleToHeight(100);
-              img.set({
-                left: (canvas.width - img.getScaledWidth()) / 2,
-                top: (canvas.height - img.getScaledHeight()) / 2,
-                selectable: true,
-                lockUniScaling: true,
-              });
-              img.setControlsVisibility({
-                mt: false, // top middle
-                mb: false, // bottom middle
-                ml: false, // middle left
-                mr: false, // middle right
-              });
-              canvas.add(img);
-              console.log(img);
-              canvas.renderAll();
+                img.scaleToWidth(100);
+                img.scaleToHeight(100);
+                img.set({
+                    left: (canvas.width - img.getScaledWidth()) / 2,
+                    top: (canvas.height - img.getScaledHeight()) / 2,
+                    selectable: true,
+                    lockUniScaling: true,
+                });
+                img.setControlsVisibility({
+                    mt: false, // top middle
+                    mb: false, // bottom middle
+                    ml: false, // middle left
+                    mr: false, // middle right
+                });
+                const timestamp = new Date().getTime();
+                img.id = `image_${timestamp}`;
+                if (type=="userImage"){
+                    setCanvasImages(prev=>[...prev, {[img.id]: file}])
+                };
+                canvas.add(img);
+                console.log(img);
+                canvas.renderAll();
             });
-          }
+        }
     }
 
     const onPaste = () => {
@@ -139,6 +148,13 @@ const TaskInterfaceProvider = ({children, canvas, setCanvas, currentQuestion, se
     }
 
     const handleSaveClick = () => {
+        const currentQuestionBeforeImages = {...currentQuestion};
+        canvasImages.forEach(image => {
+            const [imgId, file] = Object.entries(image)[0];
+            let newId = imgId.replace(/^image_/, "canvasImage_");
+            currentQuestionBeforeImages[newId] = file;
+        });
+        setCurrentQuestion(currentQuestionBeforeImages);
         if (questionType=="drag_and_drop_text"){
             setContent({
                 dropZones: Array.from(dropZones.values()),
@@ -194,6 +210,7 @@ const TaskInterfaceProvider = ({children, canvas, setCanvas, currentQuestion, se
                 canvasData: canvas,
             });
         }
+
     }  
 
     console.log(content, currentQuestion);

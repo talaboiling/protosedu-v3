@@ -52,9 +52,10 @@ const QuestionModal = ({
             </h2>
             <div className="taskConstructor" style={{height: "100%"}}>
               <TaskInterface setContent={setContent} currentQuestion={currentQuestion} 
+                setCurrentQuestion={setCurrentQuestion}
                 handleSelectCorrectAnswer={handleSelectCorrectAnswer} handleCorrectAnswer={handleCorrectAnswer}
                 content={content}
-                />
+              />
 
               <div className="taskDetails" style={{width: "80%"}}>
                 <form onSubmit={(e)=> handleQuestionSubmit(e, content)}>

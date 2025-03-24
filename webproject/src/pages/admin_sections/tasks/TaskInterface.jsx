@@ -13,7 +13,8 @@ const TaskInterface = ({
     handleSelectCorrectAnswer,
     setContent,
     handleCorrectAnswer,
-    content
+    content, 
+    setCurrentQuestion
 }) => {
     const canvasRef = useRef(null);
     const fabricRef = useRef(null);
@@ -82,7 +83,7 @@ const TaskInterface = ({
 
     return (
         <div className="taskCreationHeader">
-            <TaskInterfaceProvider handleCorrectAnswer={handleCorrectAnswer} setContent={setContent} canvas={canvas} currentQuestion={currentQuestion} content={content}>
+            <TaskInterfaceProvider setCurrentQuestion={setCurrentQuestion} handleCorrectAnswer={handleCorrectAnswer} setContent={setContent} canvas={canvas} currentQuestion={currentQuestion} content={content}>
                 <ToolsBar2 canvas={canvas} />
                 <Canvas onBackspace={onBackspace} canvasRef={canvasRef} currentQuestion={currentQuestion} handleSelectCorrectAnswer={handleSelectCorrectAnswer}/>
                 <ToolsBar canvas={canvas} functions={{addRectangle, addCircle}} />

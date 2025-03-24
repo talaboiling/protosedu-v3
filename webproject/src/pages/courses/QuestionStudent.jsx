@@ -38,8 +38,12 @@ const QuestionStudent = ({currentQuestion, showFeedback, handleSubmit,
             return userAnswers == currentCorrectAnswers.answer;
         }else if (currentQuestion.question_type==="drag_and_drop_text"){
             let currentCorrectAnswers = currentQuestion.correct_answer;
-            console.log(userAnswers, currentCorrectAnswers)
-            return userAnswers[1].answer == currentCorrectAnswers.answer.answer;
+            console.log(userAnswers, currentCorrectAnswers);
+            if (userAnswers.length==2){
+                return userAnswers[1].answer == currentCorrectAnswers.answer.answer;
+            }else{
+                return userAnswers[0].answer == currentCorrectAnswers.answer.answer;
+            }
         }else if (currentQuestion.question_type=="input_text"){
             console.log(currentQuestion.correct_answer.answer, userInputs);
             return currentQuestion.correct_answer.answer.every(correctAnswer=>{
@@ -48,6 +52,7 @@ const QuestionStudent = ({currentQuestion, showFeedback, handleSubmit,
             });
         }
     }
+
 
     function checkCorrectAnswer(userAnswers){
         const solved = isProblemSolved(userAnswers);
@@ -124,6 +129,16 @@ const QuestionStudent = ({currentQuestion, showFeedback, handleSubmit,
             }
           }
         );
+        if (currentQuestion.canvas_images){
+            currentQuestion.canvas_images.forEach(canvasImage=>{
+                canvasJson.objects.forEach(object=>{
+                    if (object.id==`image_${canvasImage.image_id}`){
+                        object.src=canvasImage.value;
+                    }
+                })
+            })
+        }
+        console.log(canvasJson);
         const currentOutsideElements = canvasJson.objects.filter(obj=>obj.hasOwnProperty('metadata') && (obj.metadata.isDrop || obj.metadata.isDrag || obj.metadata.isClick || obj.metadata.isInput));
 
         setOutsideElements([...currentOutsideElements]);

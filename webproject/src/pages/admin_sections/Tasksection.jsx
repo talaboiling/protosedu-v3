@@ -237,6 +237,12 @@ const Tasksection = () => {
     formData.append("question_text", currentQuestion.question_text);
     formData.append("question_type", currentQuestion.question_type);
     formData.append("template", currentQuestion.template);
+    Object.entries(currentQuestion).forEach(([key, value]) => {
+      if (key.startsWith("canvasImage_")) {
+        formData.append(key, value);
+      }
+    });
+    console.log(formData.entries());
     if (currentQuestion.audio && currentQuestion.audio instanceof File) {
       formData.append("audio", currentQuestion.audio);
     }

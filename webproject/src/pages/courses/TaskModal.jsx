@@ -64,7 +64,8 @@ const TaskModal = ({
 
 
   return (
-    <dialog className="studmodal" open style={{display:"flex", justifyContent:"center"}}>
+    <>
+    {currentQuestion && <dialog className="studmodal" open style={{display:"flex", justifyContent:"center"}}>
       <div className="studmodal-content">
         <div className="modalHeader" style={{position: "relative"}}>
           <span style={{ display: "flex", flexDirection: "row", gap: "2rem", alignItems:"center" }}>
@@ -196,7 +197,8 @@ const TaskModal = ({
         </div>
       </div>
       <audio ref={clickSoundRef} src={click_audio}></audio>
-    </dialog>
+    </dialog>}
+    </>
   );
 };
 
