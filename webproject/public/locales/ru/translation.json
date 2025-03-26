@@ -187,5 +187,10 @@
   "notEnoughStarsTitle": "Недостаточно звезд",
   "notEnoughStarsMessage": "Для игры необходимо набрать 20 звезд. Зарабатывайте звезды, выполняя задания.",
   "subscriptionExistsTitle": "Премиум уже существует",
-  "subscriptionExistsMessage": "Вы уже оформили премиум подписку и можете пользоваться всеми возможностями платформы."
+  "subscriptionExistsMessage": "Вы уже оформили премиум подписку и можете пользоваться всеми возможностями платформы.",
+  "changePassword": "Change Your Password",
+  "enterNewPassword": "Введите новый пароль",
+  "confirmNewPassword": "Подтвердите новый пароль",
+  "saveNewPassword": "Сохранить пароль",
+  "passwordsDoNotMatch": "Пароли не совпадают"
 }

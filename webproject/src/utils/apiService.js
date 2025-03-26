@@ -161,7 +161,7 @@ export const fetchCourse = async (courseId, child_id) => {
 
 export const fetchTests = async () => {
   try {
-    const endpoint = 'modo/tests/';
+    const endpoint = "modo/tests/";
     const response = await instance.get(endpoint);
     return response.data;
   } catch (error) {
@@ -181,7 +181,7 @@ export const fetchTest = async (testId) => {
 
 export const createTest = async (testData) => {
   try {
-    const endpoint = 'modo/tests/';
+    const endpoint = "modo/tests/";
     const response = await instance.post(endpoint, testData);
     console.log(response.data);
     return response.data;
@@ -189,7 +189,6 @@ export const createTest = async (testData) => {
     throw new Error(error || "Something went wrong");
   }
 };
-
 
 export const createCourse = async (courseData) => {
   try {
@@ -794,15 +793,8 @@ export const answerQuestion = async (
   childId
 ) => {
   try {
-    console.log(
-      courseId,
-      sectionId,
-      chapterId,
-      taskId,
-      questionId,
-      childId
-    );
-    
+    console.log(courseId, sectionId, chapterId, taskId, questionId, childId);
+
     const endpoint = `/courses/${courseId}/sections/${sectionId}/chapters/${chapterId}/tasks/${taskId}/questions/${questionId}/answer/`;
     const requestData = {
       is_correct: true,
@@ -929,5 +921,18 @@ export const importSchoolExcel = async (formData, school_id) => {
     return response.data;
   } catch (error) {
     throw new Error(error.response?.data?.message || "Failed to import data");
+  }
+};
+
+export const changeRequiredPassword = async (password) => {
+  try {
+    const response = await instance.post("/change-required-password/", {
+      password,
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message || "Failed to change required password"
+    );
   }
 };

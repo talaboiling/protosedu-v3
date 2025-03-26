@@ -3,10 +3,12 @@ import { Link, useNavigate } from "react-router-dom";
 import logoImg from "/src/assets/logo_blue.webp";
 import { loginUser, logout } from "../utils/authService";
 import { useTranslation } from "react-i18next";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faBars} from "@fortawesome/free-solid-svg-icons";
-import {slide as Menu} from "react-burger-menu";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBars } from "@fortawesome/free-solid-svg-icons";
+import { slide as Menu } from "react-burger-menu";
 import Loader from "./Loader.jsx";
+import { changeRequiredPassword } from "../utils/apiService.js";
+import { color } from "framer-motion";
 
 function Login() {
   const [formData, setFormData] = useState({
@@ -17,6 +19,11 @@ function Login() {
   const [loading, setLoading] = useState(false);
   const [responseMessage, setResponseMessage] = useState("");
   const [showErrModal, setShowErrModal] = useState(false);
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordMismatch, setPasswordMismatch] = useState(false);
+
   const navigate = useNavigate();
   const { t } = useTranslation();
 
@@ -43,9 +50,13 @@ function Login() {
         //console.log("Navigating to /parent");
         navigate("/parent"); // Redirect to parent dashboard
       } else if (user.role === "student") {
-        //console.log("Navigating to /dashboard");
-        navigate("/dashboard"); // Redirect to student dashboard
-      } else {
+        if (user.requires_password_change) {
+          setShowPasswordModal(true); // Show modal
+        } else {
+          navigate("/dashboard");
+        }
+      }
+      else {
         //console.log("Navigating to /login");
         navigate("/login"); // Default redirect to login
       }
@@ -108,7 +119,7 @@ function Login() {
           </Menu>
           <div className="excLogo">
             <div className="menuWrapper" onClick={toggleMenu}>
-              <FontAwesomeIcon icon={faBars} style={{color: "#00639E"}}/>
+              <FontAwesomeIcon icon={faBars} style={{ color: "#00639E" }} />
             </div>
             <div className="navList">
               <a href="/#oplatforme" className="navLink">
@@ -208,8 +219,66 @@ function Login() {
               </div>
             </dialog>
           )}
+
+          {showPasswordModal && (
+            <dialog open className="modal supermodal">
+              <div
+                className="modal-content"
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: "1rem",
+                  border: "3px solid #00639E",
+                }}
+              >
+                <h3 style={{ color: "black" }}>{t("changePassword")}</h3>
+
+                <input
+                  type="password"
+                  value={newPassword}
+                  placeholder={t("enterNewPassword")}
+                  onChange={(e) => {
+                    setNewPassword(e.target.value);
+                    setPasswordMismatch(false);
+                  }}
+                />
+
+                <input
+                  type="password"
+                  value={confirmPassword}
+                  placeholder={t("confirmNewPassword")}
+                  onChange={(e) => {
+                    setConfirmPassword(e.target.value);
+                    setPasswordMismatch(false);
+                  }}
+                />
+
+                {passwordMismatch && (
+                  <span style={{ color: "red" }}>{t("passwordsDoNotMatch")}</span>
+                )}
+
+                <button
+                  onClick={() => {
+                    if (newPassword !== confirmPassword) {
+                      setPasswordMismatch(true);
+                      return;
+                    }
+                    changeRequiredPassword(newPassword);
+                    setShowPasswordModal(false);
+                    navigate("/dashboard");
+                  }}
+                  className="orangeButton"
+                  style={{ maxWidth: "200px" }}
+                >
+                  {t("saveNewPassword")}
+                </button>
+              </div>
+            </dialog>
+          )}
+
         </div>
-      </div>
+      </div >
     </>
   );
 }
