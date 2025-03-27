@@ -25,6 +25,7 @@ import {
   createQuestion,
   updateQuestion,
   deleteQuestion,
+  updateChapterContents,
 } from "../../utils/apiService";
 import ToolsBar from "./tasks/ToolsBar";
 import QuestionModal from "./tasks/QuestionModal";
@@ -455,7 +456,7 @@ const Tasksection = () => {
     return <Loader />;
   };
 
-  function handleDragEnd(event){
+  async function handleDragEnd(event){
     const {active, over} = event;
     console.log(active, over);
     if (!over){
@@ -469,9 +470,23 @@ const Tasksection = () => {
     over.data.index = draggableTaskIndex;
     const draggableContent = currentTasks[draggableTaskIndex];
     const droppableContent = currentTasks[droppableTaskIndex];
+    draggableContent.order = droppableTaskIndex+1;
+    droppableContent.order = draggableTaskIndex+1;
     currentTasks[droppableTaskIndex] = draggableContent;
     currentTasks[draggableTaskIndex] = droppableContent;
+    
+    const previousTasks = [...contents];
     setContents(currentTasks);
+
+    try {
+      const response = await updateChapterContents(courseId, sectionId, chapterId, contents);
+      console.log(response);
+      console.log('New order saved to backend');
+      return true;
+    } catch (error) {
+      console.error('Error saving tasks order:', error);
+      setContents(previousTasks);
+    }
   };
 
   const containerWidth = 800;
@@ -479,6 +494,8 @@ const Tasksection = () => {
   const baseRowHeight = 90;
   const xOffset = 285;
   const yOffset = 150;
+
+  console.log(contents);
 
   return (
     <div className="spdash">

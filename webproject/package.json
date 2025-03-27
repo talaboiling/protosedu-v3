@@ -26,6 +26,7 @@
     "@react-pdf-viewer/page-navigation": "^3.12.0",
     "@simplepdf/react-embed-pdf": "^1.8.0",
     "@tailwindcss/vite": "^4.0.11",
+    "@tanstack/react-query": "^5.69.0",
     "axios": "^1.7.2",
     "chart.js": "^4.4.3",
     "dayjs": "^1.11.12",

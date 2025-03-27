@@ -306,6 +306,25 @@ export const updateChapter = async (
   }
 };
 
+export const updateChapterContents = async (
+  courseId,
+  sectionId,
+  chapterId,
+  contents
+) => {
+  console.log(contents);
+  try {
+    const response = await instance.patch(
+      `/courses/${courseId}/sections/${sectionId}/chapters/${chapterId}/contents/update_contents/`,
+      {contents}
+    );
+    console.log(response);
+    return response;
+  } catch (error) {
+    throw new Error(error.response.data.message || "Something went wrong");
+  }
+};
+
 export const deleteChapter = async (courseId, sectionId, chapterId) => {
   try {
     const response = await instance.delete(
