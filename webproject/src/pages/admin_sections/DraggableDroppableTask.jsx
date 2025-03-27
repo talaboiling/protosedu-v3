@@ -6,7 +6,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import bgtask from "../../assets/bgtask.svg";
 import Loader from "../Loader";
 import { useDraggable, useDroppable } from '@dnd-kit/core';
-
+import bgvideo from "../../assets/videolessonthumb.svg";
 const DraggableDroppableTask = ({contentIndex, content, xOffset, 
     itemWidth, containerWidth, yOffset, openLesson, 
     handleEditContent, handleTaskClick, handleEditTask, handleDeleteContent, move}
