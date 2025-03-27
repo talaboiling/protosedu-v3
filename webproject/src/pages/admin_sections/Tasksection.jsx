@@ -8,6 +8,8 @@ import EditIcon from "@mui/icons-material/Edit";
 import bgtask from "../../assets/bgtask.svg";
 import bgvideo from "../../assets/videolessonthumb.svg";
 import Loader from "../Loader";
+import { Hand } from "lucide-react";
+
 import {
   fetchContents,
   createLesson,
@@ -26,6 +28,8 @@ import {
 } from "../../utils/apiService";
 import ToolsBar from "./tasks/ToolsBar";
 import QuestionModal from "./tasks/QuestionModal";
+import { DndContext, useDraggable, useDroppable } from "@dnd-kit/core";
+import DraggableDroppableTask from "./DraggableDroppableTask";
 
 const Tasksection = () => {
   const { courseId, sectionId, chapterId } = useParams();
@@ -65,6 +69,7 @@ const Tasksection = () => {
   console.log(questions)
   const [editingQuestionIndex, setEditingQuestionIndex] = useState(null);
   const [isEditingVideo, setIsEditingVideo] = useState(false);
+  const [move, setMove] = useState(false);
 
   useEffect(() => {
     const fetchContentsData = async () => {
@@ -448,7 +453,32 @@ const Tasksection = () => {
 
   if (loading) {
     return <Loader />;
-  }
+  };
+
+  function handleDragEnd(event){
+    const {active, over} = event;
+    console.log(active, over);
+    if (!over){
+      return;
+    }
+
+    const draggableTaskIndex = active.data.current.index;
+    const droppableTaskIndex = over.data.current.index;
+    const currentTasks = [...contents];
+    active.data.index = droppableTaskIndex;
+    over.data.index = draggableTaskIndex;
+    const draggableContent = currentTasks[draggableTaskIndex];
+    const droppableContent = currentTasks[droppableTaskIndex];
+    currentTasks[droppableTaskIndex] = draggableContent;
+    currentTasks[draggableTaskIndex] = droppableContent;
+    setContents(currentTasks);
+  };
+
+  const containerWidth = 800;
+  const itemWidth = 225;
+  const baseRowHeight = 90;
+  const xOffset = 285;
+  const yOffset = 150;
 
   return (
     <div className="spdash">
@@ -499,108 +529,70 @@ const Tasksection = () => {
           
         </div>
 
-        <div className="superCont sectCont ">
-          {contents &&
-            contents.map((content, index) => (
-              <div
-                key={index}
-                className={`vidBlock ${content.content_type} ${
-                  content.template ? `template-${content.template}` : ""
-                }`}
+        <div className="superCont sectCont" style={{padding: "100px", position: "relative"}}>
+            <div
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '20%',
+                padding: '8px 10px',
+                background: 'linear-gradient(90deg, #ff7e5f, #feb47b)',
+                color: '#fff',
+                textAlign: 'center',
+                fontSize: '20px',
+                fontWeight: 'bold',
+                boxShadow: '0 2px 5px rgba(0, 0, 0, 0.2)',
+                zIndex: 1000,
+                borderBottomLeftRadius: '8px',
+                borderBottomRightRadius: '8px'
+              }}
+            >
+              <div 
+                onClick={()=>setMove(prev=>!prev)} 
+                style={{
+                  margin: 0, 
+                  display: "flex", 
+                  justifyContent: "center", 
+                  alignItems: "center", 
+                  gap: 8,
+                  color: move ? "green": "",
+                  cursor: "pointer"
+                }}
               >
-                {content.content_type === "lesson" && (
-                  <>
-                    <div
-                      className="thumbcontainer"
-                      onClick={() => openLesson(index)}
-                    >
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleEditContent(index);
-                        }}
-                        className="deleteBtn editBtn"
-                      >
-                        <EditIcon sx={{ color: "black" }} />
-                      </button>
-                      <img
-                        src={bgvideo || "placeholder.png"}
-                        alt={content.title}
-                        className="taskThumbnail"
-                      />
-                    </div>
-                    <div
-                      className={`contentTitle ${
-                        content.title.length > 20 ? "title-slider" : ""
-                      }`}
-                    >
-                      <div className="title-slide">
-                        <p style={{ margin: "0" }}>{content.title}</p>
-                      </div>
-                    </div>
-                    <div className="taskHover">
-                      <p>
-                        <strong>Название:</strong> {content.title}
-                      </p>
-                      <p>
-                        <strong>Описание:</strong> {content.description}
-                      </p>
-                    </div>
-                  </>
-                )}
-                {content.content_type === "task" && (
-                  <>
-                    <img
-                      src={bgtask}
-                      alt=""
-                      style={{
-                        paddingTop: "20px",
-                        scale: "1.3",
-                        overflow: "hidden",
-                      }}
-                      onClick={() => handleTaskClick(index)}
-                    />
-                    <div
-                      className={`contentTitle ${
-                        content.title.length > 15 ? "title-slider" : ""
-                      }`}
-                    >
-                      <div className="title-slide">
-                        <p style={{ margin: "0" }}>{content.title}</p>
-                      </div>
-                    </div>
-                    <div className="taskHover">
-                      <p>
-                        <strong>Название:</strong> {content.title}
-                      </p>
-                      <p>
-                        <strong>Описание:</strong> {content.description}
-                      </p>
-                    </div>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleEditTask(index);
-                      }}
-                      className="deleteBtn editBtn"
-                    >
-                      <EditIcon sx={{ color: "black" }} />
-                    </button>
-                  </>
-                )}
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleDeleteContent(content.id, content.content_type);
-                  }}
-                  className="deleteBtn"
-                >
-                  <DeleteForeverIcon sx={{ color: "darkred" }} />
-                </button>
+                <Hand size={20}/>
+                <p style={{margin: 0}}>Move elements</p>
               </div>
-            ))}
-
-          <div className="taskAdder">
+            </div>
+          <div style={{
+            position: "relative",
+            width: containerWidth,
+            height: 1200,
+            margin: "0 auto"
+          }}>
+            <DndContext onDragEnd={handleDragEnd}>
+              {contents &&
+                contents.map((content, contentIndex) => {
+                  return <DraggableDroppableTask
+                    key={contentIndex}
+                    content={content}
+                    contentIndex={contentIndex}
+                    xOffset={xOffset}
+                    itemWidth={itemWidth}
+                    containerWidth={containerWidth}
+                    yOffset={yOffset}
+                    openLesson={openLesson}
+                    handleEditContent={handleEditContent}
+                    handleTaskClick={handleTaskClick}
+                    handleEditTask={handleEditTask}
+                    handleDeleteContent={handleDeleteContent}
+                    move={move}
+                  />
+                })
+              }
+            </DndContext>
+          </div>
+          <div className="taskAdder" style={{position: "absolute", right: "50px", top: "50px"}}>
             <button
               className="adderBtn"
               onClick={() => {
@@ -624,6 +616,7 @@ const Tasksection = () => {
             </button>
           </div>
         </div>
+
       </div>
 
       {showVideoModal && (

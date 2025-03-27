@@ -18,7 +18,7 @@ import {
   answerQuestion,
 } from "../../utils/apiService";
 import CourseCard from "./CourseCard";
-import SectionContent from "./SectionContent";
+import SectionContent from "./contents/SectionContent";
 import VideoModal from "./VideoModal";
 import TaskModal from "./TaskModal";
 import SubscriptionErrorModal from "./SubscriptionErrorModal";
@@ -74,8 +74,8 @@ const Math = () => {
 
   const navigate = useNavigate();
 
-  useEffect(()=>{
-    if (currentQuestionIndex==questions.length){
+  useEffect(() => {
+    if (currentQuestionIndex == questions.length) {
       navigate("");
     }
   }, [currentQuestionIndex]);
@@ -152,7 +152,9 @@ const Math = () => {
       return;
     }
 
-    const videoIdMatch = url.match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+    const videoIdMatch = url.match(
+      /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/
+    );
     const videoId = videoIdMatch ? videoIdMatch[1] : null;
     if (videoId) {
       const embedUrl = `https://www.youtube.com/embed/${videoId}`;
@@ -221,7 +223,6 @@ const Math = () => {
       setIsBackgroundAudioPlaying(false);
     }
   };
-
 
   const handleDragEnd = (result) => {
     if (!result.destination) {
@@ -333,7 +334,7 @@ const Math = () => {
       setIsButtonDisabled(false);
     }, 1500);
     return;
-  }
+  };
 
   const handleSubmit = async () => {
     setIsButtonDisabled(true);
@@ -400,10 +401,9 @@ const Math = () => {
 
       let isCorrect;
 
-      if (responseData.is_correct==true){
-        isCorrect=true;
-
-      }else{
+      if (responseData.is_correct == true) {
+        isCorrect = true;
+      } else {
         isCorrect = false;
       }
 
@@ -424,7 +424,7 @@ const Math = () => {
           setIsBackgroundAudioPlaying(false);
         }
         setIsButtonDisabled(false);
-        setCurrentQuestionIndex(prev=>prev+1)
+        setCurrentQuestionIndex((prev) => prev + 1);
       }, 1500);
 
       // await loadData();
@@ -509,7 +509,7 @@ const Math = () => {
                   className="defaultStyle courseNav"
                   id={
                     window.location.pathname ===
-                      `/dashboard/courses/${courseId}/sections`
+                    `/dashboard/courses/${courseId}/sections`
                       ? "active"
                       : ""
                   }
@@ -524,7 +524,7 @@ const Math = () => {
                   className="defaultStyle courseNav"
                   id={
                     window.location.pathname ===
-                      `/dashboard/courses/${courseId}/sections/${sectionId}/chapters`
+                    `/dashboard/courses/${courseId}/sections/${sectionId}/chapters`
                       ? "active"
                       : ""
                   }
@@ -539,7 +539,7 @@ const Math = () => {
                   className="defaultStyle courseNav"
                   id={
                     window.location.pathname ===
-                      `/dashboard/courses/${courseId}/sections/${sectionId}/chapters/${chapterId}/lessons`
+                    `/dashboard/courses/${courseId}/sections/${sectionId}/chapters/${chapterId}/lessons`
                       ? "active"
                       : ""
                   }
