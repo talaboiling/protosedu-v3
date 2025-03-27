@@ -15,10 +15,15 @@ const SectionContent = ({
   const [showSubscriptionError, setShowSubscriptionError] = useState(false);
 
   const containerWidth = 640;
+  let containerHeight = 1200;
   const itemWidth = 200;
   const baseRowHeight = 90;
   const xOffset = 220;
   const yOffset = 150;
+
+  if (chapter.contents){
+    containerHeight = chapter.contents.length * 160;
+  }
 
   return (
     <div className="lessonsCont">
@@ -46,7 +51,7 @@ const SectionContent = ({
           style={{
             position: "relative",
             width: containerWidth,
-            height: 1200,
+            height: containerHeight,
             margin: "0 auto",
           }}
         >
