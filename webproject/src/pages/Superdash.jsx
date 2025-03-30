@@ -148,7 +148,7 @@ const Superdash = () => {
           Выйти
         </button>
         <p style={{ fontSize: "xx-large", fontWeight: "500", color: "#666" }}>
-          Школы
+          Платформы
         </p>
         <div className="addschool">
           <button
@@ -161,7 +161,7 @@ const Superdash = () => {
               fontWeight: "600",
             }}
           >
-            Добавить школу
+            Добавить платформу
           </button>
           <button
             onClick={downloadExcel}
@@ -241,7 +241,7 @@ const Superdash = () => {
                 fontSize: "x-large",
               }}
             >
-              Добавить школу
+              Добавить платформу
             </h2>
             <form
               onSubmit={handleSubmit}

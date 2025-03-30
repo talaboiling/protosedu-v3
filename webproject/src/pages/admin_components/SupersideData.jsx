@@ -5,8 +5,8 @@ import { BookCheck } from 'lucide-react';
 
 export const SupersideData = [
     {
-        title: 'Школы',
-        icon: <HomeIcon sx={{color:"white", fontSize:20}}/>,
+        title: 'Платформы',
+        icon: <HomeIcon sx={{ color: "white", fontSize: 20 }} />,
         link: '/admindashboard'
     },
     {
