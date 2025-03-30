@@ -7,7 +7,7 @@ import TestCreationModal from "./tests/TestCreationModal";
 import { fetchTests } from "../../utils/apiService";
 
 const createTest = async (test) => console.log("Test Created:", test);
-const featuredTypes = ["modo", "ent"];
+const featuredTypes = ["modo", "ent", "diagnostic"];
 
 const TestsPage = () => {
     const [tests, setTests] = useState([]);
@@ -94,6 +94,7 @@ const TestsPage = () => {
                 <ul style={{display: "flex", gap: 8, fontSize: "20px"}}>
                     <li style={{backgroundColor: type=="modo" ? "orange" : "", padding: "5px", borderRadius: "10px"  }}><NavLink to="?type=modo">Модо</NavLink></li>
                     <li style={{backgroundColor: type=="ent" ? "orange" : "", padding: "5px", borderRadius: "10px" }}><NavLink to="?type=ent">Ент</NavLink></li>
+                    <li style={{backgroundColor: type=="diagnostic" ? "orange" : "", padding: "5px", borderRadius: "10px" }}><NavLink to="?type=diagnostic">Диагностический тест</NavLink></li>
                     <li style={{backgroundColor: type=="others" ? "orange" : "", padding: "5px", borderRadius: "10px"  }}><NavLink to="?type=others">Другие</NavLink></li>
                 </ul>
                 <button onClick={()=>setIsModalOpen(true)}>

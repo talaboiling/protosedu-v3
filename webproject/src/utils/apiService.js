@@ -404,6 +404,19 @@ export const fetchTasks = async (courseId, sectionId, chapterId, childId) => {
   }
 };
 
+export const updateTaskContents = async (courseId, sectionId, chapterId, taskId, questionsData) => {
+  console.log(questionsData);
+  try {
+    const endpoint = `/courses/${courseId}/sections/${sectionId}/chapters/${chapterId}/tasks/${taskId}/questions/update_questions/`
+    const response = await instance.patch(endpoint, {
+      questions: questionsData
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(error || "Something went wrong");
+  }
+};
+
 export const fetchQuestions = async (
   courseId,
   sectionId,
@@ -463,6 +476,7 @@ export const fetchWeeklyProgress = async (childId) => {
       ? `/progress/weekly?child_id=${childId}`
       : "/progress/weekly";
     const response = await instance.get(endpoint);
+    console.log(response);
     return response.data;
   } catch (error) {
     throw new Error(error || "Something went wrong");

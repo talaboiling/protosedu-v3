@@ -66,6 +66,8 @@ const ChapterContent = () => {
   if (loading) {
     return <Loader />; // Display loader while fetching data
   }
+
+  console.log(chapters);
   return (
     <div className="rtdash dashMain">
       <Sidebar isMenuOpen={isMenuOpen} />
@@ -119,9 +121,8 @@ const ChapterContent = () => {
               <li
                 key={chapter.id}
                 className={`sectionItem ${
-                  activeSection === chapter.id ? "activeSection" : ""
+                  chapter.total_tasks==chapter.completed_tasks ? "activeSection" : ""
                 }`}
-                onClick={() => handleClickSection(chapter.id)}
               >
                 <p>{chapter.title}</p>
                 <div className="sectionProgress">
@@ -131,7 +132,12 @@ const ChapterContent = () => {
                     {t("completedTasks2")}
                     {chapter.total_tasks} {t("completedTasks3")}
                   </p>
-                  <progress value={chapter.percentage_completed/100} />
+                  <progress 
+                    value={
+                      chapter.percentage_completed ? 
+                        chapter.percentage_completed/100 : chapter.completed_tasks/chapter.total_tasks
+                    } 
+                  />
                 </div>
                 <Link
                   to={`/dashboard/courses/${courseId}/sections/${sectionId}/chapters/${chapter.id}/lessons`}

@@ -31,6 +31,7 @@ import ToolsBar from "./tasks/ToolsBar";
 import QuestionModal from "./tasks/QuestionModal";
 import { DndContext, useDraggable, useDroppable } from "@dnd-kit/core";
 import DraggableDroppableTask from "./DraggableDroppableTask";
+import QuestionsList from "./QuestionsList";
 
 const Tasksection = () => {
   const { courseId, sectionId, chapterId } = useParams();
@@ -67,7 +68,7 @@ const Tasksection = () => {
     imagesToUpdate: {},
     audio: null, // Add this line
   });
-  console.log(questions)
+  console.log(questions, taskDetails);
   const [editingQuestionIndex, setEditingQuestionIndex] = useState(null);
   const [isEditingVideo, setIsEditingVideo] = useState(false);
   const [move, setMove] = useState(false);
@@ -840,28 +841,13 @@ const Tasksection = () => {
             <div className="questionsList">
               
               {selectedTaskIndex !== null && questions.length > 0 && (
-                <ul>
-                  {questions.map((question, index) => (
-                    <li
-                      key={index}
-                      onClick={() => handleEditQuestion(index)}
-                      className="questions"
-                    >
-                      <p className="defaultStyle">{index + 1}.</p>
-                      {question.title || `Вопрос ${index + 1}`}
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDeleteQuestion(index);
-                        }}
-                        className="transBtn"
-                        style={{ paddingTop: "3px" }}
-                      >
-                        <DeleteForeverIcon sx={{ color: "darkred" }} />
-                      </button>
-                    </li>
-                  ))}
-                </ul>
+                <QuestionsList 
+                  questions={questions} 
+                  handleEditQuestion={handleEditQuestion}
+                  handleDeleteQuestion={handleDeleteQuestion}
+                  setQuestions={setQuestions}
+                  metaData={{courseId, sectionId, chapterId}}
+                />
               )}
               
             </div>

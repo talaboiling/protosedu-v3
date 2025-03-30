@@ -3,6 +3,8 @@ import VerifiedIcon from "@mui/icons-material/Verified";
 import bgtask from "../../../assets/bgtask.svg";
 import bgvideo from "../../../assets/videolessonthumb.svg";
 import SubscriptionErrorModal from "../SubscriptionErrorModal"; // Import the modal
+import Modal from "../../../helpers/Modal";
+import MessageModal from "./MessageModal";
 
 const SectionContent = ({
   section,
@@ -13,6 +15,7 @@ const SectionContent = ({
   t,
 }) => {
   const [showSubscriptionError, setShowSubscriptionError] = useState(false);
+  const [showMessage, setShowMessage] = useState(false);
 
   const containerWidth = 640;
   let containerHeight = 1200;
@@ -24,7 +27,9 @@ const SectionContent = ({
 
   if (chapter.contents) {
     containerHeight = chapter.contents.length * 160;
-  }
+  };
+
+  console.log(hasSubscription);
 
   return (
     <div className="lessonsCont">
@@ -128,9 +133,9 @@ const SectionContent = ({
                     <div
                       className={`studVidBlock task ${hasSubscription && !isDisabled ? "" : "noTask"}`}
                       onClick={() =>
-                        hasSubscription && !isDisabled
+                        !isDisabled
                           ? openTaskModal(content.id)
-                          : setShowSubscriptionError(true)
+                          : !hasSubscription ? setShowSubscriptionError(true): setShowMessage(true)
                       }
                       style={{ ...style, backgroundColor: "#97d4e7", opacity: isDisabled ? 0.5 : 1 }}
                     >
@@ -176,6 +181,13 @@ const SectionContent = ({
           t={t}
         />
       )}
+      {
+        showMessage && (
+          <Modal onClose={()=>setShowMessage(false)}>
+            <MessageModal message={"Вам надо закончить прошлое задание"} />
+          </Modal>
+        )
+      }
     </div>
   );
 };

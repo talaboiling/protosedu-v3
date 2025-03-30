@@ -56,6 +56,7 @@ const Dashboard = () => {
         console.log("userData", userData);
         setUser(userData);
         const weeklyProgressData = await fetchWeeklyProgress(childId);
+        console.log(weeklyProgressData);
         setWeeklyProgress(weeklyProgressData.weekly_progress);
         const coursesData = await fetchCourses(childId);
         setCourses(coursesData);
@@ -80,7 +81,7 @@ const Dashboard = () => {
   };
 
   const data = {
-    labels: weeklyProgress.map((day) => daysInRussian[day.day] || day.day),
+    labels: weeklyProgress.length>0 ? weeklyProgress.map((day) => daysInRussian[day.day] || day.day): [],
     datasets: [
       {
         label: t("cups"),

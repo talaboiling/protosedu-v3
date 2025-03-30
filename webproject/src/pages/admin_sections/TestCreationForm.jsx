@@ -68,6 +68,7 @@ const TestCreationForm = ({onClose}) => {
                         <select {...register("test_type")} name="test_type" style={{width: "fit-content"}}>
                             <option value="modo">Modo</option>
                             <option value="ent">Ent</option>
+                            <option value="diagnostic">Диагностический</option>
                         </select>
                     </div>
                     <QuestionsCreator questions={questions} setQuestions={setQuestions}/>
