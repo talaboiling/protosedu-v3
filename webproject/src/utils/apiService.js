@@ -316,7 +316,7 @@ export const updateChapterContents = async (
   try {
     const response = await instance.patch(
       `/courses/${courseId}/sections/${sectionId}/chapters/${chapterId}/contents/update_contents/`,
-      {contents}
+      { contents }
     );
     console.log(response);
     return response;
@@ -952,6 +952,20 @@ export const changeRequiredPassword = async (password) => {
   } catch (error) {
     throw new Error(
       error.response?.data?.message || "Failed to change required password"
+    );
+  }
+};
+
+export const changeClassLanguage = async (schoolId, classId, language) => {
+  try {
+    const response = await instance.patch(
+      `/schools/${schoolId}/classes/${classId}/change_language/`,
+      { language }
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message || "Failed to change class language"
     );
   }
 };

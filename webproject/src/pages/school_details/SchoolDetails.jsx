@@ -9,7 +9,8 @@ import {
   fetchSchoolData,
   assignSupervisor,
   deassignSupervisor,
-  importSchoolExcel
+  importSchoolExcel,
+  changeClassLanguage
 } from "../../utils/apiService.js";
 
 import Loader from "../Loader.jsx";
@@ -63,6 +64,18 @@ const SchoolDetails = () => {
       console.error("Error fetching classes:", error);
     }
     setLoading(false);
+  };
+
+
+  const handleLanguageChange = async (classId, newLanguage) => {
+    try {
+      await changeClassLanguage(schoolId, classId, newLanguage);
+      const updatedClasses = await fetchClassesData(schoolId);
+      setClasses(updatedClasses);
+    } catch (error) {
+      console.error("Error updating class language:", error);
+      alert("Ошибка при обновлении языка класса.");
+    }
   };
 
   const handleFormChange = (e) => {
@@ -191,16 +204,24 @@ const SchoolDetails = () => {
             {classes.map((classItem) => (
               <li
                 key={classItem.id}
-                onClick={() =>
-                  navigate(`/schools/${schoolId}/classes/${classItem.id}`)
-                }
                 className="classItem"
               >
                 Класс:{" "}
                 <b>
                   {classItem.grade} {classItem.section}
                 </b>
-              </li>
+                <button onClick={() =>
+                  navigate(`/schools/${schoolId}/classes/${classItem.id}`)
+                }>Перейти в класс</button>
+                <select
+                  name="language"
+                  value={classItem.language}
+                  onChange={(e) => handleLanguageChange(classItem.id, e.target.value)}
+                >
+                  <option value="kz">Казахский</option>
+                  <option value="ru">Русский</option>
+                </select>
+              </li  >
             ))}
           </ul>
         )}

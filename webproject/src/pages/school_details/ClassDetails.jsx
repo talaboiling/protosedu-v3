@@ -43,6 +43,7 @@ const ClassDetails = () => {
         fetchStudentsOfClass(schoolId, classId),
         fetchClass(schoolId, classId),
       ]);
+      console.log(studentsData);
       setStudents(studentsData);
       setClass(classData);
     } catch (error) {
@@ -102,9 +103,15 @@ const ClassDetails = () => {
               <li key={student.id} className="classItem">
                 <b>
                   {student.user.first_name} {student.user.last_name}
-                </b>{" "}
+                </b> <br />
+                <strong>{student.user.username}</strong>
                 <br /> {student.user.email} <br />
                 {student.user.phone_number}
+                Язык обучения: {student.language === "ru"
+                  ? "Русский"
+                  : student.language === "kz"
+                    ? "Казахский"
+                    : student.language}
               </li>
             ))}
           </ul>
