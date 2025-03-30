@@ -4,6 +4,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import ToolsBar from './ToolsBar';
 import Canvas from './Canvas';
 import TaskInterface from './TaskInterface';
+import {Dock} from "lucide-react";
 
 const QuestionModal = ({
     showQuestionModal,
@@ -18,6 +19,7 @@ const QuestionModal = ({
 }) => {
   const [content, setContent] = useState(null);
   const [isLoading, setIsLoading] = useState(null);
+  const [showDemo, setShowDemo] = useState(false);
 
   function handleCorrectAnswer(answer){
     setCurrentQuestion(prev=>({...prev, correct_answer: answer}));
@@ -55,8 +57,8 @@ const QuestionModal = ({
                 setCurrentQuestion={setCurrentQuestion}
                 handleSelectCorrectAnswer={handleSelectCorrectAnswer} handleCorrectAnswer={handleCorrectAnswer}
                 content={content}
+                showDemo={showDemo}
               />
-
               <div className="taskDetails" style={{width: "80%"}}>
                 <form onSubmit={(e)=> handleQuestionSubmit(e, content)}>
                   <div className="formConstructor">
@@ -67,6 +69,7 @@ const QuestionModal = ({
                         alignItems: "center",
                         marginBottom: "40px",
                         width: "80%",
+                        gap: 16
                       }}
                     >
                       <div
@@ -115,6 +118,13 @@ const QuestionModal = ({
                           </option>
                         </select>
                       </div>
+                      {currentQuestion.question_type==="multiple_choice_text" && <div>
+                        <Dock 
+                          size={28} 
+                          onClick={()=>setShowDemo(prev=>!prev)}
+                          style={{color: showDemo ? "green" : ""}}
+                          />
+                      </div>}
                     </div>
                     <div
                       style={{
