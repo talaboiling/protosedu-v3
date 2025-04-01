@@ -162,6 +162,7 @@
   "standardForStart": "Стандартный вариант, если хотите попробовать платформу на первое время",
   "choose": "Выбрать",
   "pleaseWriteEmail": "Введите ваш email:",
+  "pleaseWriteUsername": "Введите ваше имя пользователя:",
   "finish": "Закончить",
   "next": "Дальше",
   "subscriptionRequired": "Требуется Премиум План",

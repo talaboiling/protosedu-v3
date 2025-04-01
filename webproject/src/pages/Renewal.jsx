@@ -6,13 +6,14 @@ import { Link } from "react-router-dom";
 
 const Renewal = () => {
   const { t } = useTranslation();
-  const [email, setEmail] = useState("");
+  // const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [message, setMessage] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await requestResetPassword(email);
+      await requestResetPassword(username);
       setMessage(t("Отправили ссылку на ваш e-mail"));
     } catch (error) {
       setMessage(error.message);
@@ -28,14 +29,14 @@ const Renewal = () => {
           </Link>
           <h2 style={{ animation: "none" }}>{t("passwordRenewal")}</h2>
           <form className="registrationInput" onSubmit={handleSubmit}>
-            <label htmlFor="email">{t("pleaseWriteEmail")}</label>
+            <label htmlFor="email">{t("pleaseWriteUsername")}</label>
             <input
-              type="email"
-              name="email"
+              type="username"
+              name="username"
               id="email"
-              placeholder="email@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              placeholder="maksat.bekturgun"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
             />
             <button
               type="submit"

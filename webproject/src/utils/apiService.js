@@ -404,12 +404,18 @@ export const fetchTasks = async (courseId, sectionId, chapterId, childId) => {
   }
 };
 
-export const updateTaskContents = async (courseId, sectionId, chapterId, taskId, questionsData) => {
+export const updateTaskContents = async (
+  courseId,
+  sectionId,
+  chapterId,
+  taskId,
+  questionsData
+) => {
   console.log(questionsData);
   try {
-    const endpoint = `/courses/${courseId}/sections/${sectionId}/chapters/${chapterId}/tasks/${taskId}/questions/update_questions/`
+    const endpoint = `/courses/${courseId}/sections/${sectionId}/chapters/${chapterId}/tasks/${taskId}/questions/update_questions/`;
     const response = await instance.patch(endpoint, {
-      questions: questionsData
+      questions: questionsData,
     });
     return response.data;
   } catch (error) {
@@ -854,17 +860,17 @@ export const playGame = async (childId) => {
   }
 };
 
-export const requestResetPassword = async (email) => {
+export const requestResetPassword = async (username) => {
   try {
-    const response = await instance.post("/reset-password/", { email });
+    const response = await instance.post("/reset-password/", { username });
     if (response.status === 201 || response.status === 200) {
       return response.data;
     }
   } catch (error) {
     if (error.response.status === 404) {
-      throw new Error("Пользователь с таким email не найден");
+      throw new Error("Пользователь с таким username не найден");
     } else if (error.response.status === 400) {
-      throw new Error("Вам нужно ввести email");
+      throw new Error("Вам нужно ввести username");
     } else if (error.response.status === 500) {
       throw new Error("Ошибка сервера. Попробуйте зайти позже");
     } else {
