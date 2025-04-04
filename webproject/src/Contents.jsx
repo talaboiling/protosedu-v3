@@ -21,11 +21,13 @@ import offer_progress from "./assets/offer_progress.webp";
 import offer_time from "./assets/offer_time.webp";
 import logoImg from "./assets/logo_blue.webp";
 import logoFuture from "./assets/futureschool.png";
+import logo_65 from "./assets/65_logo.png";
+import logo_83 from "./assets/83_logo.png"
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 function Contents() {
-  useEffect(() => {}, []);
+  useEffect(() => { }, []);
   const { t } = useTranslation();
   return (
     <>
@@ -126,11 +128,11 @@ function Contents() {
             whileInView={{ opacity: 1 }}
             transition={{ duration: 0.6 }}
           >
-            <span><h2>{t ('parentDepend1')}</h2></span>
-            <span className='mob-none'><h2>{t ('parentDepend2')}</h2></span>
-            <span className='mob-display'><h2>{t ('parentDepend2_mob')}</h2></span>
-            <span className='mob-display'><h2>{t ('parentDepend22_mob')}</h2></span>
-            <span><h2>{t ('parentDepend3')}</h2></span>
+            <span><h2>{t('parentDepend1')}</h2></span>
+            <span className='mob-none'><h2>{t('parentDepend2')}</h2></span>
+            <span className='mob-display'><h2>{t('parentDepend2_mob')}</h2></span>
+            <span className='mob-display'><h2>{t('parentDepend22_mob')}</h2></span>
+            <span><h2>{t('parentDepend3')}</h2></span>
           </motion.div>
 
           <div
@@ -205,11 +207,15 @@ function Contents() {
         </div>
       </div>
       <div className="contPartners">
-          <h1 className="partnerTitle" style={{animation:"none", margin:"0", lineHeight:"normal"}}>{t("ourPartners")}</h1>
-          <div className="partnerLogos">
-            <img src={logoFuture} alt="Future School Logo" style={{width:"300px", height:"300px"}}/>
-          </div>
+        <h1 className="partnerTitle" style={{ animation: "none", margin: "0", lineHeight: "normal" }}>{t("ourPartners")}</h1>
+        <div className="partnerLogos" style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "20px" }}>
+          <img src={logoFuture} alt="Future School Logo" style={{ width: "300px", height: "300px" }} />
+          <img src={logo_65} alt="Future School Logo" style={{ width: "300px", height: "300px" }} />
+          <img src={logo_83} alt="Future School Logo" style={{ width: "300px", height: "300px" }} />
         </div>
+      </div>
+
+
       <div className="offers">
         <div className="offersTop">
           <Offers num={1} text={t("personalStudyProgram")} img={offer_books} />
@@ -235,8 +241,8 @@ function Contents() {
           <img src={laptops} alt="" className="planImg" />
         </div>
         <div className="planTop">
-          <h1 className='laptop-mob-none mob-none' style={{lineHeight:"50px", width:"557px"}}>{t ('mathPlan')}</h1>
-          <h2 className='mob-display' style={{lineHeight:"50px", width:"100%", fontSize: "35px"}}>{t ('mathPlan')}</h2>
+          <h1 className='laptop-mob-none mob-none' style={{ lineHeight: "50px", width: "557px" }}>{t('mathPlan')}</h1>
+          <h2 className='mob-display' style={{ lineHeight: "50px", width: "100%", fontSize: "35px" }}>{t('mathPlan')}</h2>
           <ul className="planCardBot">
             <li className="planCardList">{t("numeration")}</li>
             <li className="planCardList">{t("numCompare")}</li>
@@ -248,8 +254,8 @@ function Contents() {
           </ul>
         </div>
         <div className="planTop">
-          <h1 className='laptop-mob-none mob-none' style={{lineHeight:"50px", width:"577px"}}>{t ('engPlan')}</h1>
-          <h2 className='mob-display' style={{lineHeight:"50px", width:"90%", fontSize: "35px"}}>{t ('engPlan')}</h2>
+          <h1 className='laptop-mob-none mob-none' style={{ lineHeight: "50px", width: "577px" }}>{t('engPlan')}</h1>
+          <h2 className='mob-display' style={{ lineHeight: "50px", width: "90%", fontSize: "35px" }}>{t('engPlan')}</h2>
           <ul className="planCardBot">
             <li className="planCardList">Phonics</li>
             <li className="planCardList">Grammar</li>
@@ -273,9 +279,9 @@ function Contents() {
       </div>
       <div className="bottomCont">
         <div className="bottomCard">
-          <img className='mob-none' src={logoImg} alt="logo" style={{width:"136px", height:"34px"}}/>
-          <h1 className='mob-none'>{t ('eduInvest1')}<br/><br/><br/>{t ('eduInvest2')}</h1>
-          <span><h2 className='mob-display' style={{width: "100%", lineHeight: "40px", fontSize: "35px"}}>{t ('eduInvest3')}</h2></span>
+          <img className='mob-none' src={logoImg} alt="logo" style={{ width: "136px", height: "34px" }} />
+          <h1 className='mob-none'>{t('eduInvest1')}<br /><br /><br />{t('eduInvest2')}</h1>
+          <span><h2 className='mob-display' style={{ width: "100%", lineHeight: "40px", fontSize: "35px" }}>{t('eduInvest3')}</h2></span>
           <ol style={{}}>
             <li>
               <div className="contDisplay">
