@@ -30,6 +30,7 @@ const SchoolDetails = () => {
   const [supervisorData, setSupervisorData] = useState({
     first_name: "",
     last_name: "",
+    username: "",
     email: "",
     phone_number: "",
   });
@@ -124,6 +125,7 @@ const SchoolDetails = () => {
       setSupervisorData({
         first_name: "",
         last_name: "",
+        username: "",
         email: "",
         phone_number: "",
       });
@@ -442,6 +444,10 @@ const SchoolDetails = () => {
                   required
                   style={{ width: "100%", padding: "10px", fontSize: "large" }}
                 />
+                <br />
+                <br />
+                <label htmlFor="username">Логин</label>
+                <input type="text" id="username" name="username" value={supervisorData.username} onChange={handleSupervisorFormChange} required style={{ width: "100%", padding: "10px", fontSize: "large" }} />
                 <br />
                 <br />
                 <label htmlFor="email">Email</label>
