@@ -68,7 +68,7 @@ function Header() {
             <a href="#obuchenie" className="navLink">
               {t("education")}
             </a>
-            <Link to="/ktp" className="navLink">КТП</Link>
+            <Link to="/ktp" className="navLink">КТП/КСП</Link>
             <a href="#otzyvy" className="navLink">
               {t("reviews")}
             </a>
