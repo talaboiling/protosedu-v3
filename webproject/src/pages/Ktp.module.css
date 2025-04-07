@@ -1,0 +1,136 @@
+/* Ktp.module.css */
+
+.container {
+  min-height: 100vh;
+  background-color: #f7fafc;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.backButton {
+  background-color: #3182ce;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.backButton:hover {
+  background-color: #2b6cb0;
+}
+
+.title {
+  font-size: 36px;
+  font-weight: bold;
+  color: #2d3748;
+  margin-bottom: 24px;
+}
+
+.gradeButtonContainer {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.gradeButton {
+  background-color: #4299e1;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  font-size: 18px;
+  transition: background-color 0.3s ease;
+}
+
+.gradeButton:hover {
+  background-color: #3182ce;
+}
+
+.gradeButtonActive {
+  background-color: #2b6cb0;
+}
+
+.documentListContainer {
+  background-color: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  width: 100%;
+  max-width: 800px;
+  padding: 20px;
+}
+
+.documentButton {
+  display: block;
+  width: 100%;
+  text-align: left;
+  color: #2d3748;
+  background-color: #f7fafc;
+  padding: 16px;
+  border-radius: 8px;
+  font-size: 18px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.documentButton:hover {
+  background-color: #edf2f7;
+  transform: scale(1.03);
+}
+
+.noDocuments {
+  color: #718096;
+  font-size: 18px;
+  padding: 16px;
+  background-color: #edf2f7;
+  border-radius: 8px;
+}
+
+.modalBackdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 50;
+}
+
+.modalContent {
+  background-color: white;
+  width: 90%;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.closeButton {
+  background-color: #f56565;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
+  margin-top: 16px;
+}
+
+.downloadButton {
+  background-color: #48bb78;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
+  margin-top: 16px;
+}
+.downloadButton:hover {
+  background-color: #38a169;
+}
+.closeButton:hover {
+  background-color: #e53e3e;
+}

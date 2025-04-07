@@ -13,9 +13,10 @@ const PDFViewer = ({ pdfUrl, initialPage = 1 }) => {
             <Worker workerUrl={`https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js`} >
                 <Viewer
                     fileUrl={pdfUrl}
-                    defaultScale={1.5}
+                    defaultScale={1}
+                    viewMode="DualPage"
                     plugins={[defaultLayoutPluginInstance]}
-                    initialPage={currentPage - 1} // Pages are zero-indexed
+                    initialPage={currentPage - 1}
                 />
             </Worker>
         </div>

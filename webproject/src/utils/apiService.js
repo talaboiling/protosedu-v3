@@ -989,3 +989,22 @@ export const changeClassLanguage = async (schoolId, classId, language) => {
     );
   }
 };
+
+export const fetchDocuments = async (type, grade) => {
+  try {
+    if (!type) {
+      throw new Error("Type is required");
+    }
+    let endpoint = "";
+    if (!grade) {
+      endpoint = `/documents/?type=${type}`;
+    } else {
+      endpoint = `/documents/?grade=${grade}&type=${type}`;
+    }
+    console.log(endpoint);
+    const response = await instance.get(endpoint);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || "Something went wrong");
+  }
+};
