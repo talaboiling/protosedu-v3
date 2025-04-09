@@ -162,11 +162,12 @@ const Ktp = () => {
             {/* Modal */}
             {showDocument && selectedDocument && (
                 <div className={styles.modalBackdrop} onClick={() => setShowDocument(false)}>
+
                     <div
                         className={styles.modalContent}
                         onClick={(e) => e.stopPropagation()}
                     >
-                        <PDFViewer pdfUrl={selectedDocument.file} initialPage={1} />
+                        <PDFViewer pdfUrl={selectedDocument.file} initialPage={1} onClose={() => setShowDocument(false)} />
                     </div>
                 </div>
             )}

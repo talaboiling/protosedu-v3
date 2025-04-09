@@ -186,6 +186,7 @@ body {
   border: none;
   border-radius: 5px;
   padding: 10px 15px;
+  margin-bottom: 500px;
   cursor: pointer;
   transition: background 0.3s;
   font-weight: 500;
