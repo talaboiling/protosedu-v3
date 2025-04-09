@@ -5,12 +5,12 @@ import "@react-pdf-viewer/core/lib/styles/index.css";
 import "@react-pdf-viewer/default-layout/lib/styles/index.css";
 
 const PDFViewer = ({ pdfUrl, initialPage = 1 }) => {
-    const defaultLayoutPluginInstance = defaultLayoutPlugin();
     const [currentPage, setCurrentPage] = useState(initialPage);
+    const defaultLayoutPluginInstance = defaultLayoutPlugin();
 
     return (
-        <div style={{ height: "800px" }}>
-            <Worker workerUrl={`https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js`} >
+        <div style={{ height: "800px", border: "1px solid #ddd", borderRadius: "8px", overflow: "hidden" }}>
+            <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js">
                 <Viewer
                     fileUrl={pdfUrl}
                     defaultScale={1}

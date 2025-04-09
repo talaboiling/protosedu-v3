@@ -1,6 +1,11 @@
 import axios from "axios";
 import { API_URL } from "./config";
-import { getAccessToken, refreshAccessToken, clearTokens } from "./authService";
+import {
+  getAccessToken,
+  refreshAccessToken,
+  clearTokens,
+  setAccessToken,
+} from "./authService";
 
 const instance = axios.create({
   baseURL: API_URL,
@@ -28,19 +33,21 @@ instance.interceptors.response.use(
   },
   async (error) => {
     const originalRequest = error.config;
+
     if (error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
+
       try {
         const newAccessToken = await refreshAccessToken();
-        axios.defaults.headers.common[
-          "Authorization"
-        ] = `Bearer ${newAccessToken}`;
+        setAccessToken(newAccessToken);
+        originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
         return instance(originalRequest);
       } catch (err) {
         clearTokens();
         return Promise.reject(err);
       }
     }
+
     return Promise.reject(error);
   }
 );
@@ -693,6 +700,7 @@ export const updateQuestion = async (
     const response = await instance.patch(endpoint, data, { headers });
     return response.data;
   } catch (error) {
+    console.log(error);
     throw new Error(error.message || "Something went wrong");
   }
 };
@@ -709,6 +717,7 @@ export const deleteQuestion = async (
     const response = await instance.delete(endpoint);
     return response.data;
   } catch (error) {
+    console.log(error);
     throw new Error(error || "Something went wrong");
   }
 };
@@ -990,21 +999,36 @@ export const changeClassLanguage = async (schoolId, classId, language) => {
   }
 };
 
-export const fetchDocuments = async (type, grade) => {
+export const fetchSubjects = async (grade) => {
+  console.log("grade", grade);
   try {
-    if (!type) {
-      throw new Error("Type is required");
+    if (grade === null) {
+      throw new Error("Grade is required");
     }
-    let endpoint = "";
-    if (!grade) {
-      endpoint = `/documents/?type=${type}`;
-    } else {
-      endpoint = `/documents/?grade=${grade}&type=${type}`;
-    }
+    const endpoint = `${API_URL}/subjects/?grade=${grade}`;
     console.log(endpoint);
-    const response = await instance.get(endpoint);
+    const response = await axios.get(endpoint);
+    console.log(response.data);
     return response.data;
   } catch (error) {
+    console.log(error);
+    throw new Error(error.response?.data?.message || "Something went wrong");
+  }
+};
+
+export const fetchDocuments = async (type, subject_id) => {
+  try {
+    let endpoint;
+    if (type) {
+      endpoint = `${API_URL}/documents/?subject=${subject_id}&type=${type}`;
+    } else {
+      endpoint = `${API_URL}/documents/?subject=${subject_id}`;
+    }
+    console.log(endpoint);
+    const response = await axios.get(endpoint);
+    return response.data;
+  } catch (error) {
+    console.log(error);
     throw new Error(error.response?.data?.message || "Something went wrong");
   }
 };
