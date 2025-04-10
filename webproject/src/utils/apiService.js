@@ -500,7 +500,7 @@ export const fetchRatings = async (childId) => {
   try {
     const endpoint = childId
       ? `/rating/global?child_id=${childId}`
-      : `/rating/global`;
+      : `/rating/class`;
     const response = await instance.get(endpoint);
     console.log(response.data);
     return response.data;

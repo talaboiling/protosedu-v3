@@ -235,3 +235,35 @@ body {
     padding: 15px;
   }
 }
+
+.dropdownContainer {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+.dropdown {
+  padding: 10px 15px;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: 2px solid #007bff;
+  background: white;
+  color: #333;
+  width: 250px;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='blue' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 16px;
+}
+
+.dropdown:focus {
+  outline: none;
+  border-color: #0056b3;
+}
+
+.dropdown option {
+  padding: 10px;
+}
+

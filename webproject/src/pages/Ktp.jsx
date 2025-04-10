@@ -15,7 +15,6 @@ const Ktp = () => {
     const [selectedSubject, setSelectedSubject] = useState(null);
     const [selectedDocument, setSelectedDocument] = useState(null);
     const [showDocument, setShowDocument] = useState(false);
-    const [selectedSubjectName, setSelectedSubjectName] = useState(null);
 
 
     useEffect(() => {
@@ -95,17 +94,21 @@ const Ktp = () => {
             <h1 className={styles.title}>КТП</h1>
 
             {/* Grade Selection */}
-            <div className={styles.gradeButtonContainer}>
-                {Array.from({ length: 5 }, (_, index) => (
-                    <button
-                        key={index}
-                        className={`${styles.gradeButton} ${selectedGrade === index ? styles.gradeButtonActive : ""}`}
-                        onClick={() => handleGradeSelect(index)}
-                    >
-                        {index} Класс
-                    </button>
-                ))}
+            <div className={styles.dropdownContainer}>
+                <select
+                    className={styles.dropdown}
+                    value={selectedGrade ?? ""}
+                    onChange={(e) => handleGradeSelect(Number(e.target.value))}
+                >
+                    <option value="" disabled>Выберите класс</option>
+                    {Array.from({ length: 5 }, (_, index) => (
+                        <option key={index} value={index}>
+                            {index} Класс
+                        </option>
+                    ))}
+                </select>
             </div>
+
 
             {/* Subject Selection */}
             {selectedGrade !== null && subjects.length === 0 && (
@@ -113,30 +116,30 @@ const Ktp = () => {
             )}
 
             {subjects.length > 0 && (
-                <>
-                    <h3 className={styles.sectionHeading}>Предметы за {selectedGrade} класс</h3>
-                    <div className={styles.subjectButtonContainer}>
+                <div className={styles.dropdownContainer}>
+                    <select
+                        className={styles.dropdown}
+                        value={selectedSubject ?? ""}
+                        onChange={(e) => {
+                            const subjectId = e.target.value;
+                            setSelectedSubject(subjectId);
+                            setShowDocument(false);
+                            setSelectedDocument(null);
+                        }}
+                    >
+                        <option value="" disabled>Выберите предмет</option>
                         {subjects.map(subject => (
-                            <button
-                                key={subject.id}
-                                className={`${styles.subjectButton} ${selectedSubject === subject.id ? styles.subjectButtonActive : ""}`}
-                                onClick={() => {
-                                    setSelectedSubject(subject.id);
-                                    setSelectedSubjectName(subject.name);
-                                    setShowDocument(false);
-                                    setSelectedDocument(null);
-                                }}
-                            >
+                            <option key={subject.id} value={subject.id}>
                                 {subject.name}
-                            </button>
+                            </option>
                         ))}
-                    </div>
-                </>
+                    </select>
+                </div>
             )}
+
 
             {/* Document List */}
             {selectedSubject && documents.length > 0 && (<>
-                <h3 className={styles.sectionHeading}>{selectedSubjectName.toUpperCase()}</h3>
                 <div className={styles.columnsContainer}>
                     {documents.map(document => (
                         <div key={document.id} className={styles.column}>
