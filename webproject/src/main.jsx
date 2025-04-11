@@ -47,7 +47,8 @@ import QuestionDetailPage from "./pages/admin_components/QuestionDetailPage.jsx"
 import TestsChild from "./pages/dashboard_sections/TestsChild.jsx";
 import AdminTestPage from "./pages/admin_components/tests/AdminTestPage.jsx";
 import TestChild from "./pages/dashboard_sections/tests/TestChild.jsx";
-import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
+import KtpAdmin from "./pages/admin_sections/KtpAdmin.jsx";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const router = createBrowserRouter([
   { path: "/", element: <App /> },
@@ -150,6 +151,12 @@ const router = createBrowserRouter([
     path: "/admindashboard",
     element: (
       <AuthRoute element={<Superdash />} allowedRoles={["superadmin"]} />
+    ),
+  },
+  {
+    path: "/admindashboard/ktp",
+    element: (
+      <AuthRoute element={<KtpAdmin />} allowedRoles={["superadmin"]} />
     ),
   },
   {

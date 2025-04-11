@@ -1032,3 +1032,79 @@ export const fetchDocuments = async (type, subject_id) => {
     throw new Error(error.response?.data?.message || "Something went wrong");
   }
 };
+
+export const createSubject = async (formData) => {
+  try {
+    const response = await instance.post("/subjects/", formData);
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message || "Failed to create subject"
+    );
+  }
+};
+
+export const deleteSubject = async (subjectId) => {
+  try {
+    const response = await instance.delete(`/subjects/${subjectId}/`);
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message || "Failed to delete subject"
+    );
+  }
+};
+
+export const updateSubject = async (subjectId, formData) => {
+  try {
+    const response = await instance.patch(`/subjects/${subjectId}/`, formData);
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message || "Failed to update subject"
+    );
+  }
+};
+
+export const createDocument = async (formData) => {
+  try {
+    const response = await instance.post("/documents/", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message || "Failed to create document"
+    );
+  }
+};
+
+export const deleteDocument = async (documentId) => {
+  try {
+    const response = await instance.delete(`/documents/${documentId}/`);
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message || "Failed to delete document"
+    );
+  }
+};
+
+export const updateDocument = async (documentId, formData) => {
+  try {
+    const response = await instance.patch(
+      `/documents/${documentId}/`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || "Failed to edit document");
+  }
+};

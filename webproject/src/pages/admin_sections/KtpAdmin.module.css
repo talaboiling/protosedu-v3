@@ -1,0 +1,472 @@
+Container
+.container {
+  padding: 30px;
+  max-width: 1200px;
+  margin: auto;
+  background-color: #f9fafc;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+}
+
+/* Title */
+.title {
+  text-align: center;
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 40px;
+  color: #222;
+}
+
+/* Dropdown Container */
+.dropdownContainer {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+.dropdown {
+  padding: 12px 18px;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: 2px solid #007bff;
+  background-color: white;
+  color: #333;
+  width: 250px;
+  appearance: none;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='blue' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+}
+
+.dropdown:focus {
+  outline: none;
+  border-color: #0056b3;
+}
+
+.dropdown option {
+  padding: 10px;
+}
+
+/* Section headings */
+h2 {
+  font-size: 1.6rem;
+  margin-top: 30px;
+  margin-bottom: 15px;
+  color: #333;
+  text-align: left;
+}
+
+/* Rows (Subject / Document) */
+.subjectRow,
+.documentRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  margin-bottom: 12px;
+  transition: background 0.3s;
+}
+
+.subjectRow:hover,
+.documentRow:hover {
+  background: #f0f4ff;
+}
+
+/* Row name (text) */
+.subjectRow span,
+.documentRow span {
+  font-weight: 500;
+  color: #333;
+  flex-grow: 1;
+}
+
+/* Buttons */
+/* button {
+  margin-left: 8px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.3s, color 0.3s;
+  font-size: 0.9rem;
+}
+
+button:hover {
+  opacity: 0.9;
+} */
+
+/* Add Button */
+.subjectRow button:first-child,
+.documentRow button:first-child,
+.container button:first-child {
+  background-color: #28a745;
+  color: white;
+}
+
+.subjectRow button:first-child:hover,
+.documentRow button:first-child:hover,
+.container button:first-child:hover {
+  background-color: #218838;
+}
+
+/* Edit Button */
+.subjectRow button:nth-child(3),
+.documentRow button:nth-child(3) {
+  background-color: #ffc107;
+  color: #333;
+}
+
+.subjectRow button:nth-child(3):hover,
+.documentRow button:nth-child(3):hover {
+  background-color: #e0a800;
+}
+
+/* Delete Button */
+.subjectRow button:last-child,
+.documentRow button:last-child {
+  background-color: #dc3545;
+  color: white;
+}
+
+.subjectRow button:last-child:hover,
+.documentRow button:last-child:hover {
+  background-color: #c82333;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container {
+    padding: 20px;
+  }
+
+  .dropdown {
+    width: 100%;
+  }
+
+  .subjectRow,
+  .documentRow {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .subjectRow button,
+  .documentRow button {
+    margin-top: 8px;
+    margin-left: 0;
+    width: 100%;
+  }
+}
+
+/* Modal Overlay */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* Modal Content */
+.modalContent {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    width: 100%;
+    max-width: 500px;
+    max-height: 80%;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Modal Title */
+.modal h2 {
+    font-size: 1.8rem;
+    color: #333;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Form Elements */
+input,
+textarea {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 2px solid #007bff;
+    border-radius: 8px;
+    font-size: 1rem;
+    color: #333;
+}
+
+input:focus,
+textarea:focus {
+    outline: none;
+    border-color: #0056b3;
+}
+
+/* Button */
+
+/* Close Button for Modal */
+.closeButton {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    color: #333;
+    cursor: pointer;
+}
+
+.closeButton:hover {
+    color: #007bff;
+}
+
+/* Modal Animation */
+.modalContent {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Modal Overlay for Confirmation */
+.confirmationModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Modal Content for Confirmation */
+.modalContent {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.modalContent h2 {
+    margin-bottom: 20px;
+    font-size: 1.6rem;
+    color: #333;
+}
+
+/* Buttons for Confirm/Cancel */
+.confirmButton {
+    padding: 12px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin: 10px;
+}
+
+.confirmButton:hover {
+    opacity: 0.8;
+}
+
+.cancelButton {
+    padding: 12px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin: 10px;
+}
+
+.cancelButton:hover {
+    opacity: 0.8;
+}
+
+/* Confirm Button */
+.confirmButton {
+    background-color: #28a745; /* Green */
+    color: white;
+}
+
+.confirmButton:hover {
+    background-color: #218838;
+}
+
+/* Cancel Button */
+.cancelButton {
+    background-color: #dc3545; /* Red */
+    color: white;
+}
+
+.cancelButton:hover {
+    background-color: #c82333;
+}
+
+/* Modal Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Modal Overlay for Create Subject */
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Modal Content for Create Subject */
+.modalContent {
+    background-color: white;
+    padding: 30px 80px;
+    border-radius: 10px;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* Modal Title */
+.modalContent h2 {
+    font-size: 1.8rem;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Input Field */
+.inputField,
+.textareaField {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 2px solid #007bff;
+    border-radius: 8px;
+    font-size: 1rem;
+    color: #333;
+    background-color: #f9f9f9;
+}
+
+.inputField:focus,
+.textareaField:focus {
+    outline: none;
+    border-color: #0056b3;
+}
+
+/* Textarea Specific Styling */
+.textareaField {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Submit Button */
+.submitButton {
+    padding: 12px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 100%;
+    margin-top: 15px;
+}
+
+.submitButton:hover {
+    background-color: #0056b3;
+}
+
+
+.cancelSubjectButton {
+    padding: 12px 20px;
+    background-color: #f33514;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 100%;
+    margin-top: 15px;
+}
+
+.cancelSubjectButton:hover {
+    background-color: #f60c04;
+}
+
+.simpleButton {
+    padding: 10px 15px; /* Small padding */
+    font-size: 0.9rem; /* Smaller font size */
+    margin: 5px; /* Small margin */
+    background-color: #007bff; /* Blue background */
+    color: white; /* White text */
+    border: none; /* Remove border */
+    border-radius: 4px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    display: inline-block; /* Keep the button inline */
+    transition: background-color 0.3s; /* Smooth background transition */
+}
+
+.simpleButton:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+
+
+/* Modal Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+
+
