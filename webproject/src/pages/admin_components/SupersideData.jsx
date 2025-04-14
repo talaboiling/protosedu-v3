@@ -1,7 +1,7 @@
 import HomeIcon from '@mui/icons-material/Home';
 import SchoolIcon from '@mui/icons-material/School';
 import BarChartIcon from '@mui/icons-material/BarChart';
-import { BookCheck, UploadCloudIcon } from 'lucide-react';
+import { BookCheck, UploadCloudIcon, Quote } from 'lucide-react';
 
 export const SupersideData = [
     {
@@ -28,5 +28,11 @@ export const SupersideData = [
         title: 'КТП/КСП',
         icon: <UploadCloudIcon />,
         link: '/admindashboard/ktp'
+    },
+    {
+        title: 'Фраза дня',
+        icon: <Quote />,
+        link: '/admindashboard/quotes'
     }
+
 ]

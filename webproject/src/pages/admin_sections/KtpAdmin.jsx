@@ -6,6 +6,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import PDFViewer from "../../components/PDFViewer";
 import { set } from "react-hook-form";
+import Superside from "../admin_components/Superside";
 
 // createSubject, updateSubject, deleteSubject, createDocument, updateDocument, deleteDocument
 
@@ -146,294 +147,305 @@ const KtpAdmin = () => {
                 <Loader />
             ) : (
 
-                <div className={styles.container}>
-                    <h1 className={styles.title}>KTP Admin Panel</h1>
+                <div className="spdash">
+                    <Superside />
+                    <div className={styles.container}>
 
-                    {/* Grade Selection */}
-                    <div className={styles.dropdownContainer}>
-                        <select value={selectedGrade || ""} onChange={handleGradeChange} className={styles.dropdown}>
-                            <option value="" disabled>Select Grade</option>
-                            {grades.map(grade => (
-                                <option key={grade} value={grade}>{grade} Grade</option>
-                            ))}
-                        </select>
-                    </div>
+                        <h1 className={styles.title}>KTP Admin Panel</h1>
 
-                    {/* Subjects Management */}
-                    {selectedGrade !== null && showSubjects && (
-                        <div>
-                            <h2>Subjects for {selectedGrade} grade</h2>
-                            <button className={styles.simpleButton} onClick={() => {
-                                console.log("Open add subject modal")
-                                setCreateSubjectModalOpen(true);
-                            }}>+ Add Subject</button>
-                            {subjects.map(subject => (
-                                <div key={subject.id} className={styles.subjectRow}>
-                                    <span>{subject.name}</span>
-                                    <button onClick={() =>
-                                        handleSubjectSelect(subject.id)}>Manage Documents</button>
-                                    <button onClick={() => {
-                                        console.log("Edit subject", subject.id)
-                                        setEditSubjectId(subject.id);
-                                        setSubjectFormData(subject);
-                                        setEditSubjectModalOpen(true);
-                                    }}>Edit</button>
-                                    <button onClick={() => {
-                                        console.log("Delete subject", subject.id)
-                                        subjectFormData.id = subject.id;
-                                        handleSubjectDelete(subject.id);
-                                    }}>Delete</button>
-                                </div>
-                            ))}
+                        {/* Grade Selection */}
+                        <div className={styles.dropdownContainer}>
+                            <select value={selectedGrade || ""} onChange={handleGradeChange} className={styles.dropdown}>
+                                <option value="" disabled>Select Grade</option>
+                                {grades.map(grade => (
+                                    <option key={grade} value={grade}>{grade} Grade</option>
+                                ))}
+                            </select>
                         </div>
-                    )}
 
-                    {/* Documents Management */}
-                    {selectedSubject && showDocuments && (
-                        <div>
-                            <h2>Documents</h2>
-                            <button className={styles.simpleButton} onClick={() => {
-                                console.log("Back to subjects");
-                                setShowDocuments(false);
-                                setShowSubjects(true);
-                            }}>Back</button>
-                            <button className={styles.simpleButton} onClick={() => {
-                                console.log("Open add document modal")
-                                setCreateDocumentModalOpen(true);
-                            }}>+ Add Document</button>
-
-                            {/* Check if there are documents */}
-                            {documents.length > 0 ? (
-                                documents.map(document => (
-                                    <div key={document.id} className={styles.documentRow}>
-                                        <span>{document.name}</span>
+                        {/* Subjects Management */}
+                        {selectedGrade !== null && showSubjects && (
+                            <div>
+                                <h2>Subjects for {selectedGrade} grade</h2>
+                                <button className={styles.simpleButton} onClick={() => {
+                                    console.log("Open add subject modal")
+                                    setCreateSubjectModalOpen(true);
+                                }}>+ Add Subject</button>
+                                {subjects.map(subject => (
+                                    <div key={subject.id} className={styles.subjectRow}>
+                                        <span>{subject.name}</span>
+                                        <button onClick={() =>
+                                            handleSubjectSelect(subject.id)}>Manage Documents</button>
                                         <button onClick={() => {
-                                            setShowDocuments(false);
-                                            setOpenPDF(document.file)
-                                        }}>Open</button>
-
-                                        <button onClick={() => {
-                                            console.log("Edit document", document.id)
-                                            setEditDocumentId(document.id);
-                                            setEditDocumentModalOpen(true);
-                                            setDocumentFormData(document);
+                                            console.log("Edit subject", subject.id)
+                                            setEditSubjectId(subject.id);
+                                            setSubjectFormData(subject);
+                                            setEditSubjectModalOpen(true);
                                         }}>Edit</button>
                                         <button onClick={() => {
-                                            console.log("Delete document", document.id)
-                                            setDeleteDocumentId(document.id);
-                                            setAreYouSure({ show: true, type: "document" });
+                                            console.log("Delete subject", subject.id)
+                                            subjectFormData.id = subject.id;
+                                            handleSubjectDelete(subject.id);
                                         }}>Delete</button>
                                     </div>
-                                ))
-                            ) : (
-                                // If no documents, show this message
-                                <p className={styles.noDocuments}>Нет доступных документов</p>
-                            )}
-                        </div>
-                    )}
+                                ))}
+                            </div>
+                        )}
 
-                    {createSubjectModalOpen && (
-                        <div className={styles.modalOverlay}>
-                            <div className={styles.modalContent}>
-                                <h2>Create Subject</h2>
-                                <form onSubmit={(e) => {
-                                    e.preventDefault();
-                                    subjectFormData.grade = selectedGrade;
-                                    console.log("Create subject", subjectFormData);
-                                    createSubject(subjectFormData)
-                                        .then(() => {
-                                            setSubjects([...subjects, subjectFormData]);
-                                            setCreateSubjectModalOpen(false);
-                                        })
-                                        .catch(err => console.error(err));
-                                    // Reset form data
-                                    setSubjectFormData({ name: "", description: "", grade: -1 });
-                                    // Close modal
-                                    setCreateSubjectModalOpen(false);
-                                }}>
-                                    <input
-                                        type="text"
-                                        placeholder="Subject Name"
-                                        value={subjectFormData.name}
-                                        onChange={(e) => setSubjectFormData({ ...subjectFormData, name: e.target.value })}
-                                        className={styles.inputField}
-                                    />
-                                    <textarea
-                                        placeholder="Description"
-                                        value={subjectFormData.description}
-                                        onChange={(e) => setSubjectFormData({ ...subjectFormData, description: e.target.value })}
-                                        className={styles.textareaField}
-                                    />
-                                    <button type="submit" className={styles.submitButton} onClick={() => {
+                        {/* Documents Management */}
+                        {selectedSubject && showDocuments && (
+                            <div>
+                                <h2>Documents</h2>
+                                <button className={styles.simpleButton} onClick={() => {
+                                    console.log("Back to subjects");
+                                    setShowDocuments(false);
+                                    setShowSubjects(true);
+                                }}>Back</button>
+                                <button className={styles.simpleButton} onClick={() => {
+                                    console.log("Open add document modal")
+                                    setCreateDocumentModalOpen(true);
+                                }}>+ Add Document</button>
+
+                                {/* Check if there are documents */}
+                                {documents.length > 0 ? (
+                                    documents.map(document => (
+                                        <div key={document.id} className={styles.documentRow}>
+                                            <span>{document.name}</span>
+                                            <button onClick={() => {
+                                                setShowDocuments(false);
+                                                setOpenPDF(document.file)
+                                            }}>Open</button>
+
+                                            <button onClick={() => {
+                                                console.log("Edit document", document.id)
+                                                setEditDocumentId(document.id);
+                                                setEditDocumentModalOpen(true);
+                                                setDocumentFormData(document);
+                                            }}>Edit</button>
+                                            <button onClick={() => {
+                                                console.log("Delete document", document.id)
+                                                setDeleteDocumentId(document.id);
+                                                setAreYouSure({ show: true, type: "document" });
+                                            }}>Delete</button>
+                                        </div>
+                                    ))
+                                ) : (
+                                    // If no documents, show this message
+                                    <p className={styles.noDocuments}>Нет доступных документов</p>
+                                )}
+                            </div>
+                        )}
+
+                        {createSubjectModalOpen && (
+                            <div className={styles.modalOverlay}>
+                                <div className={styles.modalContent}>
+                                    <h2>Create Subject</h2>
+                                    <form onSubmit={(e) => {
+                                        e.preventDefault();
+                                        subjectFormData.grade = selectedGrade;
+                                        console.log("Create subject", subjectFormData);
                                         createSubject(subjectFormData)
                                             .then(() => {
                                                 setSubjects([...subjects, subjectFormData]);
                                                 setCreateSubjectModalOpen(false);
-                                                setSubjectFormData({ name: "", description: "", grade: -1 });
-                                                notifySuccess("Subject created successfully");
                                             })
-                                            .catch(err => notifyError("Error creating subject: " + err));
-                                    }}>Create</button>
-                                    <button type="button" className={styles.cancelSubjectButton} onClick={() => setCreateSubjectModalOpen(false)}>Cancel</button>
-                                </form>
+                                            .catch(err => console.error(err));
+                                        // Reset form data
+                                        setSubjectFormData({ name: "", description: "", grade: -1 });
+                                        // Close modal
+                                        setCreateSubjectModalOpen(false);
+                                    }}>
+                                        <input
+                                            type="text"
+                                            placeholder="Subject Name"
+                                            value={subjectFormData.name}
+                                            onChange={(e) => setSubjectFormData({ ...subjectFormData, name: e.target.value })}
+                                            className={styles.inputField}
+                                        />
+                                        <textarea
+                                            placeholder="Description"
+                                            value={subjectFormData.description}
+                                            onChange={(e) => setSubjectFormData({ ...subjectFormData, description: e.target.value })}
+                                            className={styles.textareaField}
+                                        />
+                                        <button type="submit" className={styles.submitButton} onClick={() => {
+                                            createSubject(subjectFormData)
+                                                .then(() => {
+                                                    setSubjects([...subjects, subjectFormData]);
+                                                    setCreateSubjectModalOpen(false);
+                                                    setSubjectFormData({ name: "", description: "", grade: -1 });
+                                                    notifySuccess("Subject created successfully");
+                                                })
+                                                .catch(err => notifyError("Error creating subject: " + err));
+                                        }}>Create</button>
+                                        <button type="button" className={styles.cancelSubjectButton} onClick={() => setCreateSubjectModalOpen(false)}>Cancel</button>
+                                    </form>
+                                </div>
                             </div>
-                        </div>
-                    )}
+                        )}
 
 
 
-                    {editSubjectModalOpen && (
-                        <div className={styles.modalOverlay}>
-                            <div className={styles.modalContent}>
-                                <h2>Edit Subject</h2>
-                                <form onSubmit={(e) => {
-                                    e.preventDefault();
-                                    console.log("Edit subject", subjectFormData);
-                                }}>
-                                    <input type="text" placeholder="Subject Name" value={subjectFormData.name} className={styles.inputField} onChange={(e) => setSubjectFormData({ ...subjectFormData, name: e.target.value })} />
-                                    <textarea placeholder="Description" value={subjectFormData.description} className={styles.textareaField} onChange={(e) => setSubjectFormData({ ...subjectFormData, description: e.target.value })}></textarea>
-                                    <button type="submit" className={styles.submitButton} onClick={() => {
-                                        updateSubject(editSubjectId, subjectFormData)
-                                            .then(() => {
-                                                setSubjects(subjects.map(subject => subject.id === editSubjectId ? { ...subject, ...subjectFormData } : subject));
-                                                setEditSubjectModalOpen(false);
-                                                setSubjectFormData({ name: "", description: "", grade: -1 });
-                                                setEditSubjectId(null);
-                                                notifySuccess("Subject updated successfully");
-                                            }
-                                            )
-                                            .catch(err => notifyError("Error updating subject: " + err)
-                                            );
-                                    }}>Update</button>
-                                    <button type="button" className={styles.cancelSubjectButton} onClick={() => {
-                                        setEditSubjectModalOpen(false)
-                                        setSubjectFormData({ name: "", description: "", grade: -1 })
-                                    }}>Cancel</button>
-                                </form>
+                        {editSubjectModalOpen && (
+                            <div className={styles.modalOverlay}>
+                                <div className={styles.modalContent}>
+                                    <h2>Edit Subject</h2>
+                                    <form onSubmit={(e) => {
+                                        e.preventDefault();
+                                        console.log("Edit subject", subjectFormData);
+                                    }}>
+                                        <input type="text" placeholder="Subject Name" value={subjectFormData.name} className={styles.inputField} onChange={(e) => setSubjectFormData({ ...subjectFormData, name: e.target.value })} />
+                                        <textarea placeholder="Description" value={subjectFormData.description} className={styles.textareaField} onChange={(e) => setSubjectFormData({ ...subjectFormData, description: e.target.value })}></textarea>
+                                        <button type="submit" className={styles.submitButton} onClick={() => {
+                                            updateSubject(editSubjectId, subjectFormData)
+                                                .then(() => {
+                                                    setSubjects(subjects.map(subject => subject.id === editSubjectId ? { ...subject, ...subjectFormData } : subject));
+                                                    setEditSubjectModalOpen(false);
+                                                    setSubjectFormData({ name: "", description: "", grade: -1 });
+                                                    setEditSubjectId(null);
+                                                    notifySuccess("Subject updated successfully");
+                                                }
+                                                )
+                                                .catch(err => notifyError("Error updating subject: " + err)
+                                                );
+                                        }}>Update</button>
+                                        <button type="button" className={styles.cancelSubjectButton} onClick={() => {
+                                            setEditSubjectModalOpen(false)
+                                            setSubjectFormData({ name: "", description: "", grade: -1 })
+                                        }}>Cancel</button>
+                                    </form>
+                                </div>
                             </div>
-                        </div>
-                    )}
+                        )}
 
-                    {createDocumentModalOpen && (
-                        <div className={styles.modalOverlay}>
-                            <div className={styles.modalContent}>
-                                <h2>Create Document</h2>
-                                <form onSubmit={(e) => {
-                                    e.preventDefault();
-                                    console.log("Create document", documentFormData);
-                                }}>
-                                    <input
-                                        type="text"
-                                        placeholder="Document Name"
-                                        value={documentFormData.name}
-                                        onChange={(e) => setDocumentFormData({ ...documentFormData, name: e.target.value })}
-                                        className={styles.inputField}
-                                    />
-                                    <input type="file" onChange={(e) => setDocumentFormData({ ...documentFormData, file: e.target.files[0] })} />
-                                    <button type="submit" className={styles.submitButton} onClick={() => {
-                                        documentFormData.subject = selectedSubject;
-                                        setCreateDocumentModalOpen(false);
-                                        setLoading(true);
-                                        createDocument(documentFormData)
-                                            .then(() => {
-                                                setDocuments([...documents, documentFormData]);
-                                                setDocumentFormData({ name: "", file: null, subject: null, document_type: "ktp" });
-                                                notifySuccess("Document created successfully");
-                                                setLoading(false);
-                                            })
-                                            .catch(err => {
-                                                console.error(err)
-                                                notifyError("Error creating document: " + err)
-                                                setLoading(false);
+                        {createDocumentModalOpen && (
+                            <div className={styles.modalOverlay}>
+                                <div className={styles.modalContent}>
+                                    <h2>Create Document</h2>
+                                    <form onSubmit={(e) => {
+                                        e.preventDefault();
+                                        console.log("Create document", documentFormData);
+                                    }}>
+                                        <input
+                                            type="text"
+                                            placeholder="Document Name"
+                                            value={documentFormData.name}
+                                            onChange={(e) => setDocumentFormData({ ...documentFormData, name: e.target.value })}
+                                            className={styles.inputField}
+                                        />
+                                        <input type="file" onChange={(e) => setDocumentFormData({ ...documentFormData, file: e.target.files[0] })} />
+                                        <button type="submit" className={styles.submitButton} onClick={() => {
+                                            documentFormData.subject = selectedSubject;
+                                            setCreateDocumentModalOpen(false);
+                                            setLoading(true);
+                                            createDocument(documentFormData)
+                                                .then(() => {
+                                                    setDocumentFormData({ name: "", file: null, subject: null, document_type: "ktp" });
+                                                    notifySuccess("Document created successfully");
+                                                    fetchDocuments("ktp", selectedSubject)
+                                                        .then(data => setDocuments(data))
+                                                        .catch(err => setError(err.message))
+                                                        .finally(() => setLoading(false));
+                                                    setLoading(false);
+                                                })
+                                                .catch(err => {
+                                                    console.error(err)
+                                                    notifyError("Error creating document: " + err)
+                                                    setLoading(false);
 
-                                            });
-                                    }}>Create</button>
-                                    <button type="button" className={styles.cancelSubjectButton} onClick={() => setCreateDocumentModalOpen(false)}>Cancel</button>
-                                </form>
+                                                });
+
+
+                                        }}>Create</button>
+                                        <button type="button" className={styles.cancelSubjectButton} onClick={() => setCreateDocumentModalOpen(false)}>Cancel</button>
+                                    </form>
+                                </div>
                             </div>
-                        </div>
-                    )}
+                        )}
 
 
-                    {editDocumentModalOpen && (
-                        <div className={styles.modalOverlay}>
-                            <div className={styles.modalContent}>
-                                <h2>Edit Document</h2>
-                                <form onSubmit={(e) => {
-                                    e.preventDefault();
-                                    console.log("Edit document", documentFormData);
-                                }}>
+                        {editDocumentModalOpen && (
+                            <div className={styles.modalOverlay}>
+                                <div className={styles.modalContent}>
+                                    <h2>Edit Document</h2>
+                                    <form onSubmit={(e) => {
+                                        e.preventDefault();
+                                        console.log("Edit document", documentFormData);
+                                    }}>
 
-                                    <input type="text" required className={styles.inputField} placeholder="Document Name" value={documentFormData.name} onChange={(e) => setDocumentFormData({ ...documentFormData, name: e.target.value })} />
-                                    {documentFormData.file && (
-                                        <span style={{ textAlign: "left" }}>
-                                            Selected file:
-                                            <a
-                                                href={documentFormData.file}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                            >
-                                                Open in new tab
-                                            </a>
-                                        </span>)}
-                                    <input type="file" required className={styles.inputField} onChange={(e) => setDocumentFormData({ ...documentFormData, file: e.target.files[0] })} />
-                                    <button type="submit" className={styles.submitButton} onClick={() => {
-                                        setLoading(true);
-                                        updateDocument(editDocumentId, documentFormData)
-                                            .then(() => {
-                                                setDocuments(documents.map(document => document.id === editDocumentId ? { ...document, ...documentFormData } : document));
-                                                setEditDocumentModalOpen(false);
-                                                setDocumentFormData({ name: "", file: null, subject: null, document_type: "ktp" });
-                                                setEditDocumentId(null);
-                                                setShowSubjects(false)
-                                                fetchDocuments("ktp", selectedSubject)
-                                                    .then(data => setDocuments(data))
-                                                setLoading(false);
-                                                setShowDocuments(true);
-                                                notifySuccess("Document updated successfully");
-                                            }
-                                            )
-                                            .catch(err => {
-                                                notifyError("Error updating document: " + err)
-                                                setLoading(false);
-                                            })
-                                    }}>Update</button>
-                                    <button type="button" className={styles.cancelSubjectButton} onClick={() => {
-                                        setEditDocumentModalOpen(false);
-                                        setDocumentFormData({ name: "", file: null, subject: null, document_type: "ktp" });
-                                    }}>Cancel</button>
-                                </form>
+                                        <input type="text" required className={styles.inputField} placeholder="Document Name" value={documentFormData.name} onChange={(e) => setDocumentFormData({ ...documentFormData, name: e.target.value })} />
+                                        {documentFormData.file && (
+                                            <span style={{ textAlign: "left" }}>
+                                                Selected file:
+                                                <a
+                                                    href={documentFormData.file}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                >
+                                                    Open in new tab
+                                                </a>
+                                            </span>)}
+                                        <input type="file" required className={styles.inputField} onChange={(e) => setDocumentFormData({ ...documentFormData, file: e.target.files[0] })} />
+                                        <button type="submit" className={styles.submitButton} onClick={() => {
+                                            setLoading(true);
+                                            updateDocument(editDocumentId, documentFormData)
+                                                .then(() => {
+                                                    fetchDocuments("ktp", selectedSubject)
+                                                        .then(data => setDocuments(data))
+                                                        .catch(err => setError(err.message))
+                                                        .finally(() => setLoading(false));
+                                                    setEditDocumentModalOpen(false);
+                                                    setDocumentFormData({ name: "", file: null, subject: null, document_type: "ktp" });
+                                                    setEditDocumentId(null);
+                                                    setShowSubjects(false)
+                                                    setLoading(false);
+                                                    setShowDocuments(true);
+                                                    notifySuccess("Document updated successfully");
+                                                }
+                                                )
+                                                .catch(err => {
+                                                    notifyError("Error updating document: " + err)
+                                                    setLoading(false);
+                                                })
+                                        }}>Update</button>
+                                        <button type="button" className={styles.cancelSubjectButton} onClick={() => {
+                                            setEditDocumentModalOpen(false);
+                                            setDocumentFormData({ name: "", file: null, subject: null, document_type: "ktp" });
+                                        }}>Cancel</button>
+                                    </form>
+                                </div>
                             </div>
-                        </div>
-                    )}
+                        )}
 
-                    {areYouSure.show && (
-                        <div className={styles.confirmationModal}>
-                            <div className={styles.modalContent}>
-                                <h2>Are you sure?</h2>
-                                <button className={styles.confirmButton} onClick={handleConfirmDelete}>Yes</button>
-                                <button className={styles.cancelButton} onClick={handleCancelDelete}>No</button>
+                        {areYouSure.show && (
+                            <div className={styles.confirmationModal}>
+                                <div className={styles.modalContent}>
+                                    <h2>Are you sure?</h2>
+                                    <button className={styles.confirmButton} onClick={handleConfirmDelete}>Yes</button>
+                                    <button className={styles.cancelButton} onClick={handleCancelDelete}>No</button>
+                                </div>
                             </div>
-                        </div>
-                    )}
+                        )}
 
-                    {openPDF && (
-                        <div className={styles.pdfModal}>
-                            <PDFViewer pdfUrl={openPDF} onClose={() => {
-                                setOpenPDF(null)
-                                setShowDocuments(true)
-                            }} />
-                        </div>
-                    )}
-
+                        {openPDF && (
+                            <div className={styles.pdfModal}>
+                                <PDFViewer pdfUrl={openPDF} onClose={() => {
+                                    setOpenPDF(null)
+                                    setShowDocuments(true)
+                                }} />
+                            </div>
+                        )}
 
 
 
-                    <ToastContainer />
+
+                        <ToastContainer />
 
 
-                </div >
+                    </div >
+                </div>
             )}
+
         </>
     );
 };

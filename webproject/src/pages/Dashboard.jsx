@@ -23,10 +23,12 @@ import {
   fetchUserData,
   fetchCourses,
   fetchWeeklyProgress,
+  fetchDailyMessageStudent,
   fetchSections,
   changePassword,
 } from "../utils/apiService";
 import { useTranslation } from "react-i18next";
+import { set } from "react-hook-form";
 
 ChartJS.register(
   CategoryScale,
@@ -39,7 +41,7 @@ ChartJS.register(
 );
 
 const Dashboard = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [user, setUser] = useState({ first_name: t("student"), last_name: "" }); // Default values
   const [courses, setCourses] = useState([]); // State to store courses
   const [sections, setSections] = useState([]); // State to store sections
@@ -47,6 +49,7 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true); // Add loading state
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileSwitched, setIsProfileSwitched] = useState(false);
+  const [dailyMessage, setDailyMessage] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -70,6 +73,20 @@ const Dashboard = () => {
     fetchData();
   }, []);
 
+  // useEffect(() => {
+  //   const fetchDailyMessage = async () => {
+  //     try {
+  //       const dailyMessageData = await fetchDailyMessageStudent(i18n.language);
+  //       console.log("dailyMessageData", dailyMessageData);
+  //       setDailyMessage(dailyMessageData.message);
+  //     } catch (error) {
+  //       setDailyMessage("");
+  //       console.error("Error fetching daily message:", error);
+  //     }
+  //   };
+  //   fetchDailyMessage();
+  // }, [i18n.language]);
+
   const daysInRussian = {
     Monday: t("mon"),
     Tuesday: t("tue"),
@@ -81,7 +98,7 @@ const Dashboard = () => {
   };
 
   const data = {
-    labels: weeklyProgress.length>0 ? weeklyProgress.map((day) => daysInRussian[day.day] || day.day): [],
+    labels: weeklyProgress.length > 0 ? weeklyProgress.map((day) => daysInRussian[day.day] || day.day) : [],
     datasets: [
       {
         label: t("cups"),
@@ -116,7 +133,7 @@ const Dashboard = () => {
     },
     plugins: {
       legend: {
-        display: false,
+        display: false, // We hide the legend for this chart as it's simple
       },
       tooltip: {
         enabled: true,
@@ -167,6 +184,7 @@ const Dashboard = () => {
                   margin: "0",
                 }}
               >
+                {/* {dailyMessage || `${t("quote1")} ${t("quote2")}`} */}
                 {t("quote1")}
                 {t("quote2")}
               </p>

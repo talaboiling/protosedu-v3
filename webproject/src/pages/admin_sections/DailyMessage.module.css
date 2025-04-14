@@ -1,0 +1,118 @@
+/* DailyMessage.module.css */
+
+/* General layout */
+.container {
+    font-family: 'Arial', sans-serif;
+    padding: 20px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.title {
+    text-align: center;
+    font-size: 2.5rem;
+    color: #333;
+    margin-bottom: 30px;
+}
+
+.section {
+    margin-bottom: 40px;
+}
+
+h2 {
+    font-size: 2rem;
+    color: #007bff;
+    margin-bottom: 20px;
+}
+
+/* Buttons */
+.button {
+    background-color: #007bff;
+    color: white;
+    padding: 12px 20px;
+    font-size: 1.1rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin: 10px;
+}
+
+.button:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
+
+.button:focus {
+    outline: none;
+}
+
+button:active {
+    background-color: #004085;
+}
+
+/* Collapsible section styles */
+.collapsibleButton {
+    background-color: #f7f7f7;
+    color: #007bff;
+    padding: 12px 18px;
+    font-size: 1.1rem;
+    border: 1px solid #007bff;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin: 10px 0;
+    width: 100%;
+}
+
+.collapsibleButton:hover {
+    background-color: #e7f1ff;
+    transform: scale(1.05);
+}
+
+.collapsibleContent {
+    padding-left: 20px;
+    padding-top: 10px;
+    list-style-type: none;
+}
+
+.phraseItem {
+    background-color: #f0f8ff;
+    border-radius: 6px;
+    padding: 10px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.3s ease;
+}
+
+.phraseItem:hover {
+    background-color: #e1ecf4;
+}
+
+.checkbox {
+    transform: scale(1.2);
+}
+
+/* Toast container styling */
+.Toastify__toast-container {
+    font-size: 1rem;
+    top: 80px;
+}
+
+.Toastify__toast {
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.1);
+}
+
+.textMessage{
+    font-size: 1.5rem;
+    color: #333;
+}
+
+.languageName{
+    font-size: 1rem;
+    color: #007bff;
+}

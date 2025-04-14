@@ -8,7 +8,7 @@ const Superside = () => {
   return (
     <div className="superside">
       <Link to={"/"}>
-        <img src={logo} alt="Vunderkids" style={{ margin: "50px", maxWidth:"200px" }} />
+        <img src={logo} alt="Vunderkids" style={{ margin: "50px", maxWidth: "200px" }} />
       </Link>
       <hr />
       <div className="excSideLogo supsideItems">

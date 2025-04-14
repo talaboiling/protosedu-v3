@@ -1108,3 +1108,79 @@ export const updateDocument = async (documentId, formData) => {
     throw new Error(error.response?.data?.message || "Failed to edit document");
   }
 };
+
+export const fetchDailyMessages = async () => {
+  try {
+    const response = await instance.get("/daily-messages/");
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message || "Failed to fetch messages"
+    );
+  }
+};
+
+export const fetchMotivationalPhrases = async () => {
+  try {
+    const response = await instance.get("/motivational-phrases/");
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || "Failed to fetch phrases");
+  }
+};
+
+export const randomizeDailyMessage = async (languages) => {
+  try {
+    const requestBody = languages ? { languages } : {};
+    const response = await instance.patch(
+      "/daily-message-student/",
+      requestBody
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message || "Failed to randomize messages"
+    );
+  }
+};
+
+export const fetchDailyMessageStudent = async (language) => {
+  if (language === null) {
+    throw new Error("Language is required");
+  }
+  if (language === "") {
+    throw new Error("Language cannot be empty");
+  }
+  if (language === "kk") {
+    language = "kz";
+  }
+  const languages = ["en", "ru", "kz"];
+  if (!languages.includes(language)) {
+    throw new Error("Invalid language");
+  }
+  console.log(language);
+  console.log("fetchDailyMessageStudent");
+  try {
+    const response = await instance.get(
+      "/daily-message-student/?language=" + language
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message || "Failed to fetch messages"
+    );
+  }
+};
+
+export const setPhraseForDailyMessage = async (phraseId) => {
+  try {
+    const response = await instance.patch(
+      "/daily-messages/set-daily-message/?phrase=" + phraseId
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message || "Failed to set phrase for message"
+    );
+  }
+};
