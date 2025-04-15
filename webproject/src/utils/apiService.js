@@ -888,6 +888,27 @@ export const requestResetPassword = async (username) => {
   }
 };
 
+export const checkResetPasswordToken = async (token) => {
+  try {
+    const url = `/reset-password/${token}/`;
+    const response = await instance.get(url);
+    if (response.status === 200 || response.status === 201) {
+      return true;
+    }
+    return false;
+  } catch (error) {
+    if (error.response?.status === 400 || error.response?.status === 404) {
+      throw new Error("Ссылка не действительна. Запросите новую ссылку.");
+    } else if (error.response?.status === 403) {
+      throw new Error("Ссылка для сброса пароля устарела");
+    } else if (error.response?.status === 500) {
+      throw new Error("Ошибка сервера. Попробуйте зайти позже");
+    } else {
+      throw new Error("Произошла неизвестная ошибка");
+    }
+  }
+};
+
 export const resetPassword = async (password, token) => {
   try {
     const url = `/reset-password/${token}/`;
