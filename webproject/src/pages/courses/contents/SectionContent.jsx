@@ -29,7 +29,6 @@ const SectionContent = ({
     containerHeight = chapter.contents.length * 160;
   };
 
-  console.log(hasSubscription);
 
   return (
     <div className="lessonsCont">
@@ -135,7 +134,7 @@ const SectionContent = ({
                       onClick={() =>
                         !isDisabled
                           ? openTaskModal(content.id)
-                          : !hasSubscription ? setShowSubscriptionError(true): setShowMessage(true)
+                          : !hasSubscription ? setShowSubscriptionError(true) : setShowMessage(true)
                       }
                       style={{ ...style, backgroundColor: "#97d4e7", opacity: isDisabled ? 0.5 : 1 }}
                     >
@@ -183,7 +182,7 @@ const SectionContent = ({
       )}
       {
         showMessage && (
-          <Modal onClose={()=>setShowMessage(false)}>
+          <Modal onClose={() => setShowMessage(false)}>
             <MessageModal message={"Вам надо закончить прошлое задание"} />
           </Modal>
         )

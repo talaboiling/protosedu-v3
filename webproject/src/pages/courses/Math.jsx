@@ -62,7 +62,6 @@ const Math = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAttempted, setIsAttempted] = useState(false);
 
-  console.log(questions, chapter, section);
 
   useEffect(() => {
     loadData();
@@ -321,7 +320,6 @@ const Math = () => {
   };
 
   const handleIncorrect = () => {
-    console.log(13241234);
     setIsButtonDisabled(true);
     setIsAttempted(true);
     setFeedbackMessage("Try Again");
@@ -425,9 +423,9 @@ const Math = () => {
         }
         setIsButtonDisabled(false);
         setCurrentQuestionIndex((prev) => prev + 1);
+        await loadData();
       }, 1500);
 
-      // await loadData();
     } catch (error) {
       console.error("Error answering question:", error);
       alert(
@@ -509,7 +507,7 @@ const Math = () => {
                   className="defaultStyle courseNav"
                   id={
                     window.location.pathname ===
-                    `/dashboard/courses/${courseId}/sections`
+                      `/dashboard/courses/${courseId}/sections`
                       ? "active"
                       : ""
                   }
@@ -524,7 +522,7 @@ const Math = () => {
                   className="defaultStyle courseNav"
                   id={
                     window.location.pathname ===
-                    `/dashboard/courses/${courseId}/sections/${sectionId}/chapters`
+                      `/dashboard/courses/${courseId}/sections/${sectionId}/chapters`
                       ? "active"
                       : ""
                   }
@@ -539,7 +537,7 @@ const Math = () => {
                   className="defaultStyle courseNav"
                   id={
                     window.location.pathname ===
-                    `/dashboard/courses/${courseId}/sections/${sectionId}/chapters/${chapterId}/lessons`
+                      `/dashboard/courses/${courseId}/sections/${sectionId}/chapters/${chapterId}/lessons`
                       ? "active"
                       : ""
                   }

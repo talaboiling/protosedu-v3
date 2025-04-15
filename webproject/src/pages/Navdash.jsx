@@ -47,7 +47,6 @@ const Navdash = (props) => {
         onClick={() => {
           props.setIsMenuOpen(!props.isMenuOpen);
           props.setIsProfileSwitched(false);
-          console.log("Menu sidebar toggled");
         }}
       >
         <FontAwesomeIcon icon={faBars} style={{ color: "#00639E" }} />
@@ -74,7 +73,6 @@ const Navdash = (props) => {
           onClick={() => {
             props.setIsProfileSwitched(!props.isProfileSwitched);
             props.setIsMenuOpen(false);
-            console.log("Profile sidebar toggled: ", props.isProfileSwitched);
           }}
         >
           <FontAwesomeIcon icon={faUser} style={{ color: "#339cbd" }} />
