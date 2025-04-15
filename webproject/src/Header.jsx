@@ -122,11 +122,11 @@ function Header() {
                 <Link to="/login" className="mob-right">
                   <button>{t("enter")}</button>
                 </Link>
-                <Link to="/registration" className="orangeButtonWrapper">
+                {/* <Link to="/registration" className="orangeButtonWrapper">
                   <button className="orangeButton mob-none">
                     {t("register")}
                   </button>
-                </Link>
+                </Link> */}
               </div>
             )}
           </div>
