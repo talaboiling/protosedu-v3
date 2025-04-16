@@ -4,7 +4,7 @@ import App from "./App.jsx";
 import "./index.css";
 // import "./tailwind.css";
 import Registration from "./pages/Registration.jsx";
-import Dashboard from "./pages/Dashboard.jsx";
+import Dashboard from "./pages/dashboard_content/Dashboard.jsx";
 import Rating from "./pages/dashboard_sections/Rating.jsx";
 import Progress from "./pages/dashboard_sections/Pprogress.jsx";
 import Lessons from "./pages/dashboard_sections/Lessons.jsx";

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "/src/dashboard.css";
-import Sidebar from "../Sidebar";
+import Sidebar from "../sidebar/Sidebar";
 import Navdash from "../Navdash";
 import Profile from "../Profile";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";

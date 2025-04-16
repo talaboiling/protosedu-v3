@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "/src/dashboard.css";
-import Sidebar from "../../Sidebar";
+import Sidebar from "../../sidebar/Sidebar";
 import Navdash from "../../Navdash";
 import placeholderPfp from "../../../assets/placehoder_pfp.webp"; // Import the placeholder image
 import Loader from "../../Loader";

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
-import Sidebar from "../Sidebar";
+import Sidebar from "../sidebar/Sidebar";
 import Navdash from "../Navdash";
 import bgmusic from "../../assets/audio/Upbeat Happy Cooking by Infraction [No Copyright Music]  Happy Foods [ ezmp3.cc ].mp3";
 import click_audio from "../../assets/audio/click_sound.mp3";
@@ -597,6 +597,7 @@ const Math = () => {
           audioRef={audioRef}
           setIsAudioPlaying={setIsAudioPlaying}
           handleIncorrect={handleIncorrect}
+          setQuestions={setQuestions}
         />
       )}
 

@@ -5,6 +5,9 @@ import bgvideo from "../../../assets/videolessonthumb.svg";
 import SubscriptionErrorModal from "../SubscriptionErrorModal"; // Import the modal
 import Modal from "../../../helpers/Modal";
 import MessageModal from "./MessageModal";
+import { Link } from "react-router-dom";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import { Check, Video } from "lucide-react";
 
 const SectionContent = ({
   section,
@@ -17,18 +20,27 @@ const SectionContent = ({
   const [showSubscriptionError, setShowSubscriptionError] = useState(false);
   const [showMessage, setShowMessage] = useState(false);
 
-  const containerWidth = 640;
-  let containerHeight = 1200;
-  const itemWidth = 200;
-  const baseRowHeight = 90;
-  const xOffset = 220;
-  const yOffset = 150;
-  let isBlocked = false;
+  // const containerWidth = 640;
+  // let containerHeight = 1200;
+  // const itemWidth = 200;
+  // const baseRowHeight = 90;
+  // const xOffset = 220;
+  // const yOffset = 150;
+  let isBlocked = !hasSubscription;
+  let completedTill = chapter.contents.length;
+  for (let i=0;i<chapter.contents.length;i++){
+    let content = chapter.contents[i];
+    if (content.is_completed){
+      completedTill = i;
+    }
+  }
+  completedTill+=1;
+  // if (chapter.contents) {
+  //   containerHeight = chapter.contents.length * 160;
+  // };
 
-  if (chapter.contents) {
-    containerHeight = chapter.contents.length * 160;
-  };
 
+  console.log(chapter);
 
   return (
     <div className="lessonsCont">
@@ -53,123 +65,70 @@ const SectionContent = ({
           <hr className="lessonsHr" />
         </div>
         <div
-          style={{
-            position: "relative",
-            width: containerWidth,
-            height: containerHeight,
-            margin: "0 auto",
-          }}
+          // style={{
+          //   position: "relative",
+          //   width: containerWidth,
+          //   height: containerHeight,
+          //   margin: "0 auto",
+          // }}
         >
           <div className="lessonsLinks">
             {chapter.contents && chapter.contents.map((content, contentIndex) => {
+              console.log(completedTill);
               const isTask = content.content_type === "task";
               const isLesson = content.content_type === "lesson";
-              const row = Math.floor(contentIndex / 2);
-              const col = contentIndex % 2;
-              const top = contentIndex * yOffset;
-
               let isDisabled = false;
-
-              if (isTask) {
-                if (isBlocked) {
+              if (isBlocked || contentIndex>completedTill) {
                   isDisabled = true;
                 }
-                if (!content.is_completed) {
-                  isBlocked = true;
-                }
-              }
-
-              const isEvenRow = row % 2 === 0;
-              let style = {
-                position: "absolute",
-                top: top,
-                width: itemWidth,
-                height: itemWidth,
-                backgroundColor: "#ccc",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                overflowY: "hidden"
-              };
-
-              if (isEvenRow) {
-                style.left = col * xOffset;
-              } else {
-                style.left = containerWidth - itemWidth - col * xOffset;
-              }
-
-              return (
-                <div key={contentIndex}>
-                  {isLesson ? (
-                    <div
-                      className={`vidBlock studVidBlock ${hasSubscription ? "" : "noVidBlock"}`}
-                      onClick={() =>
-                        hasSubscription
-                          ? openVideoModal(content.video_url)
-                          : setShowSubscriptionError(true)
+              return ( 
+                <li
+                  key={content.id}
+                  className={`sectionItem ${
+                    content.is_completed ? "activeSection" : ""
+                  } ${!isDisabled ? "" : "noTask"}`}
+                >
+                  <p>{content.title}</p>
+                  <div className="sectionProgress">
+                    {/* <p className="defaultStyle">
+                      {t("completedTasks1")}
+                      {chapter.completed_tasks}
+                      {t("completedTasks2")}
+                      {chapter.total_tasks} {t("completedTasks3")}
+                    </p> */}
+                    {/* <progress 
+                      value={
+                        chapter.percentage_completed ? 
+                          chapter.percentage_completed/100 : chapter.completed_tasks/chapter.total_tasks
+                      } 
+                    /> */}
+                  </div>
+                  <button 
+                    className="orangeButton"
+                    onClick={()=>{
+                      console.log(isDisabled)
+                      if (!isDisabled){
+                        if (content.content_type==="task"){
+                          openTaskModal(content.id)
+                        }else{
+                          openVideoModal(content.video_url);
+                        }
+                      } else{
+                        if (hasSubscription){
+                          setShowMessage(true);
+                        }else{
+                          setShowSubscriptionError(true);
+                        }
                       }
-                      style={style}
-                    >
-                      <div className="thumbcontainer">
-                        <img
-                          src={bgvideo || "placeholder.png"}
-                          alt="vidname"
-                          className="taskThumbnail"
-                        />
-                      </div>
-                      <p
-                        style={{
-                          backgroundColor: "white",
-                          margin: "0",
-                          padding: "7px 40px",
-                          borderRadius: "10px",
-                        }}
-                      >
-                        {content.title}
-                      </p>
-                    </div>
-                  ) : (
-                    <div
-                      className={`studVidBlock task ${hasSubscription && !isDisabled ? "" : "noTask"}`}
-                      onClick={() =>
-                        !isDisabled
-                          ? openTaskModal(content.id)
-                          : !hasSubscription ? setShowSubscriptionError(true) : setShowMessage(true)
-                      }
-                      style={{ ...style, backgroundColor: "#97d4e7", opacity: isDisabled ? 0.5 : 1 }}
-                    >
-                      <img
-                        src={bgtask || "placeholder.png"}
-                        alt="vidname"
-                        className="taskThumbnail"
-                      />
-                      <p
-                        style={{
-                          backgroundColor: "white",
-                          margin: "0",
-                          padding: "7px 40px",
-                          borderRadius: "10px",
-                          marginBottom: "7px",
-                        }}
-                      >
-                        {content.title}
-                      </p>
-                      {content.is_completed ? (
-                        <div className="completedTask">
-                          <VerifiedIcon sx={{ color: "#19a5fc" }} />
-                          <strong>{t("youCompletedTask")}</strong>
-                        </div>
-                      ) : (
-                        <div className="completedTask incompleteTask">
-                          <strong>{t("youHaveNewTask")}</strong>
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              );
+                    }}
+                  >
+                    {isTask && !content.is_completed &&  <PlayArrowIcon />}
+                    {isTask && content.is_completed &&  <Check />}
+                    {isLesson && <Video />}
+                  </button>
+                </li>
+              )
             })}
-
           </div>
         </div>
       </div>

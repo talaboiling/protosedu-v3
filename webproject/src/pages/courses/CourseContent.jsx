@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import "/src/dashboard.css";
-import Sidebar from "../Sidebar";
+import Sidebar from "../sidebar/Sidebar";
 import Navdash from "../Navdash";
 import Loader from "../Loader";
 import CourseCard from "../courses/CourseCard";

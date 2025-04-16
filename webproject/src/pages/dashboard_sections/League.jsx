@@ -30,15 +30,27 @@ const League = () => {
     fetchUser();
   }, []);
   return (
-    <div className='league'>
-        <p style={{width:"80%", marginBottom:"0", marginTop:"0"}}>
-            {t ('youAreIn')}
-        </p>
-        <p style={{fontSize:"xx-large", margin:"10px"}}>
-          {user.level}
-        </p>
-        {t ('keepItUp')}
-    </div>
+    <>
+      {user.grade>4 && (
+        <div className="senior_bronze-league">
+            <p>Ты в <strong>БРОНЗОВОЙ ЛИГЕ!</strong></p>
+            <div className="senior_league-icons">
+              🥉 🥈 🥇 🏆
+            </div>
+        </div>
+      )}
+      {user.grade<=4 && (
+        <div className='league'>
+            <p style={{width:"80%", marginBottom:"0", marginTop:"0"}}>
+                {t ('youAreIn')}
+            </p>
+            <p style={{fontSize:"xx-large", margin:"10px"}}>
+              {user.level}
+            </p>
+            {t('keepItUp')}
+        </div>
+      )}
+    </>
   )
 }
 

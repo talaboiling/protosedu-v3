@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Sidebar from "./Sidebar";
+import Sidebar from "./sidebar/Sidebar";
 import Navdash from "./Navdash";
 import Loader from "./Loader";
 import { fetchUserData } from "../utils/apiService";

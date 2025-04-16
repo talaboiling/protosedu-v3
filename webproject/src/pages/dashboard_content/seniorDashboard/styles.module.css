@@ -1,0 +1,42 @@
+.box {
+    height: 175px;
+    width: 100%;
+    border-radius: 20px;
+    height: 175px;
+    position: relative;
+    background-image: url('/src/assets/Frame\ 15\ 1\ \(1\).png');
+    background-position: center;
+    background-size: cover;
+  }
+  
+  .box .overlap {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: rgba(0, 119, 255, 0.55); /* dark overlay with transparency */
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-radius: 20px;
+  }
+  
+  .box .text-wrapper {
+    color: #ffffff;
+    font-size: 35px;
+    font-weight: bold;
+    letter-spacing: 0;
+    line-height: normal;
+    position: absolute;
+    top: 50px;
+    left:40px;
+    width: 393px;
+  }
+
+.box .image{
+    width: 100%;
+    height: 100%;
+}
+  

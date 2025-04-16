@@ -1,5 +1,5 @@
 import "/src/dashboard.css";
-import Sidebar from "../Sidebar";
+import Sidebar from "../sidebar/Sidebar";
 import Navdash from "../Navdash";
 import { useEffect, useRef, useState } from "react";
 import { playGame, fetchUserData } from "../../utils/apiService";

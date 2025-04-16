@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import "/src/dashboard.css";
-import Sidebar from "../Sidebar";
+import Sidebar from "../sidebar/Sidebar";
 import Navdash from "../Navdash";
 import mathIcon from "../../assets/calculator.webp";
 import englishIcon from "../../assets/english.webp";

@@ -13,6 +13,8 @@ import {
   faCalendarDays,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
+import classes from "./Navdash.module.css";
+import { Search } from "lucide-react";
 
 const Navdash = (props) => {
   const { t } = useTranslation();
@@ -41,7 +43,7 @@ const Navdash = (props) => {
   };
 
   return (
-    <div className="navdashboard">
+    <div className="navdashboard" style={{width: "100%"}}>
       <div
         className="icons burger"
         onClick={() => {
@@ -51,59 +53,107 @@ const Navdash = (props) => {
       >
         <FontAwesomeIcon icon={faBars} style={{ color: "#00639E" }} />
       </div>
-      <div className="lndsh starCount">
-        <img src={staricon} alt="stars" className="starIcon" />
-        {user.stars || props.starCount}
-      </div>
-      <div className="lndsh cupCount">
-        <img src={cupicon} alt="cups" className="cupIcon" />
-        {user.cups || props.cupCount}
-      </div>
-      <div className="lndsh cupCount">
-        <img
-          src={user.streak !== 0 ? streak : nostreak}
-          alt="streak"
-          className="cupIcon"
-        />
-        {user.streak}
-      </div>
-      {props.urlPath === "dashboard" ? (
-        <div
-          className="icons profile"
-          onClick={() => {
-            props.setIsProfileSwitched(!props.isProfileSwitched);
-            props.setIsMenuOpen(false);
-          }}
-        >
-          <FontAwesomeIcon icon={faUser} style={{ color: "#339cbd" }} />
-        </div>
-      ) : null}
-      {props.urlPath === "lesson" ? (
-        <div
-          className="icons program"
-          onClick={() => {
-            props.setIsProgramSwitched(!props.isProgramSwitched);
-            props.setIsMenuOpen(false);
-          }}
-        >
-          <FontAwesomeIcon icon={faCalendarDays} style={{ color: "#339cbd" }} />
-        </div>
-      ) : null}
-      <div className="rndsh gradeNum">
-        {user.grade || props.gradeNum} {t("studClass")}
-      </div>
-      <div className="rndsh langSelect">
-        <div className="button b2" id="button-10">
-          <input
-            type="checkbox"
-            className="checkbox"
-            checked={checked}
-            onChange={handleChange}
-          />
-          <div className="knobs">
-            <span><strong>ҚАЗ</strong></span>
+      <div style={{display: "flex", justifyContent: "space-around", width: "100%", alignItems: "center"}}>
+        {user.grade<4 && (
+          <>
+          <div style={{display: "flex", justifyContent: "space-between", alignItems: "center", gap: "3rem"}}>
+            <div className="lndsh starCount">
+              <img src={staricon} alt="stars" className="starIcon" />
+              {user.stars || props.starCount}
+            </div>
+            <div className="lndsh cupCount">
+              <img src={cupicon} alt="cups" className="cupIcon" />
+              {user.cups || props.cupCount}
+            </div>
+            <div className="lndsh cupCount">
+              <img
+                src={user.streak !== 0 ? streak : nostreak}
+                alt="streak"
+                className="cupIcon"
+              />
+              {user.streak}
+            </div>
+            {props.urlPath === "dashboard" ? (
+              <div
+                className="icons profile"
+                onClick={() => {
+                  props.setIsProfileSwitched(!props.isProfileSwitched);
+                  props.setIsMenuOpen(false);
+                  console.log("Profile sidebar toggled: ", props.isProfileSwitched);
+                }}
+              >
+                <FontAwesomeIcon icon={faUser} style={{ color: "#339cbd" }} />
+              </div>
+            ) : null}
+            {props.urlPath === "lesson" ? (
+              <div
+                className="icons program"
+                onClick={() => {
+                  props.setIsProgramSwitched(!props.isProgramSwitched);
+                  props.setIsMenuOpen(false);
+                }}
+              >
+                <FontAwesomeIcon icon={faCalendarDays} style={{ color: "#339cbd" }} />
+              </div>
+            ) : null}
           </div>
-        </div>
+          <div style={{display: "flex", justifyContent: "space-between", alignItems: "center", gap: "3rem"}}>
+            <div className="rndsh gradeNum">
+              {user.grade || props.gradeNum} {t("studClass")}
+            </div>
+            <div className="rndsh langSelect">
+              <div className="button b2" id="button-10">
+                <input
+                  type="checkbox"
+                  className="checkbox"
+                  checked={checked}
+                  onChange={handleChange}
+                />
+                <div className="knobs">
+                  <span><strong>ҚАЗ</strong></span>
+                </div>
+              </div>
+            </div>
+          </div>
+          </>
+        )}
+        {user.grade>=4 && (
+          <>
+            <div className={classes.box}>
+              <div className={classes.search}>
+                <div className={classes.group}>
+                  <Search size={24} color={"#8A8A8A"} style={{cursor:"pointer"}}/>
+                  <input className={classes["text-wrapper"]} placeholder="Поиск уроков, сертификатов...">
+                  </input>
+                </div>
+              </div>
+            </div>
+            {user.grade<2 && <div className="rndsh langSelect">
+              <div className="button b2" id="button-10">
+                <input
+                  type="checkbox"
+                  className="checkbox"
+                  checked={checked}
+                  onChange={handleChange}
+                />
+                <div className="knobs">
+                  <span><strong>ҚАЗ</strong></span>
+                </div>
+              </div>
+            </div>}
+            {user.grade>=2 && 
+            <div className={classes["wrapper"]}>
+              <span className={`${classes.label} ${!checked ? classes.active : ''}`}>RUS</span>
+
+              <div className={classes["toggle"]} onClick={() => handleChange()}>
+                <div className={`${classes.circle} ${checked ? classes['move-right'] : ''}`}></div>
+              </div>
+
+              <span className={`${classes.label} ${checked ? classes.active : ''}`}>KAZ</span>
+            </div>
+            }
+          </>
+        )}
       </div>
     </div>
   );

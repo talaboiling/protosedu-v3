@@ -1,0 +1,61 @@
+.sidebar{
+    box-sizing: border-box;
+    height: 100vh;
+    margin: 0;
+    margin-right: 50px;
+    background-color: white;
+    border-radius: 0 40px 40px 0;
+    padding: 24px;
+}
+
+.sidebar-junior{
+    box-sizing: border-box;
+    height: 100vh;
+    margin: 0;
+    margin-right: 50px;
+    background-color: white;
+    padding: 24px;
+    border-radius: 0;
+}
+
+.linkbuttonVal{
+    flex-direction: row;
+    gap: 1rem;
+    font-size: medium;
+    text-decoration: solid;
+    display: flex;
+    border-radius: 20px;
+    padding: 10px;
+    margin-bottom: 10px;
+    font-weight: 600;
+    align-items: center;
+    transition: 0.2s ease-in-out;
+}
+.linkbuttonVal svg{
+    width: 40px;
+}
+
+.linkbuttonVal img{
+    width: 32px;
+}
+.active{
+    background-color: #F0F7FF;
+    color: "blue";
+    border-left: #0077FF solid 5px;
+}
+
+.exitButton {
+    font-weight: 700;
+    font-size: large;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    color: red;
+    background-color: white;
+}
+
+.exitButton:hover {
+    background-color: white;
+}

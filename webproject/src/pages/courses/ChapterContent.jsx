@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import "/src/dashboard.css";
-import Sidebar from "../Sidebar";
+import Sidebar from "../sidebar/Sidebar";
 import Navdash from "../Navdash";
 import Loader from "../Loader";
 import CourseCard from "../courses/CourseCard";
@@ -121,7 +121,9 @@ const ChapterContent = () => {
               <li
                 key={chapter.id}
                 className={`sectionItem ${
-                  chapter.total_tasks==chapter.completed_tasks ? "activeSection" : ""
+                  chapter.total_tasks == chapter.completed_tasks
+                    ? "activeSection"
+                    : ""
                 }`}
               >
                 <p>{chapter.title}</p>
@@ -132,11 +134,12 @@ const ChapterContent = () => {
                     {t("completedTasks2")}
                     {chapter.total_tasks} {t("completedTasks3")}
                   </p>
-                  <progress 
+                  <progress
                     value={
-                      chapter.percentage_completed ? 
-                        chapter.percentage_completed/100 : chapter.completed_tasks/chapter.total_tasks
-                    } 
+                      chapter.percentage_completed
+                        ? chapter.percentage_completed / 100
+                        : chapter.completed_tasks / chapter.total_tasks
+                    }
                   />
                 </div>
                 <Link

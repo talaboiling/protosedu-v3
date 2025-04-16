@@ -1,0 +1,77 @@
+.box {
+    height: 50px;
+    width: 438px;
+  }
+  
+  .box .search {
+    background-color: #ffffff;
+    border-radius: 50px;
+    height: 50px;
+    width: 438px;
+  }
+  
+  .box .group {
+    height: 100%;
+    display: flex;
+    padding-inline: 30px;
+    gap: 1rem;
+    align-items: center;
+  }
+  
+  .box .text-wrapper {
+    font-family: "Montserrat-SemiBold", Helvetica;
+    font-size: 18px;
+    font-weight: 600;
+    outline: none;
+    border: none;
+    padding: 1;
+    margin:0;
+    max-width: 300px;
+  }
+
+
+  .wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    font-family: sans-serif;
+  }
+  
+  .label {
+    font-weight: bold;
+    font-size: 18px;
+    color: rgba(0, 0, 0, 0.5);
+    transition: color 0.3s;
+  }
+  
+  .label.active {
+    color: black;
+  }
+  
+  .toggle {
+    width: 60px;
+    height: 20px;
+    background-color: #2979ff;
+    border-radius: 999px;
+    cursor: pointer;
+    position: relative;
+    transition: background-color 0.3s;
+  }
+  
+  .circle {
+    width: 30px;
+    height: 30px;
+    background-color: white;
+    border-radius: 50%;
+    position: absolute;
+    left: 0px;
+    top:-5px;
+    transition: transform 0.3s ease;
+  }
+  
+  .circle.move-right {
+    transform: translateX(35px);
+  }
+  
+  

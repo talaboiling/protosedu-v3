@@ -1,3 +1,4 @@
+import { X } from 'lucide-react';
 import React, { useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 
@@ -21,7 +22,7 @@ const OVERLAY_STYLES = {
     zIndex: 1000
 }
 
-export default function Modal({children, onClose }) {
+export default function Modal({children, onClose, extraStyles}) {
 
     const outsideRef = useRef(null);
 
@@ -43,7 +44,8 @@ export default function Modal({children, onClose }) {
     return createPortal(
       <>
         <div ref={outsideRef} style={OVERLAY_STYLES} />
-        <div style={MODAL_STYLES}>
+        <div style={{...MODAL_STYLES, ...extraStyles}}>
+          <X style={{cursor: "pointer", position: "absolute", left: "20px", top: "20px"}} onClick={()=>onClose()}/>
           {children}
         </div>
       </>,

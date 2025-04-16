@@ -6,10 +6,10 @@ import correctlion from "../../assets/lion_correct.webp";
 import wronglion from "../../assets/lion_incorrect.webp";
 import { useTranslation } from 'react-i18next';
 
-const QuestionStudent = ({ currentQuestion, showFeedback, handleSubmit,
-    selectedOption, setSelectedOption, handleOptionClick,
-    feedbackMessage, handleIncorrect, currentQuestionIndex, volume, handleVolumeChange, }) => {
-
+const QuestionStudent = ({currentQuestion, showFeedback, handleSubmit, 
+    selectedOption, setSelectedOption, handleOptionClick, 
+    feedbackMessage, handleIncorrect, currentQuestionIndex, volume, handleVolumeChange, setAttempts, attempts}) => {
+    
     const { t } = useTranslation();
     const [content, setContent] = useState(null);
     const [canvas, setCanvas] = useState(null);
@@ -61,6 +61,7 @@ const QuestionStudent = ({ currentQuestion, showFeedback, handleSubmit,
             handleSubmit();
         } else {
             handleIncorrect();
+            setAttempts(prev=>prev-1);
         }
     }
 

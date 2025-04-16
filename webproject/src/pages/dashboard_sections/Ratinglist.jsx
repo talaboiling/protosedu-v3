@@ -44,7 +44,7 @@ const Ratinglist = ({ ratings }) => {
         {t("studentRating")}
       </p>
       <div className="studentsList">
-        {ratings.map((student, index) => (
+        {[...ratings, ...ratings, ...ratings, ...ratings].map((student, index) => (
           <div
             className="ratingItem"
             key={student.id}
@@ -57,6 +57,7 @@ const Ratinglist = ({ ratings }) => {
                   : index === 2
                   ? "#D9AB7D"
                   : "#F0F7FF",
+              maxHeight: user.grade>2 ? "40px" : "inherit"
             }}
           >
             <div className="notMedals">
@@ -64,33 +65,37 @@ const Ratinglist = ({ ratings }) => {
                 src={student.avatar || placeholderPfp}
                 alt="pfp"
                 className="pfprating"
-                style={{ borderRadius: "50%", width: "50px", height: "50px" }}
+                style={{ borderRadius: "50%", width: user.grade <= 2 ? "50px" : "40px", height: user.grade <= 2 ? "50px" : "40px" }}
               />
               <div className="namePoints">
                 <p
                   style={{
-                    fontSize: "large",
+                    fontSize: user.grade<=2 ? "large" : 'medium',
                     color: index > 2 ? "#222222" : "#fff",
                     margin: "0",
                     padding: "0",
                     fontWeight: "600",
+                    width: "120px",
+                    whiteSpace: "nowrap",    
+                    overflow: "hidden",
+                    textOverflow: "ellipsis"
                   }}
                 >
                   {student.first_name} {student.last_name}
                 </p>
                 <p
                   style={{
-                    fontSize: "large",
+                    fontSize: user.grade<=2 ? "large" : 'small',
                     color: index > 2 ? "#222222" : "#fff",
                     margin: "0",
                     padding: "0",
                     fontWeight: "700",
                   }}
                 >
-                  <strong style={{ fontSize: "x-large" }}>{student.cups}</strong>{" "}
+                  <strong style={{ fontSize: user.grade<=2 ? "large" : 'small', fontWeight: 700 }}>{student.cups}</strong>{" "}
                   {t("points")}
                 </p>
-                <span
+                {user.grade<=2 && <span
                   style={{
                     margin: "0",
                     display: "flex",
@@ -108,7 +113,7 @@ const Ratinglist = ({ ratings }) => {
                     alt=""
                     style={{ width: "20px", height: "20px", marginRight: "5px" }}
                   />
-                </span>
+                </span>}
               </div>
             </div>
             
@@ -122,7 +127,7 @@ const Ratinglist = ({ ratings }) => {
               )}
               {index === 1 && (
                 <>
-                  <img src={silvermedal} alt="silver" />
+                  <img src={silvermedal} alt="silver"/>
                   {/* <img src={bronzemedal} alt="bronze" /> */}
                 </>
               )}
@@ -134,7 +139,7 @@ const Ratinglist = ({ ratings }) => {
               {index > 2 && (
                 <p
                   style={{
-                    fontSize: "40px",
+                    fontSize: user.grade<=2 ? "40px" : '32px',
                     fontWeight: "800",
                     color: "#55A2FA",
                     margin: "0",

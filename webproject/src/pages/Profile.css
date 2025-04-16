@@ -1,0 +1,98 @@
+.senior_right-sidebar {
+    display: flex;
+    flex-direction: column;
+    width: 320px;
+    max-height: 100vh;
+    background-color: #ffffff;
+    padding: 30px 36px;
+    font-family: 'Segoe UI', sans-serif;
+    box-sizing: border-box;
+  }
+  
+  .senior_top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    width: 100%;
+  }
+
+  .senior_notification {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .senior_notification_img {
+    width: 24px;
+  }
+  
+  .senior_profile {
+    display: flex;
+    align-items: center;
+    background: #e7f1ff;
+    padding: 6px 12px;
+    border-radius: 12px;
+    gap: 10px;
+  }
+  
+  .senior_avatar {
+    background-color: #2979ff;
+    color: white;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .senior_name {
+    font-weight: 500;
+  }
+  
+  .senior_arrow {
+    font-size: 12px;
+  }
+  
+  .senior_section {
+    width: 100%;
+  }
+
+  .senior_section * {
+    margin: 0;
+  }
+  
+  .senior_section p {
+    font-size: 18px;
+  }
+  
+  .senior_dropdown {
+    font-size: 12px;
+    font-weight: bold;
+    color: #555;
+  }
+  
+  .senior_graph-placeholder {
+    height: 180px;
+    background: linear-gradient(to top, #cde6ff, transparent);
+    border-radius: 12px;
+  }
+  
+  .senior_bronze-league {
+    background: linear-gradient(to right, #0b1d45, #1e2d66);
+    color: white;
+    border-radius: 16px;
+    padding: 16px;
+    text-align: center;
+  }
+  
+  .senior_league-icons {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    font-size: 22px;
+  }
+  
