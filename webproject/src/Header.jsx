@@ -212,11 +212,11 @@ function Header() {
               <Link to="/login" className="mob-right burger-login">
                 <button>{t("enter")}</button>
               </Link>
-              <Link to="/registration" className="orangeButtonWrapper">
+              {/* <Link to="/registration" className="orangeButtonWrapper">
                 <button className="orangeButton" style={{ width: "100%" }}>
                   {t("register")}
                 </button>
-              </Link>
+              </Link> */}
             </div>
           )}
         </div>
