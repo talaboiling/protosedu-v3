@@ -256,24 +256,13 @@ const TaskModal = ({
               <button onClick={() => {
                 setFoundError(true)
                 console.log("foundError:", foundError)
-                if (user.parent) {
-                  setComplaintFormData({
-                    user: user.parent,
-                    description: "",
-                    question: currentQuestion.id,
-                    type: "content",
-                  })
-                  console.log("parent_id:", user.parent)
-                }
-                else {
-                  setComplaintFormData({
-                    user: user.id,
-                    description: "",
-                    question: currentQuestion.id,
-                    type: "content",
-                  })
-                  console.log("user_id:", user)
-                }
+                const userJson = JSON.parse(localStorage.getItem("user"));
+                setComplaintFormData({
+                  user: userJson.id,
+                  description: "",
+                  question: currentQuestion.id,
+                  type: "content",
+                })
               }}>{t("foundProblem")}</button>
               <button
                 onClick={

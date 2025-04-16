@@ -1219,6 +1219,7 @@ export const fetchComplaints = async () => {
 
 export const createComplaint = async (formData) => {
   try {
+    console.log("Formdata", formData);
     const response = await instance.post("/complaints/", formData);
     return response.data;
   } catch (error) {

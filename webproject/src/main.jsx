@@ -50,6 +50,7 @@ import TestChild from "./pages/dashboard_sections/tests/TestChild.jsx";
 import KtpAdmin from "./pages/admin_sections/KtpAdmin.jsx";
 import Quotes from "./pages/admin_sections/Quotes.jsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import Complaints from "./pages/admin_sections/Complaints.jsx";
 
 const router = createBrowserRouter([
   { path: "/", element: <App /> },
@@ -164,6 +165,12 @@ const router = createBrowserRouter([
     path: "/admindashboard/quotes",
     element: (
       <AuthRoute element={<Quotes />} allowedRoles={["superadmin"]} />
+    ),
+  },
+  {
+    path: "/admindashboard/complaints",
+    element: (
+      <AuthRoute element={<Complaints />} allowedRoles={["superadmin"]} />
     ),
   },
   {

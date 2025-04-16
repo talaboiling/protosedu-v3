@@ -32,6 +32,7 @@ import QuestionModal from "./tasks/QuestionModal";
 import { DndContext, useDraggable, useDroppable } from "@dnd-kit/core";
 import DraggableDroppableTask from "./DraggableDroppableTask";
 import QuestionsList from "./QuestionsList";
+import { useLocation } from "react-router-dom";
 
 const Tasksection = () => {
   const { courseId, sectionId, chapterId } = useParams();
@@ -93,6 +94,25 @@ const Tasksection = () => {
 
     fetchContentsData();
   }, [courseId, sectionId, chapterId]);
+
+
+  const location = useLocation();
+
+  useEffect(() => {
+    if (!location.hash || contents.length === 0) return;
+
+    const id = location.hash.replace("#", "");
+    const tryScroll = (retries = 10) => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+      } else if (retries > 0) {
+        setTimeout(() => tryScroll(retries - 1), 300); // retry every 300ms
+      }
+    };
+
+    tryScroll();
+  }, [contents, location.hash]);
 
   const handleTaskSubmit = async (e) => {
     e.preventDefault();
@@ -273,7 +293,7 @@ const Tasksection = () => {
     }
 
     if (currentQuestion.question_type === "click_image" || currentQuestion.question_type === "input_text") {
-      formData.append("correct_answer", JSON.stringify({answer: currentQuestion.correct_answer}));
+      formData.append("correct_answer", JSON.stringify({ answer: currentQuestion.correct_answer }));
     }
 
     if (currentQuestion.question_type === "drag_and_drop_text") {
@@ -294,7 +314,7 @@ const Tasksection = () => {
         .filter((answer) => answer !== null)
         .sort((a, b) => a.order - b.order)
         .map((answer) => answer.id);
-      formData.append("correct_answer", JSON.stringify({answer: currentQuestion.correct_answer}));
+      formData.append("correct_answer", JSON.stringify({ answer: currentQuestion.correct_answer }));
     }
 
     if (currentQuestion.question_type === "drag_and_drop_images") {
@@ -457,10 +477,10 @@ const Tasksection = () => {
     return <Loader />;
   };
 
-  async function handleDragEnd(event){
-    const {active, over} = event;
+  async function handleDragEnd(event) {
+    const { active, over } = event;
     console.log(active, over);
-    if (!over){
+    if (!over) {
       return;
     }
 
@@ -471,11 +491,11 @@ const Tasksection = () => {
     over.data.index = draggableTaskIndex;
     const draggableContent = currentTasks[draggableTaskIndex];
     const droppableContent = currentTasks[droppableTaskIndex];
-    draggableContent.order = droppableTaskIndex+1;
-    droppableContent.order = draggableTaskIndex+1;
+    draggableContent.order = droppableTaskIndex + 1;
+    droppableContent.order = draggableTaskIndex + 1;
     currentTasks[droppableTaskIndex] = draggableContent;
     currentTasks[draggableTaskIndex] = droppableContent;
-    
+
     const previousTasks = [...contents];
     setContents(currentTasks);
 
@@ -523,7 +543,7 @@ const Tasksection = () => {
             alignItems: "center",
           }}
         >
-          <Link to={"/admindashboard/tasks"} style={{color:"black"}}>
+          <Link to={"/admindashboard/tasks"} style={{ color: "black" }}>
             <p
               className="defaultStyle"
               style={{
@@ -537,51 +557,51 @@ const Tasksection = () => {
             </p>
           </Link>
           <Link to={`/admindashboard/tasks/courses/${course.id}/sections/${section.id}`}>
-            <p style={{ fontSize: "x-large", fontWeight: "500", color: "#666" , marginRight:"20px"}}>
+            <p style={{ fontSize: "x-large", fontWeight: "500", color: "#666", marginRight: "20px" }}>
               {'>'} {section.title}
             </p>
           </Link>
           <p style={{ fontSize: "x-large", fontWeight: "500", color: "#666" }}>
             {'>'} {chapter.title}
           </p>
-          
+
         </div>
 
-        <div className="superCont sectCont" style={{padding: "100px", position: "relative"}}>
+        <div className="superCont sectCont" style={{ padding: "100px", position: "relative" }}>
+          <div
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '20%',
+              padding: '8px 10px',
+              background: 'linear-gradient(90deg, #ff7e5f, #feb47b)',
+              color: '#fff',
+              textAlign: 'center',
+              fontSize: '20px',
+              fontWeight: 'bold',
+              boxShadow: '0 2px 5px rgba(0, 0, 0, 0.2)',
+              zIndex: 1000,
+              borderBottomLeftRadius: '8px',
+              borderBottomRightRadius: '8px'
+            }}
+          >
             <div
+              onClick={() => setMove(prev => !prev)}
               style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '20%',
-                padding: '8px 10px',
-                background: 'linear-gradient(90deg, #ff7e5f, #feb47b)',
-                color: '#fff',
-                textAlign: 'center',
-                fontSize: '20px',
-                fontWeight: 'bold',
-                boxShadow: '0 2px 5px rgba(0, 0, 0, 0.2)',
-                zIndex: 1000,
-                borderBottomLeftRadius: '8px',
-                borderBottomRightRadius: '8px'
+                margin: 0,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: 8,
+                color: move ? "green" : "",
+                cursor: "pointer"
               }}
             >
-              <div 
-                onClick={()=>setMove(prev=>!prev)} 
-                style={{
-                  margin: 0, 
-                  display: "flex", 
-                  justifyContent: "center", 
-                  alignItems: "center", 
-                  gap: 8,
-                  color: move ? "green": "",
-                  cursor: "pointer"
-                }}
-              >
-                <Hand size={20}/>
-                <p style={{margin: 0}}>Move elements</p>
-              </div>
+              <Hand size={20} />
+              <p style={{ margin: 0 }}>Move elements</p>
             </div>
+          </div>
           <div style={{
             position: "relative",
             width: containerWidth,
@@ -605,12 +625,13 @@ const Tasksection = () => {
                     handleEditTask={handleEditTask}
                     handleDeleteContent={handleDeleteContent}
                     move={move}
+                    htmlId={`task-${content.id}`}
                   />
                 })
               }
             </DndContext>
           </div>
-          <div className="taskAdder" style={{position: "absolute", right: "50px", top: "50px"}}>
+          <div className="taskAdder" style={{ position: "absolute", right: "50px", top: "50px" }}>
             <button
               className="adderBtn"
               onClick={() => {
@@ -800,25 +821,25 @@ const Tasksection = () => {
           {loading ? (
             <Loader />
           ) : (
-          <div className="modal-content">
-            <div className="modalHeader">
-              <h2 className="defaultStyle" style={{ color: "#666" }}>
-                Вопросы задания
-              </h2>
+            <div className="modal-content">
+              <div className="modalHeader">
+                <h2 className="defaultStyle" style={{ color: "#666" }}>
+                  Вопросы задания
+                </h2>
+                <button
+                  style={{
+                    border: "none",
+                    float: "right",
+                    backgroundColor: "transparent",
+                    boxShadow: "none",
+                    padding: "0",
+                  }}
+                  onClick={() => setShowQuestionsModal(false)}
+                >
+                  <CloseIcon sx={{ color: "gray" }} />
+                </button>
+              </div>
               <button
-                style={{
-                  border: "none",
-                  float: "right",
-                  backgroundColor: "transparent",
-                  boxShadow: "none",
-                  padding: "0",
-                }}
-                onClick={() => setShowQuestionsModal(false)}
-              >
-                <CloseIcon sx={{ color: "gray" }} />
-              </button>
-            </div>
-            <button
                 onClick={() => {
                   setCurrentQuestion({
                     question_type: "",
@@ -838,27 +859,27 @@ const Tasksection = () => {
               >
                 Добавить вопрос
               </button>
-            <div className="questionsList">
-              
-              {selectedTaskIndex !== null && questions.length > 0 && (
-                <QuestionsList 
-                  questions={questions} 
-                  handleEditQuestion={handleEditQuestion}
-                  handleDeleteQuestion={handleDeleteQuestion}
-                  setQuestions={setQuestions}
-                  metaData={{courseId, sectionId, chapterId}}
-                />
-              )}
-              
+              <div className="questionsList">
+
+                {selectedTaskIndex !== null && questions.length > 0 && (
+                  <QuestionsList
+                    questions={questions}
+                    handleEditQuestion={handleEditQuestion}
+                    handleDeleteQuestion={handleDeleteQuestion}
+                    setQuestions={setQuestions}
+                    metaData={{ courseId, sectionId, chapterId }}
+                  />
+                )}
+
+              </div>
             </div>
-          </div>
           )}
         </dialog>
       )}
 
       {showQuestionModal && (
-        <QuestionModal 
-          showQuestionModal={showQuestionModal} 
+        <QuestionModal
+          showQuestionModal={showQuestionModal}
           setShowQuestionModal={setShowQuestionModal}
           setCurrentQuestion={setCurrentQuestion}
           loading={loading}

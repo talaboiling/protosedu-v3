@@ -33,6 +33,11 @@ export const SupersideData = [
         title: 'Фраза дня',
         icon: <Quote />,
         link: '/admindashboard/quotes'
+    },
+    {
+        title: 'Жалобы',
+        icon: <Quote />,
+        link: '/admindashboard/complaints'
     }
 
 ]
