@@ -117,7 +117,7 @@ export const addStudent = async (schoolId, classId, formData) => {
 
 export const deleteChild = async (childId) => {
   try {
-    const response = await instance.delete(`/children/${childId}`);
+    const response = await instance.delete(`/children/${childId}/`);
     return response.data;
   } catch (error) {
     throw new Error(error || "Something went wrong");
