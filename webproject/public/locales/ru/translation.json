@@ -189,9 +189,11 @@
   "notEnoughStarsMessage": "Для игры необходимо набрать 20 звезд. Зарабатывайте звезды, выполняя задания.",
   "subscriptionExistsTitle": "Премиум уже существует",
   "subscriptionExistsMessage": "Вы уже оформили премиум подписку и можете пользоваться всеми возможностями платформы.",
-  "changePassword": "Change Your Password",
+  "changePassword": "Сменить пароль",
   "enterNewPassword": "Введите новый пароль",
   "confirmNewPassword": "Подтвердите новый пароль",
   "saveNewPassword": "Сохранить пароль",
-  "passwordsDoNotMatch": "Пароли не совпадают"
+  "passwordsDoNotMatch": "Пароли не совпадают",
+  "rememberYourPassword": "Запомните свой пароль и не передавайте его третьим лицам!",
+  "loginInfo": "Для входа от имени школы используйте логин и пароль, которые вы получили. Создавать новый аккаунт не требуется."
 }

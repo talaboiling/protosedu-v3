@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import logoImg from "/src/assets/logo_blue.webp";
 import { loginUser, logout } from "../utils/authService";
@@ -9,8 +9,11 @@ import { slide as Menu } from "react-burger-menu";
 import Loader from "./Loader.jsx";
 import { changeRequiredPassword } from "../utils/apiService.js";
 import { color } from "framer-motion";
+import { ToastContainer, toast } from 'react-toastify';
+
 
 function Login() {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -25,7 +28,25 @@ function Login() {
   const [passwordMismatch, setPasswordMismatch] = useState(false);
 
   const navigate = useNavigate();
-  const { t } = useTranslation();
+
+
+  useEffect(() => {
+    toast.warning(t("loginInfo"), {
+      // position: toast.POSITION.TOP_CENTER,
+      className: "centered-toast",
+      style: {
+        fontSize: "1rem",         // Bigger font
+        textAlign: "left",        // Center text
+        width: "auto",              // Optional: tighter fit
+        maxWidth: "600px",          // Optional: prevent it from being too wide
+        margin: "0 auto",           // Center horizontally
+      },
+      autoClose: 8000,              // Optional: show for 8s
+      // icon: "ℹ️❗",                   // Optional: info icon
+    });
+  }, []);
+
+
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -47,8 +68,13 @@ function Login() {
         //console.log("Navigating to /supervisor-dashboard");
         navigate("/supervisor-dashboard"); // Redirect to supervisor dashboard
       } else if (user.role === "parent") {
+        console.log("User requires password change:", user.requires_password_change);
+        if (user.requires_password_change) {
+          setShowPasswordModal(true); // Show modal
+        } else {
+          navigate("/parent"); // Redirect to parent dashboard
+        }
         //console.log("Navigating to /parent");
-        navigate("/parent"); // Redirect to parent dashboard
       } else if (user.role === "student") {
         if (user.requires_password_change) {
           setShowPasswordModal(true); // Show modal
@@ -63,7 +89,9 @@ function Login() {
     } catch (error) {
       setResponseMessage("Ошибка: " + error.message);
       setShowErrModal(true);
-      console.error("Login error:", error); // Debugging log
+      console.error("Login error:", error);
+      toast.error("Ошибка: " + error.message || t("loginFailed"));
+
     } finally {
       setLoading(false);
     }
@@ -221,17 +249,38 @@ function Login() {
           )}
 
           {showPasswordModal && (
-            <dialog open className="modal supermodal">
+            <dialog open className="modal supermodal" onClick={() => setShowPasswordModal(false)}>
               <div
                 className="modal-content"
+                onClick={(e) => e.stopPropagation()} // ⛔️ prevent background click from closing
                 style={{
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
                   gap: "1rem",
                   border: "3px solid #00639E",
+                  position: "relative", // for close button
+                  padding: "2rem",
                 }}
               >
+                {/* ❌ Close button */}
+                <button
+                  onClick={() => setShowPasswordModal(false)}
+                  style={{
+                    position: "absolute",
+                    top: "0.5rem",
+                    right: "0.5rem",
+                    background: "none",
+                    border: "none",
+                    fontSize: "1.5rem",
+                    color: "#00639E",
+                    cursor: "pointer",
+                  }}
+                  aria-label="Close"
+                >
+                  &times;
+                </button>
+
                 <h3 style={{ color: "black" }}>{t("changePassword")}</h3>
 
                 <input
@@ -254,6 +303,8 @@ function Login() {
                   }}
                 />
 
+                <p>{t("rememberYourPassword")}</p>
+
                 {passwordMismatch && (
                   <span style={{ color: "red" }}>{t("passwordsDoNotMatch")}</span>
                 )}
@@ -262,6 +313,10 @@ function Login() {
                   onClick={() => {
                     if (newPassword !== confirmPassword) {
                       setPasswordMismatch(true);
+                      setTimeout(() => {
+                        setPasswordMismatch(false);
+                      }, 2000);
+                      toast.error(t("passwordsDoNotMatch"));
                       return;
                     }
                     changeRequiredPassword(newPassword);
@@ -277,7 +332,9 @@ function Login() {
             </dialog>
           )}
 
+
         </div>
+        <ToastContainer />
       </div >
     </>
   );
