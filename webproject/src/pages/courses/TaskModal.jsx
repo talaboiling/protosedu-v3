@@ -17,6 +17,9 @@ import classes from "./TaskModal.module.css"
 import DnDquestion from "./DragAndDrop/DnDquestion";
 import QuestionStudent from "./QuestionStudent";
 import click_audio from "../../assets/audio/click_sound.mp3";
+import { createComplaint } from "../../utils/apiService";
+import { ToastContainer, toast } from 'react-toastify';
+
 
 const TaskModal = ({
   user,
@@ -46,6 +49,11 @@ const TaskModal = ({
 
   const [selectedOption, setSelectedOption] = useState(null);
   const [foundError, setFoundError] = useState(false);
+  const [complaintFormData, setComplaintFormData] = useState({
+    question: null,
+    type: "content",
+    description: "",
+  });
 
   const clickSoundRef = useRef();
 
@@ -158,6 +166,79 @@ const TaskModal = ({
             volume={volume}
             handleVolumeChange={handleVolumeChange}
           />
+          {foundError && (
+            <dialog
+              open
+              onClick={() => setFoundError(false)}
+              style={{
+                position: "fixed",
+                top: 0,
+                left: 0,
+                zIndex: 9999,
+                width: "100vw",
+                height: "100vh",
+                background: "rgba(0, 0, 0, 0.4)",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                border: "none",
+              }}
+            >
+              <div
+                onClick={(e) => e.stopPropagation()}
+                style={{
+                  background: "#fff",
+                  padding: "1.5rem",
+                  borderRadius: "10px",
+                  maxWidth: "400px",
+                  width: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "1rem",
+                }}
+              >
+                <h3 style={{ margin: 0, color: "black" }}>{t("pleaseDescribeProblem")}</h3>
+                <textarea
+                  placeholder={t("typeHere")}
+                  value={complaintFormData.description}
+                  onChange={(e) =>
+                    setComplaintFormData({ ...complaintFormData, description: e.target.value })
+                  }
+                  rows={4}
+                  style={{
+                    padding: "0.75rem",
+                    borderRadius: "6px",
+                    border: "1px solid #ccc",
+                    resize: "none",
+                  }}
+                />
+                <div style={{ display: "flex", justifyContent: "flex-end", gap: "0.5rem" }}>
+                  <button onClick={() => setFoundError(false)}>{t("cancel")}</button>
+                  <button
+                    className="orangeButton"
+                    onClick={async () => {
+                      const formData = new FormData();
+                      formData.append("question", complaintFormData.question);
+                      formData.append("description", complaintFormData.description);
+                      formData.append("type", complaintFormData.type);
+                      formData.append("user", complaintFormData.user);
+
+                      try {
+                        await createComplaint(formData);
+                        toast.success(t("complaintSent"))
+                        setFoundError(false);
+                      } catch (err) {
+                        toast.error(t("errorSendingComplaint"))
+                        console.error(err);
+                      }
+                    }}
+                  >
+                    {t("send")}
+                  </button>
+                </div>
+              </div>
+            </dialog>
+          )}
           <div className="navigationButtons">
             <span
               style={{
@@ -172,7 +253,28 @@ const TaskModal = ({
                 max="100"
                 style={{ width: "60%", marginTop: "10px" }}
               ></progress>
-              <button onClick={() => setFoundError(true)}>Нашли ошибку? {currentQuestion.id}</button>
+              <button onClick={() => {
+                setFoundError(true)
+                console.log("foundError:", foundError)
+                if (user.parent) {
+                  setComplaintFormData({
+                    user: user.parent,
+                    description: "",
+                    question: currentQuestion.id,
+                    type: "content",
+                  })
+                  console.log("parent_id:", user.parent)
+                }
+                else {
+                  setComplaintFormData({
+                    user: user.id,
+                    description: "",
+                    question: currentQuestion.id,
+                    type: "content",
+                  })
+                  console.log("user_id:", user)
+                }
+              }}>{t("foundProblem")}</button>
               <button
                 onClick={
                   currentQuestionIndex === questions.length - 1
@@ -198,6 +300,9 @@ const TaskModal = ({
         </div>
         <audio ref={clickSoundRef} src={click_audio}></audio>
       </dialog>}
+
+      <ToastContainer />
+
     </>
   );
 };

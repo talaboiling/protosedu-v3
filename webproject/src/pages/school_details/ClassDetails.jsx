@@ -63,11 +63,10 @@ const ClassDetails = () => {
         last_name: "",
         email: "",
         gender: "",
-        phone_number: "",
       });
       await fetchData();
     } catch (error) {
-      console.error("Error adding student:", error);
+      console.error("Error adding student:", error.message);
     }
   };
 
@@ -180,16 +179,6 @@ const ClassDetails = () => {
                   onChange={handleFormChange}
                   required
                 />
-                <label htmlFor="phone_number">Телефон</label>
-                <input
-                  type="text"
-                  id="phone_number"
-                  name="phone_number"
-                  value={formData.phone_number}
-                  onChange={handleFormChange}
-                  required
-                />
-
                 <label htmlFor="gender">Пол</label>
                 <select
                   id="gender"
@@ -198,7 +187,7 @@ const ClassDetails = () => {
                   onChange={handleFormChange}
                   required
                 >
-                  <option value="">Выберите пол</option>
+                  <option value="O">Выберите пол</option>
                   <option value="M">Мужской</option>
                   <option value="F">Женский</option>
                   <option value="O">Не указан</option>

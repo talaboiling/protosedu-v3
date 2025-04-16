@@ -1205,3 +1205,50 @@ export const setPhraseForDailyMessage = async (phraseId) => {
     );
   }
 };
+
+export const fetchComplaints = async () => {
+  try {
+    const response = await instance.get("/complaints/");
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message || "Failed to fetch complaints"
+    );
+  }
+};
+
+export const createComplaint = async (formData) => {
+  try {
+    const response = await instance.post("/complaints/", formData);
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message || "Failed to create complaint"
+    );
+  }
+};
+
+export const deleteComplaint = async (complaintId) => {
+  try {
+    const response = await instance.delete(`/complaints/${complaintId}/`);
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message || "Failed to delete complaint"
+    );
+  }
+};
+
+export const updateComplaint = async (complaintId, formData) => {
+  try {
+    const response = await instance.patch(
+      `/complaints/${complaintId}/`,
+      formData
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message || "Failed to update complaint"
+    );
+  }
+};
