@@ -56,6 +56,7 @@ const Complaints = () => {
             <p><strong>Глава:</strong> {complaint.chapter}</p>
             <p><strong>Задание:</strong> {complaint.task}</p>
             <p><strong>Вопрос:</strong> {complaint.question}</p>
+            <p><strong>Текст вопроса:</strong> {complaint.question_text}</p>
         </div>
     );
 
