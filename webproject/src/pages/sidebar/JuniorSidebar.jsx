@@ -8,7 +8,7 @@ import classes from "./style.module.css"
 const JuniorSidebar = ({user, isMenuOpen, goBack, handleLogout}) => {
     const { t } = useTranslation();
     return (
-        <div className={`sidebar  ${classes["sidebar-junior"]} ${isMenuOpen ? "activeMenu" : "nonActive"}`} style={{backgroundColor: user.grade<4 ? "#97D4E7" : ""}}>
+        <div className={`sidebar  ${classes["sidebar-junior"]} ${isMenuOpen ? "activeMenu" : ""}`} style={{backgroundColor: user.grade<4 ? "#97D4E7" : ""}}>
         <Link to={"/"}>
             <img src={logo} alt="logo" className="dashsidelogo" />
         </Link>
