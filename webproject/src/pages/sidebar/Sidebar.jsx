@@ -8,13 +8,11 @@ import { useTranslation } from "react-i18next";
 import SeniorSidebar from "./SeniorSidebar";
 import JuniorSidebar from "./JuniorSidebar";
 
-const Sidebar = ({ isMenuOpen }) => {
+const Sidebar = ({ isMenuOpen, user }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
   // Parse user information from local storage
-  const user = JSON.parse(localStorage.getItem("user"));
-  console.log(user);
 
   const handleLogout = () => {
     logout();

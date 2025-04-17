@@ -149,7 +149,7 @@ const Dashboard = () => {
 
   return (
     <div className="rtdash dashMain">
-      <Sidebar isMenuOpen={isMenuOpen} />
+      <Sidebar isMenuOpen={isMenuOpen} user={user}/>
       <div className="centralDash">
         {user.grade>4 && <SeniorDashboardContent t={t} user={user} courses={courses} isMenuOpen={isMenuOpen}/>}
         {user.grade<=4 && 
