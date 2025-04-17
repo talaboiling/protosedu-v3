@@ -18,76 +18,76 @@ import { updateTaskContents } from '../../utils/apiService';
 
 function SortableItem({ id, children, question, handleEditQuestion, handleDeleteQuestion, index }) {
     const {
-      attributes,
-      listeners,
-      setNodeRef,
-      setActivatorNodeRef, 
-      transform,
-      transition,
+        attributes,
+        listeners,
+        setNodeRef,
+        setActivatorNodeRef,
+        transform,
+        transition,
     } = useSortable({ id });
-  
+
     const style = {
-      transform: CSS.Transform.toString(transform),
-      transition,
+        transform: CSS.Transform.toString(transform),
+        transition,
     };
-  
+
     return (
-      <div ref={setNodeRef} style={style}>
-        <li
-            key={index}
-            onClick={() => handleEditQuestion(index)}
-            className="questions"
-        >
-            <p className="defaultStyle">{index + 1}.</p>
-            {question.title || `Вопрос ${index + 1}`}
-            <div style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                gap: 4
-            }}>
-                <button
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        handleDeleteQuestion(index);
-                    }}
-                    className="transBtn"
-                    style={{ paddingTop: "3px" }}
-                >
-                    <DeleteForeverIcon sx={{ color: "darkred" }} />
-                </button>
-                <div
-                    ref={setActivatorNodeRef}
-                    {...listeners}
-                    {...attributes}
-                    style={{
-                        cursor: 'grab',
-                        padding: '4px',
-                        userSelect: 'none',
-                    }}
-                >
-                    &#9776; {/* Unicode for a hamburger icon */}
+        <div ref={setNodeRef} style={style}>
+            <li
+                key={index}
+                onClick={() => handleEditQuestion(index)}
+                className="questions"
+            >
+                <p className="defaultStyle">{index + 1}.</p>
+                {question.title || `Вопрос ${index + 1}`} <span>Вопрос: {question.question_text.slice(0, 15)}</span>
+                <div style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    gap: 4
+                }}>
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteQuestion(index);
+                        }}
+                        className="transBtn"
+                        style={{ paddingTop: "3px" }}
+                    >
+                        <DeleteForeverIcon sx={{ color: "darkred" }} />
+                    </button>
+                    <div
+                        ref={setActivatorNodeRef}
+                        {...listeners}
+                        {...attributes}
+                        style={{
+                            cursor: 'grab',
+                            padding: '4px',
+                            userSelect: 'none',
+                        }}
+                    >
+                        &#9776; {/* Unicode for a hamburger icon */}
+                    </div>
                 </div>
-            </div>
-        </li>
-      </div>
+            </li>
+        </div>
     );
 };
 
-const QuestionsList = ({questions, handleEditQuestion, handleDeleteQuestion, setQuestions, metaData}) => {
+const QuestionsList = ({ questions, handleEditQuestion, handleDeleteQuestion, setQuestions, metaData }) => {
 
     const sensors = useSensors(
         useSensor(PointerSensor, {
-          activationConstraint: { distance: 5 },
+            activationConstraint: { distance: 5 },
         })
     );
     async function handleDragEnd(event) {
         const { active, over } = event;
         console.log(active, over);
         try {
-            const {courseId, sectionId, chapterId} = metaData;
+            const { courseId, sectionId, chapterId } = metaData;
             console.log(courseId, sectionId, chapterId);
-            questions.forEach((question, index)=>question.order=index+1);
+            questions.forEach((question, index) => question.order = index + 1);
             const response = await updateTaskContents(courseId, sectionId, chapterId, questions[0].task, questions);
             console.log(response);
             console.log('New order saved to backend');
@@ -107,14 +107,14 @@ const QuestionsList = ({questions, handleEditQuestion, handleDeleteQuestion, set
             [currentQuestions[oldIndex], currentQuestions[newIndex]] = [currentQuestions[newIndex], currentQuestions[oldIndex]];
             setQuestions(currentQuestions);
         }
-      };
+    };
 
     console.log(questions);
 
     return (
-        <DndContext 
-            sensors={sensors} 
-            collisionDetection={closestCenter} 
+        <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
             onDragEnd={handleDragEnd}
             modifiers={[restrictToVerticalAxis]}
             onDragOver={handleDragOver}
@@ -122,9 +122,9 @@ const QuestionsList = ({questions, handleEditQuestion, handleDeleteQuestion, set
             <SortableContext items={questions}>
                 <ul>
                     {questions.map((question, index) => (
-                        <SortableItem 
-                            key={question.id} 
-                            id={question.id} 
+                        <SortableItem
+                            key={question.id}
+                            id={question.id}
                             index={index}
                             question={question}
                             handleDeleteQuestion={handleDeleteQuestion} handleEditQuestion={handleEditQuestion}
