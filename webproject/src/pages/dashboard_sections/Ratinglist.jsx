@@ -44,7 +44,7 @@ const Ratinglist = ({ ratings }) => {
         {t("studentRating")}
       </p>
       <div className="studentsList">
-        {[...ratings, ...ratings, ...ratings, ...ratings].map((student, index) => (
+        {ratings.map((student, index) => (
           <div
             className="ratingItem"
             key={student.id}
