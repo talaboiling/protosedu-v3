@@ -1,7 +1,7 @@
 import HomeIcon from '@mui/icons-material/Home';
 import SchoolIcon from '@mui/icons-material/School';
 import BarChartIcon from '@mui/icons-material/BarChart';
-import { BookCheck, UploadCloudIcon, Quote } from 'lucide-react';
+import { BookCheck, UploadCloudIcon, Quote, AlertCircle } from 'lucide-react';
 
 export const SupersideData = [
     {
@@ -36,7 +36,7 @@ export const SupersideData = [
     },
     {
         title: 'Жалобы',
-        icon: <Quote />,
+        icon: <AlertCircle />,
         link: '/admindashboard/complaints'
     }
 

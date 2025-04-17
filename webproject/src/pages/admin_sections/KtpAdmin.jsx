@@ -151,14 +151,13 @@ const KtpAdmin = () => {
                     <Superside />
                     <div className={styles.container}>
 
-                        <h1 className={styles.title}>KTP Admin Panel</h1>
-
+                        <h1 className={styles.title}>Админ-панель КТП</h1>
                         {/* Grade Selection */}
                         <div className={styles.dropdownContainer}>
                             <select value={selectedGrade || ""} onChange={handleGradeChange} className={styles.dropdown}>
-                                <option value="" disabled>Select Grade</option>
+                                <option value="" disabled>Выберите класс</option>
                                 {grades.map(grade => (
-                                    <option key={grade} value={grade}>{grade} Grade</option>
+                                    <option key={grade} value={grade}>{grade} Класс</option>
                                 ))}
                             </select>
                         </div>
@@ -166,27 +165,27 @@ const KtpAdmin = () => {
                         {/* Subjects Management */}
                         {selectedGrade !== null && showSubjects && (
                             <div>
-                                <h2>Subjects for {selectedGrade} grade</h2>
+                                <h2>Предметы {selectedGrade} класса</h2>
                                 <button className={styles.simpleButton} onClick={() => {
                                     console.log("Open add subject modal")
                                     setCreateSubjectModalOpen(true);
-                                }}>+ Add Subject</button>
+                                }}>+ Добавить предмет</button>
                                 {subjects.map(subject => (
                                     <div key={subject.id} className={styles.subjectRow}>
                                         <span>{subject.name}</span>
                                         <button onClick={() =>
-                                            handleSubjectSelect(subject.id)}>Manage Documents</button>
+                                            handleSubjectSelect(subject.id)}>Управление документами</button>
                                         <button onClick={() => {
                                             console.log("Edit subject", subject.id)
                                             setEditSubjectId(subject.id);
                                             setSubjectFormData(subject);
                                             setEditSubjectModalOpen(true);
-                                        }}>Edit</button>
+                                        }}>Редактировать</button>
                                         <button onClick={() => {
                                             console.log("Delete subject", subject.id)
                                             subjectFormData.id = subject.id;
                                             handleSubjectDelete(subject.id);
-                                        }}>Delete</button>
+                                        }}>Удалить</button>
                                     </div>
                                 ))}
                             </div>
@@ -195,16 +194,16 @@ const KtpAdmin = () => {
                         {/* Documents Management */}
                         {selectedSubject && showDocuments && (
                             <div>
-                                <h2>Documents</h2>
+                                <h2>Документы</h2>
                                 <button className={styles.simpleButton} onClick={() => {
                                     console.log("Back to subjects");
                                     setShowDocuments(false);
                                     setShowSubjects(true);
-                                }}>Back</button>
+                                }}>Назад</button>
                                 <button className={styles.simpleButton} onClick={() => {
                                     console.log("Open add document modal")
                                     setCreateDocumentModalOpen(true);
-                                }}>+ Add Document</button>
+                                }}>+ Добавить документ</button>
 
                                 {/* Check if there are documents */}
                                 {documents.length > 0 ? (
@@ -214,19 +213,19 @@ const KtpAdmin = () => {
                                             <button onClick={() => {
                                                 setShowDocuments(false);
                                                 setOpenPDF(document.file)
-                                            }}>Open</button>
+                                            }}>Просмотреть</button>
 
                                             <button onClick={() => {
                                                 console.log("Edit document", document.id)
                                                 setEditDocumentId(document.id);
                                                 setEditDocumentModalOpen(true);
                                                 setDocumentFormData(document);
-                                            }}>Edit</button>
+                                            }}>Редактировать</button>
                                             <button onClick={() => {
                                                 console.log("Delete document", document.id)
                                                 setDeleteDocumentId(document.id);
                                                 setAreYouSure({ show: true, type: "document" });
-                                            }}>Delete</button>
+                                            }}>Удалить</button>
                                         </div>
                                     ))
                                 ) : (
@@ -239,7 +238,7 @@ const KtpAdmin = () => {
                         {createSubjectModalOpen && (
                             <div className={styles.modalOverlay}>
                                 <div className={styles.modalContent}>
-                                    <h2>Create Subject</h2>
+                                    <h2>Добавить предмет</h2>
                                     <form onSubmit={(e) => {
                                         e.preventDefault();
                                         subjectFormData.grade = selectedGrade;
@@ -257,13 +256,13 @@ const KtpAdmin = () => {
                                     }}>
                                         <input
                                             type="text"
-                                            placeholder="Subject Name"
+                                            placeholder="Название предмета"
                                             value={subjectFormData.name}
                                             onChange={(e) => setSubjectFormData({ ...subjectFormData, name: e.target.value })}
                                             className={styles.inputField}
                                         />
                                         <textarea
-                                            placeholder="Description"
+                                            placeholder="Описание (необязательно)"
                                             value={subjectFormData.description}
                                             onChange={(e) => setSubjectFormData({ ...subjectFormData, description: e.target.value })}
                                             className={styles.textareaField}
@@ -274,10 +273,10 @@ const KtpAdmin = () => {
                                                     setSubjects([...subjects, subjectFormData]);
                                                     setCreateSubjectModalOpen(false);
                                                     setSubjectFormData({ name: "", description: "", grade: -1 });
-                                                    notifySuccess("Subject created successfully");
+                                                    notifySuccess("Предмет создан успешно");
                                                 })
-                                                .catch(err => notifyError("Error creating subject: " + err));
-                                        }}>Create</button>
+                                                .catch(err => notifyError("Ошибка при создании предмета: " + err));
+                                        }}>Создать</button>
                                         <button type="button" className={styles.cancelSubjectButton} onClick={() => setCreateSubjectModalOpen(false)}>Cancel</button>
                                     </form>
                                 </div>
@@ -289,13 +288,13 @@ const KtpAdmin = () => {
                         {editSubjectModalOpen && (
                             <div className={styles.modalOverlay}>
                                 <div className={styles.modalContent}>
-                                    <h2>Edit Subject</h2>
+                                    <h2>Редактировать предмет</h2>
                                     <form onSubmit={(e) => {
                                         e.preventDefault();
                                         console.log("Edit subject", subjectFormData);
                                     }}>
-                                        <input type="text" placeholder="Subject Name" value={subjectFormData.name} className={styles.inputField} onChange={(e) => setSubjectFormData({ ...subjectFormData, name: e.target.value })} />
-                                        <textarea placeholder="Description" value={subjectFormData.description} className={styles.textareaField} onChange={(e) => setSubjectFormData({ ...subjectFormData, description: e.target.value })}></textarea>
+                                        <input type="text" placeholder="Название предмета" value={subjectFormData.name} className={styles.inputField} onChange={(e) => setSubjectFormData({ ...subjectFormData, name: e.target.value })} />
+                                        <textarea placeholder="Описание предмета(необязательно)" value={subjectFormData.description} className={styles.textareaField} onChange={(e) => setSubjectFormData({ ...subjectFormData, description: e.target.value })}></textarea>
                                         <button type="submit" className={styles.submitButton} onClick={() => {
                                             updateSubject(editSubjectId, subjectFormData)
                                                 .then(() => {
@@ -303,16 +302,16 @@ const KtpAdmin = () => {
                                                     setEditSubjectModalOpen(false);
                                                     setSubjectFormData({ name: "", description: "", grade: -1 });
                                                     setEditSubjectId(null);
-                                                    notifySuccess("Subject updated successfully");
+                                                    notifySuccess("Предмет обновлен успешно");
                                                 }
                                                 )
-                                                .catch(err => notifyError("Error updating subject: " + err)
+                                                .catch(err => notifyError("Ошибка при обновлений предмета: " + err)
                                                 );
-                                        }}>Update</button>
+                                        }}>Обновить</button>
                                         <button type="button" className={styles.cancelSubjectButton} onClick={() => {
                                             setEditSubjectModalOpen(false)
                                             setSubjectFormData({ name: "", description: "", grade: -1 })
-                                        }}>Cancel</button>
+                                        }}>Отменить</button>
                                     </form>
                                 </div>
                             </div>
@@ -321,14 +320,14 @@ const KtpAdmin = () => {
                         {createDocumentModalOpen && (
                             <div className={styles.modalOverlay}>
                                 <div className={styles.modalContent}>
-                                    <h2>Create Document</h2>
+                                    <h2>Создать документ</h2>
                                     <form onSubmit={(e) => {
                                         e.preventDefault();
                                         console.log("Create document", documentFormData);
                                     }}>
                                         <input
                                             type="text"
-                                            placeholder="Document Name"
+                                            placeholder="Название документа(Тема)"
                                             value={documentFormData.name}
                                             onChange={(e) => setDocumentFormData({ ...documentFormData, name: e.target.value })}
                                             className={styles.inputField}
@@ -341,7 +340,7 @@ const KtpAdmin = () => {
                                             createDocument(documentFormData)
                                                 .then(() => {
                                                     setDocumentFormData({ name: "", file: null, subject: null, document_type: "ktp" });
-                                                    notifySuccess("Document created successfully");
+                                                    notifySuccess("Документ создан успешно");
                                                     fetchDocuments("ktp", selectedSubject)
                                                         .then(data => setDocuments(data))
                                                         .catch(err => setError(err.message))
@@ -350,14 +349,14 @@ const KtpAdmin = () => {
                                                 })
                                                 .catch(err => {
                                                     console.error(err)
-                                                    notifyError("Error creating document: " + err)
+                                                    notifyError("Ошибка при созданий документа: " + err)
                                                     setLoading(false);
 
                                                 });
 
 
-                                        }}>Create</button>
-                                        <button type="button" className={styles.cancelSubjectButton} onClick={() => setCreateDocumentModalOpen(false)}>Cancel</button>
+                                        }}>Добавить</button>
+                                        <button type="button" className={styles.cancelSubjectButton} onClick={() => setCreateDocumentModalOpen(false)}>Отменить</button>
                                     </form>
                                 </div>
                             </div>
@@ -367,22 +366,22 @@ const KtpAdmin = () => {
                         {editDocumentModalOpen && (
                             <div className={styles.modalOverlay}>
                                 <div className={styles.modalContent}>
-                                    <h2>Edit Document</h2>
+                                    <h2>Редактировать документ</h2>
                                     <form onSubmit={(e) => {
                                         e.preventDefault();
                                         console.log("Edit document", documentFormData);
                                     }}>
 
-                                        <input type="text" required className={styles.inputField} placeholder="Document Name" value={documentFormData.name} onChange={(e) => setDocumentFormData({ ...documentFormData, name: e.target.value })} />
+                                        <input type="text" required className={styles.inputField} placeholder="Название документа(Тема)" value={documentFormData.name} onChange={(e) => setDocumentFormData({ ...documentFormData, name: e.target.value })} />
                                         {documentFormData.file && (
                                             <span style={{ textAlign: "left" }}>
-                                                Selected file:
+                                                Текущий файл: { }
                                                 <a
                                                     href={documentFormData.file}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
                                                 >
-                                                    Open in new tab
+                                                    Открыть в новой вкладке
                                                 </a>
                                             </span>)}
                                         <input type="file" required className={styles.inputField} onChange={(e) => setDocumentFormData({ ...documentFormData, file: e.target.files[0] })} />
@@ -400,18 +399,18 @@ const KtpAdmin = () => {
                                                     setShowSubjects(false)
                                                     setLoading(false);
                                                     setShowDocuments(true);
-                                                    notifySuccess("Document updated successfully");
+                                                    notifySuccess("Документ обновлен успешно");
                                                 }
                                                 )
                                                 .catch(err => {
-                                                    notifyError("Error updating document: " + err)
+                                                    notifyError("Ошибка при обновлений документы: " + err)
                                                     setLoading(false);
                                                 })
-                                        }}>Update</button>
+                                        }}>Обновить</button>
                                         <button type="button" className={styles.cancelSubjectButton} onClick={() => {
                                             setEditDocumentModalOpen(false);
                                             setDocumentFormData({ name: "", file: null, subject: null, document_type: "ktp" });
-                                        }}>Cancel</button>
+                                        }}>Отменить</button>
                                     </form>
                                 </div>
                             </div>
@@ -420,9 +419,9 @@ const KtpAdmin = () => {
                         {areYouSure.show && (
                             <div className={styles.confirmationModal}>
                                 <div className={styles.modalContent}>
-                                    <h2>Are you sure?</h2>
-                                    <button className={styles.confirmButton} onClick={handleConfirmDelete}>Yes</button>
-                                    <button className={styles.cancelButton} onClick={handleCancelDelete}>No</button>
+                                    <h2>Вы точно хотите удалить?</h2>
+                                    <button className={styles.confirmButton} onClick={handleConfirmDelete}>Да</button>
+                                    <button className={styles.cancelButton} onClick={handleCancelDelete}>Нет</button>
                                 </div>
                             </div>
                         )}
