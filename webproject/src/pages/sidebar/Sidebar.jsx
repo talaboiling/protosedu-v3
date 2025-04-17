@@ -18,6 +18,11 @@ const Sidebar = ({ isMenuOpen, user }) => {
     logout();
     navigate("/");
   };
+  if (!user){
+    user = JSON.parse(localStorage.getItem('user'));
+  }
+
+  console.log(user);
 
   const goBack = () => {
     console.log(user);

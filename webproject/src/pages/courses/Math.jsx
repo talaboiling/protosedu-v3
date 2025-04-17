@@ -482,7 +482,7 @@ const Math = () => {
 
   return (
     <div className="rtdash rtrat mathLesson">
-      <Sidebar className="courseSidebar" isMenuOpen={isMenuOpen} />
+      <Sidebar className="courseSidebar" isMenuOpen={isMenuOpen} user={user}/>
       <div className="centralLessons">
         <div className="centralLessonsInner maths">
           <Navdash
