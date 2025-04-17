@@ -75,7 +75,7 @@ const JuniorDashBoardContent = ({data,options, user, isMenuOpen, courses, setIsM
                     {t("myCourses")}
                 </h3>
                 <div className="coursesCards">
-                    {[...courses, ...courses].map((course, section) => (
+                    {[...courses, ...courses, ...courses].map((course, section) => (
                     <div className="courseItem" key={course.id}>
                         <div className="courseItemLeft">
                         <p style={{ margin: "0" }}>{course.name}</p>

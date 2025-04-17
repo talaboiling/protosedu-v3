@@ -173,7 +173,7 @@
   padding: 16px;
   padding-bottom: 33px;
   margin: 50px;
-  position: sticky;
+  position: fixed;
 }
 
 .sidebar.senior{
