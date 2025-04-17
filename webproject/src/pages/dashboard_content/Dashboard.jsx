@@ -47,7 +47,7 @@ const Dashboard = () => {
   const [sections, setSections] = useState([]); // State to store sections
   const [weeklyProgress, setWeeklyProgress] = useState([]);
   const [loading, setLoading] = useState(true); // Add loading state
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(true);
   const [isProfileSwitched, setIsProfileSwitched] = useState(false);
   const [dailyMessage, setDailyMessage] = useState("");
 

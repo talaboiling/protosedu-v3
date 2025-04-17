@@ -40,7 +40,7 @@ const SectionContent = ({
   // };
 
 
-  console.log(chapter);
+  console.log(completedTill, chapter);
 
   return (
     <div className="lessonsCont">
