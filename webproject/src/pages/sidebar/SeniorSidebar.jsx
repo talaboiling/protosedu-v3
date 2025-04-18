@@ -51,9 +51,9 @@ const SeniorSidebar = ({user, isMenuOpen, goBack, handleLogout, sidebarType}) =>
             </ul>
             {/* Conditionally render the "Назад" button based on user role */}
             {user.role === "parent" && (
-                <button className="exitButton" onClick={goBack}>
-                    {t("back")}
-                </button>
+                <span className={styles["exitButton"]} onClick={goBack}>
+                    <p>{t("back")}</p>
+                </span>
             )}
             <span className={styles["exitButton"]} onClick={handleLogout}>
                 <LogOut/> 

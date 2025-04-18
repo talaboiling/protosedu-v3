@@ -53,9 +53,9 @@ const Profile = ({ user, isProfileSwitched, setIsProfileSwitched }) => {
   return (
     <div 
       className={`dashProfile ${isProfileSwitched ? "activeProfile" : ""} 
-        ${user.grade>=4 ? "senior_right-sidebar" : ""}`}
+        ${user.grade>4 ? "senior_right-sidebar" : ""}`}
     >
-      {user.grade<4 && 
+      {user.grade<=4 && 
         <>
           <div
             className="backButton"
@@ -181,7 +181,7 @@ const Profile = ({ user, isProfileSwitched, setIsProfileSwitched }) => {
             </div>
         </>
         }
-        {user.grade>=4 && (
+        {user.grade>4 && (
           <>
           <div className="senior_top-bar">
               <div className="senior_notification">
