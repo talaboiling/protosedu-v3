@@ -27,7 +27,7 @@ const SectionContent = ({
   // const xOffset = 220;
   // const yOffset = 150;
   let isBlocked = !hasSubscription;
-  let completedTill = chapter.contents.length;
+  let completedTill = 0;
   for (let i=0;i<chapter.contents.length;i++){
     let content = chapter.contents[i];
     if (content.is_completed){
