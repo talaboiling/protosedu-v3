@@ -15,6 +15,8 @@ const DashboardLayout = () => {
         }
     },[]);
 
+    console.log(user, 123412341234);
+
     return (
         <div>
             <div className="rtdash dashMain">

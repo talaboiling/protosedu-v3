@@ -34,6 +34,8 @@ const Sidebar = ({ isMenuOpen, user }) => {
     }
   };
 
+  console.log(user, "USER DATA 1234123412341234");
+
   return (
     <div className="">
       <p style={{display:"none"}}>Sidebar</p>
