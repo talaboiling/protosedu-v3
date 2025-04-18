@@ -16,8 +16,10 @@ import cert500 from "../../assets/500lessons.webp";
 import Loader from "../Loader";
 import { fetchUserData } from "../../utils/apiService";
 import { useTranslation } from "react-i18next";
+import { useOutletContext } from "react-router-dom";
 
 const Lessons = () => {
+  const {isMenuOpen, setIsMenuOpen} = useOutletContext();
   const { t } = useTranslation();
   const [user, setUser] = useState({ first_name: t("student"), last_name: "" }); // Default values
 
@@ -26,7 +28,6 @@ const Lessons = () => {
   const [status, setStatus] = useState("");
 
   const [isCertificatesSwitched, setIsCertificatesSwitched] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -59,8 +60,7 @@ const Lessons = () => {
     return <Loader></Loader>;
   }
   return (
-    <div className="rtdash certpage">
-      <Sidebar isMenuOpen={isMenuOpen} />
+    <div className="rtdash centralDash certpage">
       <div className="centralLessons">
         <div className="centralLessonsInner">
           <Navdash

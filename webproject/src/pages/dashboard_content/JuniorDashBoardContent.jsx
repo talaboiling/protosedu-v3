@@ -12,12 +12,13 @@ const JuniorDashBoardContent = ({data,options, user, isMenuOpen, courses, setIsM
     
     useLayoutEffect(() => {
         if (parentRef.current) {
-          const measuredWidth = parentRef.current.getBoundingClientRect().width * 0.8;
+          const measuredWidth = parentRef.current.getBoundingClientRect().width;
           setGraphWidth(measuredWidth);
         }
     }, []);
     
     console.log(graphWidth);
+    console.log(isMenuOpen, setIsMenuOpen);
     return (
         <>
             <Navdash

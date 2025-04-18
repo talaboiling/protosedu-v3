@@ -194,6 +194,13 @@
   padding: 18px 26px;
 }
 
+.testslogo{
+  max-width: 160px;
+  height: fit-content;
+  border-radius: 10px;
+  margin-top: 18px;
+}
+
 .linkbuttonVal {
   display: flex;
   flex-direction: column;
@@ -242,7 +249,7 @@
 }
 
 .excSideLogo {
-  margin-top: 60px;
+  margin-top: 30px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -526,7 +533,7 @@
   display: flex;
   flex-direction: row;
   padding: 0 10px;
-  justify-content: space-around;
+  justify-content: space-between;
 }
 
 .ratingMain {
@@ -1238,7 +1245,6 @@ img.childcard {
 
 .game-div {
   display: grid;
-  padding-right: 50px;
   grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
 }

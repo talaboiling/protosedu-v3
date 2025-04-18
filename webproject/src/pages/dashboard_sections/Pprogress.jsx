@@ -4,6 +4,7 @@ import "/src/dashboard.css";
 import Sidebar from "../sidebar/Sidebar";
 import Navdash from "../Navdash";
 import Profile from "../Profile";
+import { useOutletContext } from "react-router-dom";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
@@ -27,6 +28,7 @@ import updateLocale from "dayjs/plugin/updateLocale";
 import weekday from "dayjs/plugin/weekday";
 import localeData from "dayjs/plugin/localeData";
 import "dayjs/locale/ru";
+import SeniorMyGrowth from "../SeniorMyGrowth";
 
 dayjs.extend(updateLocale);
 dayjs.extend(weekday);
@@ -50,11 +52,11 @@ ChartJS.register(
 );
 
 const Pprogress = () => {
+  const {isMenuOpen, setIsMenuOpen} = useOutletContext();
   const { t } = useTranslation();
   const [user, setUser] = useState({ first_name: t("student"), last_name: "" }); // Default values
   const [weeklyProgress, setWeeklyProgress] = useState([]);
   const [loading, setLoading] = useState(true); // Add loading state
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileSwitched, setIsProfileSwitched] = useState(false);
   const [selectedDate, setSelectedDate] = useState(dayjs()); // State for selected date
   const [dailyProgress, setDailyProgress] = useState(null); // State for daily progress
@@ -156,7 +158,6 @@ const Pprogress = () => {
 
   return (
     <div className="rtdash progressPage">
-      <Sidebar isMenuOpen={isMenuOpen} />
       <div className="centralDash">
         <Navdash
           isMenuOpen={isMenuOpen}
@@ -167,8 +168,8 @@ const Pprogress = () => {
         />
         <h2 className="progressText">Прогресс</h2>
         <div className="centralProg">
-          <div style={{ width: "100%", height: "200px" }}>
-            <Line data={data} options={options} />
+          <div style={{ width: "100%", height: "300px" }}>
+            <SeniorMyGrowth t={t} graphStyles={{height: "300px"}}/>
           </div>
           <div className="progcalendar">
             <LocalizationProvider dateAdapter={AdapterDayjs}>

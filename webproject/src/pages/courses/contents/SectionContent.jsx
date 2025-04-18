@@ -35,6 +35,13 @@ const SectionContent = ({
     }
   }
   completedTill+=1;
+  for (let i=completedTill;i<chapter.contents.length;i++){
+    let content = chapter.contents[i];
+    if (content.is_completed){
+      completedTill = i;
+      break;
+    }
+  }
   // if (chapter.contents) {
   //   containerHeight = chapter.contents.length * 160;
   // };

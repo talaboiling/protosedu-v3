@@ -8,12 +8,12 @@ import { LogOut } from 'lucide-react';
 
 const SeniorSidebar = ({user, isMenuOpen, goBack, handleLogout, sidebarType}) => {
     const { t } = useTranslation();
+    console.log(user);
     return (
         <div className={`sidebar ${isMenuOpen ? "activeMenu" : ""} ${styles["sidebar"]}`}>
         <Link to={"/"}>
             <img src={logo} alt="logo" className="dashsidelogo" />
         </Link>
-
         <div className="excSideLogo senior">
             <ul className="sideItems" style={{width:"100%"}}>
             {SidebarData.map((item, index) => {

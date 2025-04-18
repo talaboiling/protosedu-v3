@@ -20,7 +20,8 @@ const Navdash = (props) => {
   const { t } = useTranslation();
   const [user, setUser] = useState({ first_name: t("student"), last_name: "" }); // Default values
   const [checked, setChecked] = useState(i18next.language === "ru");
-
+  console.log(props);
+  
   useEffect(() => {
     const fetchUser = async () => {
       const childId = localStorage.getItem("child_id");

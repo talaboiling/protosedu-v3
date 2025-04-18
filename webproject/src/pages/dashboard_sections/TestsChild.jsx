@@ -73,11 +73,12 @@ const TestsChild = () => {
     filteredTests = filteredTests.filter(
       (test) => !featuredTypes.includes(test.test_type)
     );
-  }
+  };
+
+  console.log(filteredTests);
 
   return (
-    <div className="rtdash rtrat ratingPage boundary-right">
-      <Sidebar isMenuOpen={isMenuOpen} />
+    <div className="rtdash rtrat ratingPage">
       <div className="centralLessons">
         <div style={{ width: "100%" }}>
           <Navdash
@@ -149,7 +150,6 @@ const TestsChild = () => {
         </div>
         <div
           style={{
-            width: "80%",
             margin: "auto",
             display: "flex",
             gap: "2rem",

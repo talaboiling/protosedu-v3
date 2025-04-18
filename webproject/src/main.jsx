@@ -51,6 +51,7 @@ import KtpAdmin from "./pages/admin_sections/KtpAdmin.jsx";
 import Quotes from "./pages/admin_sections/Quotes.jsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Complaints from "./pages/admin_sections/Complaints.jsx";
+import DashboardLayout from "./pages/DashboardLayout.jsx";
 
 const router = createBrowserRouter([
   { path: "/", element: <App /> },
@@ -80,38 +81,37 @@ const router = createBrowserRouter([
   {
     path: "/dashboard",
     element: (
-      <AuthRoute element={<Dashboard />} allowedRoles={["student", "parent"]} />
+      <AuthRoute 
+        element={<DashboardLayout />} 
+        allowedRoles={["student", "parent"]} 
+      />
     ),
-  },
-  {
-    path: "/dashboard/rating",
-    element: (
-      <AuthRoute element={<Rating />} allowedRoles={["student", "parent"]} />
-    ),
-  },
-  {
-    path: "/dashboard/progress",
-    element: (
-      <AuthRoute element={<Progress />} allowedRoles={["student", "parent"]} />
-    ),
-  },
-  {
-    path: "/dashboard/lessons",
-    element: (
-      <AuthRoute element={<Lessons />} allowedRoles={["student", "parent"]} />
-    ),
-  },
-  {
-    path: "/dashboard/tests",
-    element: (
-      <AuthRoute element={<TestsChild />} allowedRoles={["student", "parent"]} />
-    ),
-  },
-  {
-    path: "/dashboard/games",
-    element: (
-      <AuthRoute element={<Games />} allowedRoles={["student", "parent"]} />
-    ),
+    children: [
+    {
+      path: "", 
+      element: <Dashboard/>
+    },
+    {
+      path: "rating", 
+      element: <Rating/>
+    },
+    {
+      path: "progress", 
+      element: <Progress/>
+    },
+    {
+      path: "lessons", 
+      element: <Lessons/>
+    },
+    {
+      path: "tests", 
+      element: <TestsChild/>
+    },
+    {
+      path: "games", 
+      element: <Games/>
+    }
+  ]
   },
   {
     path: "/dashboard/courses/:courseId/sections",

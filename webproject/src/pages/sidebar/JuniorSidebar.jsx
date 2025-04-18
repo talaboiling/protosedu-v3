@@ -4,13 +4,18 @@ import { SidebarData } from './SidebarData';
 import logo from "../../assets/NAV_LOGO.webp";
 import { useTranslation } from "react-i18next";
 import classes from "./style.module.css"
+import tests_button from "../../../src/assets/tests button.png"
 
 const JuniorSidebar = ({user, isMenuOpen, goBack, handleLogout}) => {
     const { t } = useTranslation();
+    console.log(user);
     return (
         <div className={`sidebar  ${classes["sidebar-junior"]} ${isMenuOpen ? "activeMenu" : ""}`} style={{backgroundColor: user.grade<=4 ? "#97D4E7" : ""}}>
         <Link to={"/"}>
             <img src={logo} alt="logo" className="dashsidelogo" />
+        </Link>
+        <Link to={"/dashboard/tests"}>
+            <img src={tests_button} alt="Test_button" className="testslogo" />
         </Link>
 
         <div className="excSideLogo">

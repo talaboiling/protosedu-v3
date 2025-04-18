@@ -14,18 +14,17 @@ import MusicMahjong from "../../assets/musicmahjong800450.webp"
 import WaterSort from "../../assets/watersort800450.webp"
 import TrafficControl from "../../assets/trafficcontrol800450.webp"
 import lion_incorrect from "../../assets/lion_incorrect.webp";
-
+import { useOutletContext } from "react-router-dom";
 
 const Games = () => {
   const { t } = useTranslation();
-
+  const {isMenuOpen, setIsMenuOpen} = useOutletContext();
   const [user, setUser] = useState({});
   const [isChild, setIsChild] = useState(false);
   const [childId, setChildId] = useState("");
   const [open, setOpen] = useState(false);
   const [gamePath, setGamePath] = useState("");
   const modalRef = useRef(null);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [notEnoughStarsModal, setNotEnoughStarsModal] = useState(false);
 
@@ -128,8 +127,7 @@ const Games = () => {
 
 
   return (
-    <div className="rtdash rtrat gamesPage">
-      <Sidebar isMenuOpen={isMenuOpen} />
+    <div className="gamesPage">
       <div className="centralDash">
         <Navdash isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} />
         <div className="game-div">
@@ -250,8 +248,8 @@ const Games = () => {
         )}
 
 
-      </div >
-    </div >
+      </div>
+    </div>
 
   );
 };

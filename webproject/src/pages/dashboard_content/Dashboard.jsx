@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useOutletContext } from "react-router-dom";
 import "/src/dashboard.css";
 import Sidebar from "../sidebar/Sidebar";
 import Navdash from "../Navdash";
@@ -41,13 +41,13 @@ ChartJS.register(
 );
 
 const Dashboard = () => {
+  const {isMenuOpen, setIsMenuOpen} = useOutletContext();
   const { t, i18n } = useTranslation();
   const [user, setUser] = useState({ first_name: t("student"), last_name: "" }); // Default values
   const [courses, setCourses] = useState([]); // State to store courses
   const [sections, setSections] = useState([]); // State to store sections
   const [weeklyProgress, setWeeklyProgress] = useState([]);
   const [loading, setLoading] = useState(true); // Add loading state
-  const [isMenuOpen, setIsMenuOpen] = useState(true);
   const [isProfileSwitched, setIsProfileSwitched] = useState(false);
   const [dailyMessage, setDailyMessage] = useState("");
 
@@ -57,6 +57,7 @@ const Dashboard = () => {
       try {
         const userData = await fetchUserData(childId);
         console.log("userData", userData);
+        localStorage.setItem('user', JSON.stringify(userData));
         setUser(userData);
         const weeklyProgressData = await fetchWeeklyProgress(childId);
         console.log(weeklyProgressData);
@@ -149,7 +150,6 @@ const Dashboard = () => {
 
   return (
     <div className="rtdash dashMain">
-      <Sidebar isMenuOpen={isMenuOpen} user={user}/>
       <div className="centralDash">
         {user.grade>4 && <SeniorDashboardContent t={t} user={user} courses={courses} isMenuOpen={isMenuOpen}/>}
         {user.grade<=4 && 
