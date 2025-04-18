@@ -69,9 +69,9 @@ const SeniorMyGrowth = ({t, graphStyles}) => {
         scales: {
           y: {
             beginAtZero: true,
-            max: 100,
+            max: Math.max(Math.max(...weeklyProgress.map(caps=>caps.cups)),100),
             ticks: {
-              stepSize: 10,
+              stepSize: parseInt(Math.max(Math.max(...weeklyProgress.map(caps=>caps.cups)),100)/5),
             },
           },
           x: {
@@ -102,7 +102,7 @@ const SeniorMyGrowth = ({t, graphStyles}) => {
             </div>
             {/* Skip graph as requested */}
             <div style={{ width: graphStyles && graphStyles.width ? `${graphStyles.width}` : "80%",height: graphStyles && graphStyles.height ? `${graphStyles.height}` : `150px`, cursor: "pointer"}}>
-                <Line data={data} options={options} onClick={()=>setShowModal(true)}/>
+              <Line data={data} options={options} onClick={()=>setShowModal(true)}/>
             </div>
             {showModal && (
                 <Modal onClose={()=>setShowModal(false)} extraStyles={{borderRadius: "20px"}}>
