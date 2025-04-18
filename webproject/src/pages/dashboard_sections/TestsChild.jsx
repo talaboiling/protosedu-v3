@@ -19,6 +19,7 @@ import { useTranslation } from "react-i18next";
 import i18next from "i18next";
 import { NavLink, useNavigate, useSearchParams } from "react-router-dom";
 import { capitalizeFirstLetter } from "../../lib/helperFunctions";
+import TestsTable from "./TestsTable";
 
 const featuredTypes = ["modo", "ent"];
 
@@ -161,7 +162,7 @@ const TestsChild = () => {
               <div
                 key={test.id}
                 className="addedCourses"
-                style={{ width: "200px", cursor: "pointer" }}
+                style={{ width: "200px", cursor: "pointer", padding:"20px" }}
                 onClick={() => navigateToTest(test.id)}
               >
                 <div
@@ -169,15 +170,16 @@ const TestsChild = () => {
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
+                    justifyContent: "center",
                     gap: "0.5rem",
                   }}
                 >
-                  <h3
+                  <p
                     className="defaultStyle"
-                    style={{ fontSize: "x-large", color: "black" }}
+                    style={{ fontSize: "x-large", color: "black",textAlign:"center" }}
                   >
                     {test.title}
-                  </h3>
+                  </p>
                   <p className="defaultStyle" style={{ color: "#666" }}>
                     {test.description}
                   </p>
@@ -188,6 +190,7 @@ const TestsChild = () => {
               </div>
             ))}
         </div>
+        {/* {tests.length>0 && <TestsTable data={tests}/>} */}
       </div>
     </div>
   );
