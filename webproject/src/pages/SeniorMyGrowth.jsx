@@ -69,7 +69,7 @@ const SeniorMyGrowth = ({t, graphStyles}) => {
         scales: {
           y: {
             beginAtZero: true,
-            max: Math.max(Math.max(...weeklyProgress.map(caps=>caps.cups)),100),
+            max: Math.max(Math.max(...weeklyProgress.map(caps=>caps.cups)),100)+5,
             ticks: {
               stepSize: parseInt(Math.max(Math.max(...weeklyProgress.map(caps=>caps.cups)),100)/5),
             },
