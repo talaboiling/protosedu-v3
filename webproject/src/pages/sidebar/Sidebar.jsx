@@ -18,7 +18,7 @@ const Sidebar = ({ isMenuOpen, user }) => {
     logout();
     navigate("/");
   };
-  if (!user){
+  if (localStorage.getItem('user')){
     user = JSON.parse(localStorage.getItem('user'));
   }
 

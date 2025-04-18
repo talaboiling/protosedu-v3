@@ -7,7 +7,7 @@ import Navdash from './Navdash';
 const DashboardLayout = () => {
 
     const [user, setUser] = useState();
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isMenuOpen, setIsMenuOpen] = useState(true);
 
     useEffect(()=>{
         if (localStorage.getItem('user')){
