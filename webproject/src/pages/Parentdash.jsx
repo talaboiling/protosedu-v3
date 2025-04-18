@@ -70,6 +70,7 @@ const Parentdash = () => {
         //   fetchUserData(),
         //   fetchChildren(),
         // ]);
+        localStorage.setItem('grade', childrenData[0].grade);
 
         setUser(userData);
         setChildren(childrenData);

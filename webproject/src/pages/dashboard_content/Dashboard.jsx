@@ -58,7 +58,7 @@ const Dashboard = () => {
         const userData = await fetchUserData(childId);
         console.log("userData", userData);
         if (userData.role==="parent"){
-          userData.grade = userData.children ? userData.children[0].grade : 3;
+          userData.grade = userData.children ? userData.children[0].grade : 2;
         }
         localStorage.setItem('grade', userData.grade);
         setUser(userData);
