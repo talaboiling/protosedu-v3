@@ -37,8 +37,8 @@ const Sidebar = ({ isMenuOpen, user }) => {
   return (
     <div className="">
       <p style={{display:"none"}}>Sidebar</p>
-      {user.grade>4 && <SeniorSidebar isMenuOpen={isMenuOpen} sidebarType={"senior"} user={user} goBack={goBack} handleLogout={handleLogout}/>}
-      {user.grade<=4 && <JuniorSidebar isMenuOpen={isMenuOpen} sidebarType={"junior"} user={user} goBack={goBack} handleLogout={handleLogout}/>}
+      {user.gradeNum>4 && <SeniorSidebar isMenuOpen={isMenuOpen} sidebarType={"senior"} user={user} goBack={goBack} handleLogout={handleLogout}/>}
+      {user.gradeNum<=4 && <JuniorSidebar isMenuOpen={isMenuOpen} sidebarType={"junior"} user={user} goBack={goBack} handleLogout={handleLogout}/>}
     </div>
   );
 };

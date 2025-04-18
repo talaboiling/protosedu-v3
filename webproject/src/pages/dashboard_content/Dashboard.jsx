@@ -151,8 +151,8 @@ const Dashboard = () => {
   return (
     <div className="rtdash dashMain">
       <div className="centralDash">
-        {user.grade>4 && <SeniorDashboardContent t={t} user={user} courses={courses} isMenuOpen={isMenuOpen}/>}
-        {user.grade<=4 && 
+        {user.gradeNum>4 && <SeniorDashboardContent t={t} user={user} courses={courses} isMenuOpen={isMenuOpen}/>}
+        {user.gradeNum<=4 && 
         <JuniorDashBoardContent 
           user={user} 
           courses={courses} 

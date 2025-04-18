@@ -55,7 +55,7 @@ const Navdash = (props) => {
         <FontAwesomeIcon icon={faBars} style={{ color: "#00639E" }} />
       </div>
       <div style={{display: "flex", justifyContent: "space-around", width: "100%", alignItems: "center"}}>
-        {user.grade<4 && (
+        {user.gradeNum<4 && (
           <>
           <div style={{display: "flex", justifyContent: "space-between", alignItems: "center", gap: "3rem"}}>
             <div className="lndsh starCount">
@@ -118,7 +118,7 @@ const Navdash = (props) => {
           </div>
           </>
         )}
-        {user.grade>=4 && (
+        {user.gradeNum>=4 && (
           <>
             <div className={classes.box}>
               <div className={classes.search}>
@@ -129,7 +129,7 @@ const Navdash = (props) => {
                 </div>
               </div>
             </div>
-            {user.grade<2 && <div className="rndsh langSelect">
+            {user.grade<4 && <div className="rndsh langSelect">
               <div className="button b2" id="button-10">
                 <input
                   type="checkbox"
@@ -142,7 +142,7 @@ const Navdash = (props) => {
                 </div>
               </div>
             </div>}
-            {user.grade>=2 && 
+            {user.gradeNum>=4 && 
             <div className={classes["wrapper"]}>
               <span className={`${classes.label} ${!checked ? classes.active : ''}`}>RUS</span>
 
