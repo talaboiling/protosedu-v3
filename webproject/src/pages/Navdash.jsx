@@ -37,6 +37,8 @@ const Navdash = (props) => {
     setChecked(i18next.language === "ru");
   }, []);
 
+  console.log(user);
+
   const handleChange = () => {
     const newLang = i18next.language === "ru" ? "kk" : "ru";
     i18next.changeLanguage(newLang);
@@ -55,7 +57,7 @@ const Navdash = (props) => {
         <FontAwesomeIcon icon={faBars} style={{ color: "#00639E" }} />
       </div>
       <div style={{display: "flex", justifyContent: "space-around", width: "100%", alignItems: "center"}}>
-        {user.gradeNum<4 && (
+        {user.grade<=4 && (
           <>
           <div style={{display: "flex", justifyContent: "space-between", alignItems: "center", gap: "3rem"}}>
             <div className="lndsh starCount">
@@ -118,7 +120,7 @@ const Navdash = (props) => {
           </div>
           </>
         )}
-        {user.gradeNum>=4 && (
+        {user.grade>4 && (
           <>
             <div className={classes.box}>
               <div className={classes.search}>
@@ -129,7 +131,7 @@ const Navdash = (props) => {
                 </div>
               </div>
             </div>
-            {user.grade<4 && <div className="rndsh langSelect">
+            {user.grade<=4 && <div className="rndsh langSelect">
               <div className="button b2" id="button-10">
                 <input
                   type="checkbox"
@@ -142,7 +144,7 @@ const Navdash = (props) => {
                 </div>
               </div>
             </div>}
-            {user.gradeNum>=4 && 
+            {user.grade>4 && 
             <div className={classes["wrapper"]}>
               <span className={`${classes.label} ${!checked ? classes.active : ''}`}>RUS</span>
 
