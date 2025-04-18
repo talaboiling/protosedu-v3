@@ -46,14 +46,14 @@ const SeniorMyGrowth = ({t, graphStyles}) => {
         fetchData();
     }, []);
 
-    console.log(weeklyProgress);
+    console.log(graphStyles);
 
     const data = {
         labels: weeklyProgress.map(caps=>t(caps.day).slice(0,2)),
         datasets: [
           {
             label: 'Очки',
-            data: weeklyProgress.map((caps,index)=>caps.cups+[10,70,70,40,60,50,30][index]),
+            data: weeklyProgress.map((caps,index)=>caps.cups),
             borderColor: '#2979ff',
             backgroundColor: 'rgba(41, 121, 255, 0.2)',
             pointBackgroundColor: '#2979ff',
@@ -94,7 +94,6 @@ const SeniorMyGrowth = ({t, graphStyles}) => {
           },
         },
     };
-    console.log(`${graphStyles.height}px`);
     return (
         <div className="senior_section">
             <div style={{width: '100%', display: "flex", justifyContent: "space-between", alignItems:"center"}}>
@@ -102,13 +101,13 @@ const SeniorMyGrowth = ({t, graphStyles}) => {
                 <div className="senior_dropdown">Неделя ▼</div>
             </div>
             {/* Skip graph as requested */}
-            <div style={{ width: graphStyles.width ? `${graphStyles.width}` : `500px`,height: graphStyles.height ? `${graphStyles.height}` : `150px`, cursor: "pointer"}}>
+            <div style={{ width: graphStyles && graphStyles.width ? `${graphStyles.width}` : `500px`,height: graphStyles && graphStyles.height ? `${graphStyles.height}` : `150px`, cursor: "pointer"}}>
                 <Line data={data} options={options} onClick={()=>setShowModal(true)}/>
             </div>
             {showModal && (
                 <Modal onClose={()=>setShowModal(false)} extraStyles={{borderRadius: "20px"}}>
-                    <div style={{width: graphStyles.width ? `${graphStyles.width}` : `500px`,height: graphStyles.height ? `${graphStyles.height}` : `150px` }}>
-                        <Line data={data} options={options}/>
+                    <div style={{width: graphStyles && graphStyles.width ? `${graphStyles.width}` : `500px`, height: graphStyles && graphStyles.height ? `${graphStyles.height}` : `150px` }}>
+                      <Line data={data} options={options}/>
                     </div>
                 </Modal>
             )}

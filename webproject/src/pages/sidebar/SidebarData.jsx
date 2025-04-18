@@ -35,11 +35,6 @@ export const SidebarData = [
     type: "junior",
     link: "/dashboard/games",
   },
-  {
-    title: "Тесты",
-    icon: <BookCheck size={32} color="#8A8A8A"/>,
-    link: "/dashboard/tests",
-  }
   // {
   //     title: 'Подписки',
   //     icon: <SubscriptionsIcon/>,

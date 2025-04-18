@@ -51,8 +51,10 @@ const Profile = ({ user, isProfileSwitched, setIsProfileSwitched }) => {
   };
 
   return (
-    <div className={`dashProfile ${isProfileSwitched ? "activeProfile" : ""} 
-      ${user.grade>=4 ? "senior_right-sidebar" : ""}`}>
+    <div 
+      className={`dashProfile ${isProfileSwitched ? "activeProfile" : ""} 
+        ${user.grade>=4 ? "senior_right-sidebar" : ""}`}
+    >
       {user.grade<4 && 
         <>
           <div

@@ -13,14 +13,15 @@ import Loader from "../Loader";
 import { fetchRatings, fetchUserData } from "../../utils/apiService";
 import { useTranslation } from "react-i18next";
 import i18next from "i18next";
+import { useOutletContext } from "react-router-dom";
 
 const Rating = () => {
+  const {isMenuOpen, setIsMenuOpen} = useOutletContext();
   const { t } = useTranslation();
   const [user, setUser] = useState({ first_name: t("student"), last_name: "" }); // Default values
   const [ratings, setRatings] = useState([]); // State to store ratings
   const [loading, setLoading] = useState(true); // Add loading state
   const avatarUrl = user.avatar ? user.avatar : placeholderPfp; // Use placeholder if avatar is null
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileSwitched, setIsProfileSwitched] = useState(false);
   const [checked, setChecked] = useState(i18next.language === "ru");
 
@@ -54,8 +55,7 @@ const Rating = () => {
   }
 
   return (
-    <div className="rtdash rtrat ratingPage">
-      <Sidebar isMenuOpen={isMenuOpen} />
+    <>
       <div className="centralLessons">
         <div style={{ width: "fit-content" }}>
           <Navdash
@@ -70,7 +70,7 @@ const Rating = () => {
           />
         </div>
 
-        <div className="ratingCentral">
+        <div className="ratingCentral" style={{gap: "4rem"}}>
           <div className="ratinginfo">
             <div className="prowfirst">
               <p
@@ -131,7 +131,7 @@ const Rating = () => {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
