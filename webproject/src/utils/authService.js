@@ -25,7 +25,7 @@ export const isAuthenticated = () => {
 
 export const getUserRole = () => {
   const user = JSON.parse(localStorage.getItem("user"));
-  return user?.role;
+  return user?.role || user?.parent;
 
   // console.log("getUserRole:", role); // Debugging log
 };

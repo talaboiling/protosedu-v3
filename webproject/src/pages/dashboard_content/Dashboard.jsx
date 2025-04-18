@@ -60,7 +60,6 @@ const Dashboard = () => {
         if (userData.role==="parent"){
           userData.grade = userData.children ? userData.children[0].grade : 3;
         }
-        localStorage.setItem('user', JSON.stringify(userData));
         setUser(userData);
         const weeklyProgressData = await fetchWeeklyProgress(childId);
         console.log(weeklyProgressData);
