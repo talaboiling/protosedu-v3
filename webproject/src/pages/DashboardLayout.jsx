@@ -11,7 +11,10 @@ const DashboardLayout = () => {
 
     useEffect(()=>{
         if (localStorage.getItem('user')){
-            setUser(JSON.parse(localStorage.getItem('user')))
+            const userData = {...JSON.parse(localStorage.getItem('user'))}
+            const grade = localStorage.getItem('grade')
+            userData.grade = userData.grade ? userData.grade : grade;
+            setUser(userData);
         }
     },[]);
 
