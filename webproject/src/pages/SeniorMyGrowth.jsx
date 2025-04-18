@@ -101,7 +101,7 @@ const SeniorMyGrowth = ({t, graphStyles}) => {
                 <div className="senior_dropdown">Неделя ▼</div>
             </div>
             {/* Skip graph as requested */}
-            <div style={{ width: graphStyles && graphStyles.width ? `${graphStyles.width}` : `500px`,height: graphStyles && graphStyles.height ? `${graphStyles.height}` : `150px`, cursor: "pointer"}}>
+            <div style={{ width: graphStyles && graphStyles.width ? `${graphStyles.width}` : "80%",height: graphStyles && graphStyles.height ? `${graphStyles.height}` : `150px`, cursor: "pointer"}}>
                 <Line data={data} options={options} onClick={()=>setShowModal(true)}/>
             </div>
             {showModal && (
