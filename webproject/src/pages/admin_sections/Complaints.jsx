@@ -3,10 +3,15 @@ import { fetchComplaints, updateComplaint, deleteComplaint } from "../../utils/a
 import { useNavigate } from "react-router-dom";
 import "./Complaints.css";
 import { ToastContainer, toast } from 'react-toastify';
+import Loader from "../Loader"
+import Superside from "../admin_components/Superside";
 
 const Complaints = () => {
     const [complaints, setComplaints] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [filterStatus, setFilterStatus] = useState("all");
+    const [searchEmail, setSearchEmail] = useState("");
+    const [sortOption, setSortOption] = useState("newest");
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -23,6 +28,30 @@ const Complaints = () => {
         };
         loadData();
     }, []);
+
+    const getFilteredAndSortedComplaints = () => {
+        let filtered = [...complaints];
+
+        if (filterStatus !== "all") {
+            filtered = filtered.filter(c => c.status === filterStatus);
+        }
+
+        if (searchEmail.trim() !== "") {
+            filtered = filtered.filter(c =>
+                (c.user_email || "аноним").toLowerCase().includes(searchEmail.toLowerCase())
+            );
+        }
+
+        if (sortOption === "newest") {
+            filtered.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        } else if (sortOption === "status") {
+            const order = { pending: 0, resolved: 1, rejected: 2 };
+            filtered.sort((a, b) => order[a.status] - order[b.status]);
+        }
+
+        return filtered;
+    };
+
 
     const handleStatusChange = async (id, status) => {
         try {
@@ -60,67 +89,109 @@ const Complaints = () => {
         </div>
     );
 
-    if (loading) return <p className="loading-text">Загрузка жалоб...</p>;
+    if (loading) return <Loader />;
 
     return (
-        <div className="complaints-container">
-            <h2>Управление жалобами</h2>
-            <table className="complaints-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Описание</th>
-                        <th>Статус</th>
-                        <th>Пользователь</th>
-                        <th>Детали</th>
-                        <th>Действия</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {complaints.map((complaint) => (
-                        <tr key={complaint.id}>
-                            <td>{complaint.id}</td>
-                            <td>{complaint.description}</td>
-                            <td>
-                                <select
-                                    value={complaint.status}
-                                    onChange={(e) => handleStatusChange(complaint.id, e.target.value)}
-                                >
-                                    <option value="pending">Ожидает</option>
-                                    <option value="resolved">Решено</option>
-                                    <option value="rejected">Отклонено</option>
-                                </select>
-                            </td>
-                            <td>{complaint.user_email || "Аноним"}</td>
-                            <td>{renderDetails(complaint)}</td>
-                            <td>
-                                <button
-                                    onClick={() =>
-                                        navigate(
-                                            `/admindashboard/tasks/courses/${complaint.course_id}/sections/${complaint.section_id}/chapters/${complaint.chapter_id}#task-${complaint.task_id}`
-                                        )
-                                    }
-                                    className="explore-button"
-                                    style={{ margin: "5px", width: "100px" }}
+        <div className="spdash">
+            <Superside />
+            <div className="complaints-container">
+                <h2>Управление жалобами</h2>
+                <div className="filters-panel">
+                    <label>
+                        Статус:
+                        <select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}>
+                            <option value="all">Все</option>
+                            <option value="pending">Ожидает</option>
+                            <option value="resolved">Решено</option>
+                            <option value="rejected">Отклонено</option>
+                        </select>
+                    </label>
 
-                                >
-                                    Перейти
-                                </button>
-                                <button
-                                    onClick={() => handleDelete(complaint.id)}
-                                    className="delete-button"
-                                    style={{ margin: "5px", width: "100px" }}
+                    <label>
+                        Поиск по Email:
+                        <input
+                            type="text"
+                            value={searchEmail}
+                            onChange={(e) => setSearchEmail(e.target.value)}
+                            placeholder="user@example.com"
+                        />
+                    </label>
 
-                                >
-                                    Удалить
-                                </button>
-                            </td>
+                    <label>
+                        Сортировка:
+                        <select value={sortOption} onChange={(e) => setSortOption(e.target.value)}>
+                            <option value="newest">Сначала новые</option>
+                            <option value="status">По статусу</option>
+                        </select>
+                    </label>
+                </div>
+
+                <table className="complaints-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Описание</th>
+                            <th>Статус</th>
+                            <th>Пользователь</th>
+                            <th>Детали</th>
+                            <th>Действия</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {getFilteredAndSortedComplaints().map((complaint) => (
+                            <tr key={complaint.id}>
+                                <td>{complaint.id}</td>
+                                <td>{complaint.description}</td>
+                                <td>
+                                    <select
+                                        style={{
+                                            backgroundColor:
+                                                complaint.status === "resolved"
+                                                    ? "#d4edda"
+                                                    : complaint.status === "rejected"
+                                                        ? "#f8d7da"
+                                                        : "#fff3cd",
+                                        }}
+                                        value={complaint.status}
+                                        onChange={(e) => handleStatusChange(complaint.id, e.target.value)}
+                                    >
+                                        <option value="pending">Ожидает</option>
+                                        <option value="resolved">Решено</option>
+                                        <option value="rejected">Отклонено</option>
+                                    </select>
+                                </td>
+                                <td>{complaint.user_email || "Аноним"}</td>
+                                <td>{renderDetails(complaint)}</td>
+                                <td>
+                                    <button
+                                        onClick={() =>
+                                            navigate(
+                                                `/admindashboard/tasks/courses/${complaint.course_id}/sections/${complaint.section_id}/chapters/${complaint.chapter_id}#task-${complaint.task_id}`
+                                            )
+                                        }
+                                        className="explore-button"
+                                        style={{ margin: "5px", width: "100px" }}
+
+                                    >
+                                        Перейти
+                                    </button>
+                                    <button
+                                        onClick={() => handleDelete(complaint.id)}
+                                        className="delete-button"
+                                        style={{ margin: "5px", width: "100px" }}
+
+                                    >
+                                        Удалить
+                                    </button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
             <ToastContainer />
         </div>
+
     );
 };
 

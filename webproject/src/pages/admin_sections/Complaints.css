@@ -1,71 +1,132 @@
 .complaints-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
-  font-family: Arial, sans-serif;
+  padding: 3rem 2rem;
+  font-family: "Segoe UI", sans-serif;
+  background-color: #f9fafe;
+  border-radius: 12px;
 }
 
 .complaints-container h2 {
   text-align: center;
-  margin-bottom: 2rem;
+  font-size: 2.2rem;
+  color: #333;
+  margin-bottom: 2.5rem;
 }
 
 .complaints-table {
   width: 100%;
   border-collapse: collapse;
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  background-color: white;
+  border-radius: 12px;
+  overflow: hidden;
 }
 
 .complaints-table th,
 .complaints-table td {
-  border: 1px solid #ddd;
-  padding: 1rem;
-  vertical-align: top;
+  padding: 1.2rem 1rem;
   text-align: left;
+  vertical-align: top;
 }
 
 .complaints-table th {
-  background-color: #f3f3f3;
+  background-color: #f0f2f5;
+  color: #333;
   font-weight: 600;
+  font-size: 1rem;
 }
 
-.complaints-table tr:nth-child(even) {
-  background-color: #fafafa;
+.complaints-table td {
+  border-top: 1px solid #eee;
+  font-size: 0.95rem;
+  color: #444;
 }
 
 .complaints-table tr:hover {
-  background-color: #f0f8ff;
+  background-color: #f9fcff;
 }
 
-select {
-  padding: 0.3rem 0.6rem;
-  border-radius: 4px;
-  border: 1px solid #ccc;
+/* Action Buttons */
+.explore-button,
+.delete-button {
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
 }
 
 .explore-button {
-  background-color: #00639e;
+  background-color: #0d6efd;
   color: white;
-  border: none;
-  padding: 0.4rem 0.8rem;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-right: 0.5rem;
 }
 
 .explore-button:hover {
-  background-color: #004d7a;
+  background-color: #0a58ca;
+  transform: scale(1.05);
 }
 
 .delete-button {
-  background-color: #f44336;
+  background-color: #dc3545;
   color: white;
-  border: none;
-  padding: 0.4rem 0.8rem;
-  border-radius: 4px;
-  cursor: pointer;
 }
 
 .delete-button:hover {
-  background-color: #d32f2f;
+  background-color: #bb2d3b;
+  transform: scale(1.05);
+}
+
+/* Status Dropdown */
+select {
+  padding: 0.4rem 0.6rem;
+  font-size: 0.9rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  transition: border 0.2s ease;
+}
+
+select:hover {
+  border-color: #007bff;
+}
+
+/* Complaint Details Styling */
+.complaint-details {
+  font-size: 0.85rem;
+  background-color: #f6f8fa;
+  border-left: 4px solid #0d6efd;
+  border-radius: 6px;
+  padding: 10px 14px;
+  margin-top: 8px;
+  line-height: 1.5;
+}
+
+.complaint-details p {
+  margin: 4px 0;
+}
+
+.filters-panel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  align-items: center;
+}
+
+.filters-panel label {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+.filters-panel input,
+.filters-panel select {
+  margin-top: 4px;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  min-width: 180px;
 }

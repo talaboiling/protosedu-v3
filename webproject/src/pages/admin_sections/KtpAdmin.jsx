@@ -34,7 +34,6 @@ const KtpAdmin = () => {
     const [deleteDocumentId, setDeleteDocumentId] = useState(null);
     const [openPDF, setOpenPDF] = useState(false);
 
-    // Fetch subjects when grade changes
     useEffect(() => {
         if (selectedGrade !== null) {
             setLoading(true);
@@ -48,7 +47,6 @@ const KtpAdmin = () => {
         }
     }, [selectedGrade]);
 
-    // Fetch documents when subject changes
     useEffect(() => {
         if (selectedSubject !== null) {
             setLoading(true);
@@ -58,6 +56,39 @@ const KtpAdmin = () => {
                 .finally(() => setLoading(false));
         }
     }, [selectedSubject]);
+
+
+    const refreshDocuments = () => {
+        if (selectedSubject !== null) {
+            setLoading(true);
+            fetchDocuments("ktp", selectedSubject)
+                .then(data => {
+                    setDocuments(data)
+                    notifySuccess("Документы обновлены успешно");
+                })
+                .catch(err => {
+                    setError(err.message)
+                    notifyError("Ошибка при обновлении документов: " + err.message);
+                })
+                .finally(() => setLoading(false));
+        }
+    }
+
+    const refreshSubjects = () => {
+        if (selectedGrade !== null) {
+            setLoading(true);
+            fetchSubjects(selectedGrade)
+                .then(data => {
+                    setSubjects(data)
+                    notifySuccess("Предметы обновлены успешно");
+                })
+                .catch(err => {
+                    setError(err.message)
+                    notifyError("Ошибка при обновлении предметов: " + err.message);
+                })
+                .finally(() => setLoading(false));
+        }
+    }
 
 
     const handleGradeChange = (e) => {
@@ -90,11 +121,11 @@ const KtpAdmin = () => {
                     setDocuments([]);
                     setShowSubjects(true);
                     setAreYouSure({ show: false, type: "" });
-                    notifySuccess("Subject deleted successfully");
+                    notifySuccess("Предмет удален успешно");
                 })
                 .catch(err => {
                     console.error(err);
-                    notifyError("Error deleting subject: " + err.message);
+                    notifyError("Ошибка при удалении документа: " + err.message);
                 });
         }
         if (areYouSure.type === "document" && deleteDocumentId !== null) {
@@ -103,11 +134,11 @@ const KtpAdmin = () => {
                     setDocuments(documents.filter(document => document.id !== deleteDocumentId));
                     setDeleteDocumentId(null);
                     setAreYouSure({ show: false, type: "" });
-                    notifySuccess("Document deleted successfully");
+                    notifySuccess("Документ удален успешно");
                 })
                 .catch(err => {
                     console.error(err);
-                    notifyError("Error deleting document: " + err.message);
+                    notifyError("Ошибка при удалении документа: " + err.message);
                 });
         }
     }
@@ -166,6 +197,7 @@ const KtpAdmin = () => {
                         {selectedGrade !== null && showSubjects && (
                             <div>
                                 <h2>Предметы {selectedGrade} класса</h2>
+                                <button className={styles.simpleButton} onClick={() => refreshSubjects()}>Обновить</button>
                                 <button className={styles.simpleButton} onClick={() => {
                                     console.log("Open add subject modal")
                                     setCreateSubjectModalOpen(true);
@@ -200,6 +232,9 @@ const KtpAdmin = () => {
                                     setShowDocuments(false);
                                     setShowSubjects(true);
                                 }}>Назад</button>
+                                <button onClick={() => {
+                                    refreshDocuments();
+                                }} className={styles.simpleButton}>Обновить</button>
                                 <button className={styles.simpleButton} onClick={() => {
                                     console.log("Open add document modal")
                                     setCreateDocumentModalOpen(true);

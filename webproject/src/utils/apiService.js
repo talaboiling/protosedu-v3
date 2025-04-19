@@ -1037,14 +1037,30 @@ export const fetchSubjects = async (grade) => {
   }
 };
 
-export const fetchDocuments = async (type, subject_id) => {
+const validateFetchDocumentsParams = (type, subject_id, language) => {
+  if (type === null || subject_id === null || language === null) {
+    throw new Error("All parameters are required");
+  }
+  if (type === "") {
+    throw new Error("Type cannot be empty");
+  }
+  if (subject_id === "") {
+    throw new Error("Subject ID cannot be empty");
+  }
+  if (language === "") {
+    throw new Error("Language cannot be empty");
+  }
+  if (language !== "kz" && language !== "ru" && language !== "en") {
+    console.log(language);
+    throw new Error("Invalid language");
+  }
+};
+
+export const fetchDocuments = async (type, subject_id, language) => {
   try {
-    let endpoint;
-    if (type) {
-      endpoint = `${API_URL}/documents/?subject=${subject_id}&type=${type}`;
-    } else {
-      endpoint = `${API_URL}/documents/?subject=${subject_id}`;
-    }
+    // validateFetchDocumentsParams(type, subject_id, language);
+    // TODO: Add language
+    const endpoint = `${API_URL}/documents/?subject=${subject_id}&type=${type}`;
     console.log(endpoint);
     const response = await axios.get(endpoint);
     return response.data;
@@ -1147,6 +1163,49 @@ export const fetchMotivationalPhrases = async () => {
     return response.data;
   } catch (error) {
     throw new Error(error.response?.data?.message || "Failed to fetch phrases");
+  }
+};
+
+export const createMotivationalPhrase = async (formData) => {
+  try {
+    const response = await instance.post("/motivational-phrases/", formData);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || "Failed to create phrase");
+  }
+};
+
+export const updateMotivationalPhraseStatus = async (phraseId, is_active) => {
+  try {
+    const response = await instance.patch(
+      `/motivational-phrases/${phraseId}/`,
+      { is_active }
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || "Failed to update phrase");
+  }
+};
+
+export const deleteMotivationalPhrase = async (phraseId) => {
+  try {
+    const response = await instance.delete(
+      `/motivational-phrases/${phraseId}/`
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || "Failed to delete phrase");
+  }
+};
+
+export const deleteDailyMessage = async (messageId) => {
+  try {
+    const response = await instance.delete(`/daily-messages/${messageId}/`);
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message || "Failed to delete daily message"
+    );
   }
 };
 

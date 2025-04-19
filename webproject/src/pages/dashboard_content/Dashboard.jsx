@@ -41,7 +41,7 @@ ChartJS.register(
 );
 
 const Dashboard = () => {
-  const {isMenuOpen, setIsMenuOpen} = useOutletContext();
+  const { isMenuOpen, setIsMenuOpen } = useOutletContext();
   const { t, i18n } = useTranslation();
   const [user, setUser] = useState({ first_name: t("student"), last_name: "" }); // Default values
   const [courses, setCourses] = useState([]); // State to store courses
@@ -57,7 +57,7 @@ const Dashboard = () => {
       try {
         const userData = await fetchUserData(childId);
         console.log("userData", userData);
-        if (userData.role==="parent"){
+        if (userData.role === "parent") {
           userData.grade = userData.children ? userData.children[0].grade : 2;
         }
         localStorage.setItem('grade', userData.grade);
@@ -77,19 +77,19 @@ const Dashboard = () => {
     fetchData();
   }, []);
 
-  // useEffect(() => {
-  //   const fetchDailyMessage = async () => {
-  //     try {
-  //       const dailyMessageData = await fetchDailyMessageStudent(i18n.language);
-  //       console.log("dailyMessageData", dailyMessageData);
-  //       setDailyMessage(dailyMessageData.message);
-  //     } catch (error) {
-  //       setDailyMessage("");
-  //       console.error("Error fetching daily message:", error);
-  //     }
-  //   };
-  //   fetchDailyMessage();
-  // }, [i18n.language]);
+  useEffect(() => {
+    const fetchDailyMessage = async () => {
+      try {
+        const dailyMessageData = await fetchDailyMessageStudent(i18n.language);
+        console.log("dailyMessageData", dailyMessageData);
+        setDailyMessage(dailyMessageData.message);
+      } catch (error) {
+        setDailyMessage("");
+        console.error("Error fetching daily message:", error);
+      }
+    };
+    fetchDailyMessage();
+  }, [i18n.language]);
 
   const daysInRussian = {
     Monday: t("mon"),
@@ -154,19 +154,19 @@ const Dashboard = () => {
   return (
     <div className="rtdash dashMain">
       <div className="centralDash">
-        {user.grade>4 && <SeniorDashboardContent t={t} user={user} courses={courses} isMenuOpen={isMenuOpen}/>}
-        {user.grade<=4 && 
-        <JuniorDashBoardContent 
-          user={user} 
-          courses={courses} 
-          isMenuOpen={isMenuOpen} 
-          setIsMenuOpen={setIsMenuOpen}
-          isProfileSwitched={isProfileSwitched}
-          setIsProfileSwitched={setIsProfileSwitched}
-          t={t}
-          data={data}
-          options={options}
-        />}
+        {user.grade > 4 && <SeniorDashboardContent t={t} user={user} courses={courses} isMenuOpen={isMenuOpen} />}
+        {user.grade <= 4 &&
+          <JuniorDashBoardContent
+            user={user}
+            courses={courses}
+            isMenuOpen={isMenuOpen}
+            setIsMenuOpen={setIsMenuOpen}
+            isProfileSwitched={isProfileSwitched}
+            setIsProfileSwitched={setIsProfileSwitched}
+            t={t}
+            data={data}
+            options={options}
+          />}
       </div>
       <Profile
         user={user}
