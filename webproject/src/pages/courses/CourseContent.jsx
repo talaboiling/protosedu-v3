@@ -66,7 +66,6 @@ const CourseContent = () => {
   }
   return (
     <div className="rtdash dashMain">
-      <Sidebar isMenuOpen={isMenuOpen} user={user}/>
       <div className="centralDash">
         <Navdash
           starCount={user.stars}

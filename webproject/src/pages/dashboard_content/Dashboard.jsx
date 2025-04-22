@@ -41,51 +41,46 @@ ChartJS.register(
 );
 
 const Dashboard = () => {
-  const { isMenuOpen, setIsMenuOpen } = useOutletContext();
+  const { isMenuOpen, setIsMenuOpen, user } = useOutletContext();
   const { t, i18n } = useTranslation();
-  const [user, setUser] = useState({ first_name: t("student"), last_name: "" }); // Default values
   const [courses, setCourses] = useState([]); // State to store courses
   const [sections, setSections] = useState([]); // State to store sections
   const [weeklyProgress, setWeeklyProgress] = useState([]);
-  const [loading, setLoading] = useState(true); // Add loading state
+  const [loading, setLoading] = useState(false); // Add loading state
   const [isProfileSwitched, setIsProfileSwitched] = useState(false);
   const [dailyMessage, setDailyMessage] = useState("");
-
-  useEffect(() => {
-    const fetchData = async () => {
+  
+  useEffect(()=>{
+    async function fetchData(){
       const childId = localStorage.getItem("child_id");
       try {
-        const userData = await fetchUserData(childId);
-        console.log("userData", userData);
-        if (userData.role === "parent") {
-          userData.grade = userData.children ? userData.children[0].grade : 2;
-        }
-        localStorage.setItem('grade', userData.grade);
-        setUser(userData);
+        setLoading(true);
         const weeklyProgressData = await fetchWeeklyProgress(childId);
         console.log(weeklyProgressData);
         setWeeklyProgress(weeklyProgressData.weekly_progress);
         const coursesData = await fetchCourses(childId);
         setCourses(coursesData);
-      } catch (error) {
+      } catch(error){
         console.error("Error fetching data:", error);
       } finally {
         setLoading(false);
       }
     };
-
     fetchData();
   }, []);
 
   useEffect(() => {
     const fetchDailyMessage = async () => {
       try {
+        setLoading(true);
         const dailyMessageData = await fetchDailyMessageStudent(i18n.language);
         console.log("dailyMessageData", dailyMessageData);
         setDailyMessage(dailyMessageData.message);
       } catch (error) {
-        setDailyMessage("");
+        setDailyMessage("Not bad!");
         console.error("Error fetching daily message:", error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchDailyMessage();
@@ -152,7 +147,7 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="rtdash dashMain">
+    <div className="" style={{display: "flex", justifyContent: 'space-between'}}>
       <div className="centralDash">
         {user.grade > 4 && <SeniorDashboardContent t={t} user={user} courses={courses} isMenuOpen={isMenuOpen} />}
         {user.grade <= 4 &&
@@ -168,11 +163,6 @@ const Dashboard = () => {
             options={options}
           />}
       </div>
-      <Profile
-        user={user}
-        isProfileSwitched={isProfileSwitched}
-        setIsProfileSwitched={setIsProfileSwitched}
-      />
     </div>
   );
 };

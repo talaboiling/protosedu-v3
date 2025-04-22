@@ -198,7 +198,6 @@ const Pprogress = () => {
           </div>
         </div>
       </div>
-      <Profile user={user} />
     </div>
   );
 };

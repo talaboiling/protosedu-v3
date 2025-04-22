@@ -25,7 +25,7 @@ import SubscriptionErrorModal from "./SubscriptionErrorModal";
 import LessonProgress from "./LessonProgress";
 import { useNavigate } from "react-router-dom";
 
-const Math = () => {
+const Math = ({config}) => {
   const { t } = useTranslation();
   const { courseId, sectionId, chapterId } = useParams();
   const [course, setCourse] = useState();
@@ -481,8 +481,7 @@ const Math = () => {
   }
 
   return (
-    <div className="rtdash rtrat mathLesson">
-      <Sidebar className="courseSidebar" isMenuOpen={isMenuOpen} user={user}/>
+    <div className="">
       <div className="centralLessons">
         <div className="centralLessonsInner maths">
           <Navdash

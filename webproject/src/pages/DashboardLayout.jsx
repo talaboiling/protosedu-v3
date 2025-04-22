@@ -3,33 +3,59 @@ import { Outlet } from 'react-router-dom';
 import Sidebar from './sidebar/Sidebar';
 import "./DashboardLayout.css";
 import Navdash from './Navdash';
+import Profile from './Profile';
+import { fetchUserData } from '../utils/apiService';
 
 const DashboardLayout = () => {
 
     const [user, setUser] = useState();
     const [isMenuOpen, setIsMenuOpen] = useState(true);
-
-    useEffect(()=>{
-        if (localStorage.getItem('user')){
-            const userData = {...JSON.parse(localStorage.getItem('user'))}
-            const grade = localStorage.getItem('grade')
-            userData.grade = userData.grade ? userData.grade : grade;
+    const [isProfileSwitched, setIsProfileSwitched] = useState(true);
+    const [loading, setLoading] = useState(false);
+    
+    useEffect(() => {
+        const fetchData = async () => {
+          const childId = localStorage.getItem("child_id");
+          try {
+            setLoading(true);
+            const userData = await fetchUserData(childId);
+            console.log("userData", userData);
+            if (userData.role === "parent") {
+              userData.grade = userData.children ? userData.children[0].grade : 2;
+            }
+            localStorage.setItem('grade', userData.grade);
             setUser(userData);
-        }
-    },[]);
+          } catch (error) {
+            console.error("Error fetching data:", error);
+          } finally {
+            setLoading(false);
+          }
+        };
+    
+        fetchData();
+      }, []);
 
     console.log(user, 123412341234);
 
     return (
         <div>
-            <div className="rtdash dashMain">
+            {user && 
+            <>
                 <Sidebar user={user} isMenuOpen={isMenuOpen}/>
-                <div className='content'>
-                    <div className='info'>
-                        <Outlet context={{isMenuOpen, setIsMenuOpen}}/>
+                <div className="rtdash dashMain">
+                    <div className='content'>
+                        <div className='info'>
+                          <Outlet context={{isMenuOpen, setIsMenuOpen, user}}/>
+                        </div>
                     </div>
+                    <Profile 
+                      user={user} 
+                      isProfileSwitched={isProfileSwitched} 
+                      setIsProfileSwitched={setIsProfileSwitched}
+                    /> 
                 </div>
-            </div>
+            </>
+            }
         </div>
     )
 }

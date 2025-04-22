@@ -110,35 +110,35 @@ const router = createBrowserRouter([
     {
       path: "games", 
       element: <Games/>
+    }, 
+    {
+      path: "/dashboard/courses/:courseId/sections",
+      element: (
+        <AuthRoute
+          element={<CourseContent />}
+          allowedRoles={["student", "parent"]}
+        />
+      ),
+    },
+    {
+      path: "/dashboard/courses/:courseId/sections/:sectionId/chapters",
+      element: (
+        <AuthRoute
+          element={<ChapterContent />}
+          allowedRoles={["student", "parent"]}
+        />
+      ),
+    },
+    {
+      path: "/dashboard/courses/:courseId/sections/:sectionId/chapters/:chapterId/lessons",
+      element: (
+        <AuthRoute
+          element={<MathCourse config={{noProfile: true}}/>}
+          allowedRoles={["student", "parent"]}
+        />
+      ),
     }
   ]
-  },
-  {
-    path: "/dashboard/courses/:courseId/sections",
-    element: (
-      <AuthRoute
-        element={<CourseContent />}
-        allowedRoles={["student", "parent"]}
-      />
-    ),
-  },
-  {
-    path: "/dashboard/courses/:courseId/sections/:sectionId/chapters",
-    element: (
-      <AuthRoute
-        element={<ChapterContent />}
-        allowedRoles={["student", "parent"]}
-      />
-    ),
-  },
-  {
-    path: "/dashboard/courses/:courseId/sections/:sectionId/chapters/:chapterId/lessons",
-    element: (
-      <AuthRoute
-        element={<MathCourse />}
-        allowedRoles={["student", "parent"]}
-      />
-    ),
   },
   {
     path: "/dashboard/tests/:testId",

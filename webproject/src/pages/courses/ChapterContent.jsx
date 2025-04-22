@@ -69,8 +69,7 @@ const ChapterContent = () => {
 
   console.log(chapters);
   return (
-    <div className="rtdash dashMain">
-      <Sidebar isMenuOpen={isMenuOpen} user={user}/>
+    <div>
       <div className="centralDash">
         <Navdash
           starCount={user.stars}

@@ -13,7 +13,7 @@ import "./Profile.css";
 import notification_image from "../../src/assets/Notification.png";
 import SeniorMyGrowth from "./SeniorMyGrowth";
 
-const Profile = ({ user, isProfileSwitched, setIsProfileSwitched }) => {
+const Profile = ({ user, isProfileSwitched=true, setIsProfileSwitched=undefined }) => {
   const { t } = useTranslation();
   const avatarUrl = user.avatar ? user.avatar : placeholderPfp; // Use placeholder if avatar is null
   const [ratings, setRatings] = useState([]); // State to store ratings

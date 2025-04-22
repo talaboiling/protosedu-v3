@@ -11,7 +11,7 @@
   -moz-osx-font-smoothing: grayscale;
   text-decoration: none;
   display: grid;
-  grid-template-columns: 1fr 3fr 1fr;
+  grid-template-columns: 3fr 1fr;
 }
 
 .navdashboard {
@@ -283,17 +283,18 @@
   flex-direction: column;
   align-items: center;
   width: auto;
+  padding: 20px 30px;
 }
 
 .dashProfile {
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 35px 40px;
   gap: 1rem;
   background-color: #fff;
   margin-left: 20px;
-
+  padding: 20px;
 }
 
 .settings {
@@ -1240,7 +1241,7 @@ img.childcard {
 }
 
 .gameImg {
-  width: 300px;
+  width: 100%;
 }
 
 .game-div {

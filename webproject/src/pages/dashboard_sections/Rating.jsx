@@ -71,61 +71,6 @@ const Rating = () => {
         </div>
 
         <div className="ratingCentral" style={{gap: "4rem"}}>
-          <div className="ratinginfo">
-            <div className="prowfirst">
-              <p
-                style={{
-                  fontSize: "x-large",
-                  fontWeight: "650",
-                  color: "#222222",
-                  margin: "0",
-                  padding: "0",
-                }}
-              >
-                {t("myProfile")}
-              </p>
-            </div>
-            <div className="sidepfp">
-              <img
-                src={avatarUrl}
-                alt="pfp"
-                className="pfp"
-                style={{
-                  borderRadius: "50%",
-                  marginBottom: "15px",
-                  width: "100px",
-                  height: "100px",
-                }}
-              />
-              <p
-                style={{
-                  fontSize: "x-large",
-                  fontWeight: "650",
-                  color: "#222222",
-                  margin: "0",
-                  padding: "0",
-                }}
-              >
-                {user.first_name} {user.last_name}
-              </p>
-              <p
-                style={{
-                  fontSize: "large",
-                  fontWeight: "450",
-                  color: "#222222",
-                  margin: "0",
-                  padding: "0",
-                }}
-              >
-                {t("student")}
-              </p>
-            </div>
-            <div className="lndsh cupCount">
-              <img src={cupicon} alt="cups" className="cupIcon" />
-              <p style={{ margin: "0" }}>{user.cups}</p>
-            </div>
-            <League />
-          </div>
           <div className="listInRating">
             <Ratinglist ratings={ratings} />
           </div>

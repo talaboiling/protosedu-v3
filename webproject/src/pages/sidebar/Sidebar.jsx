@@ -40,7 +40,6 @@ const Sidebar = ({ isMenuOpen, user }) => {
   
   return (
     <div className="">
-      <p style={{display:"none"}}>Sidebar</p>
       {grade>4 && <SeniorSidebar isMenuOpen={isMenuOpen} sidebarType={"senior"} user={{...user, grade}} goBack={goBack} handleLogout={handleLogout}/>}
       {grade<=4 && <JuniorSidebar isMenuOpen={isMenuOpen} sidebarType={"junior"} user={{...user, grade}} goBack={goBack} handleLogout={handleLogout}/>}
     </div>
