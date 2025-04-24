@@ -347,6 +347,7 @@ const Tasks = () => {
                     <option value="2">2 класс</option>
                     <option value="3">3 класс</option>
                     <option value="4">4 класс</option>
+                    <option value="-1">Общий для всех</option>
                   </select>
                   <label htmlFor="courselang">Выберите язык обучения</label>
                   <select
@@ -359,6 +360,7 @@ const Tasks = () => {
                     <option value="">Выберите язык</option>
                     <option value="ru">Русский</option>
                     <option value="kz">Қазақша</option>
+                    <option value="cm">Общий для всех</option>
                   </select>
                   <span style={{ display: "flex", flexDirection: "row", marginTop: "30px" }}>
                     <button
