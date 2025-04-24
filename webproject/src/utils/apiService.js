@@ -1058,9 +1058,8 @@ const validateFetchDocumentsParams = (type, subject_id, language) => {
 
 export const fetchDocuments = async (type, subject_id, language) => {
   try {
-    // validateFetchDocumentsParams(type, subject_id, language);
-    // TODO: Add language
-    const endpoint = `${API_URL}/documents/?subject=${subject_id}&type=${type}`;
+    validateFetchDocumentsParams(type, subject_id, language);
+    const endpoint = `${API_URL}/documents/?subject=${subject_id}&type=${type}&language=${language}`;
     console.log(endpoint);
     const response = await axios.get(endpoint);
     return response.data;

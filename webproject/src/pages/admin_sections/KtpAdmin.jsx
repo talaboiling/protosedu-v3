@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate, useLocation } from 'react-router-dom';
 import { fetchSubjects, fetchDocuments, createSubject, deleteSubject, updateSubject, createDocument, deleteDocument, updateDocument } from "../../utils/apiService"; // Ensure these are created
 import styles from './KtpAdmin.module.css';
 import Loader from "../Loader";
@@ -16,16 +17,14 @@ const KtpAdmin = () => {
     const [selectedGrade, setSelectedGrade] = useState(null);
     const [subjects, setSubjects] = useState([]);
     const [selectedSubject, setSelectedSubject] = useState(null);
-    const [showSubjects, setShowSubjects] = useState(true);
     const [documents, setDocuments] = useState([]);
-    const [showDocuments, setShowDocuments] = useState(true);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [subjectFormData, setSubjectFormData] = useState({ name: "", description: "", grade: -1 });
     const [createSubjectModalOpen, setCreateSubjectModalOpen] = useState(false);
     const [editSubjectModalOpen, setEditSubjectModalOpen] = useState(false);
     const [editSubjectId, setEditSubjectId] = useState(null);
-    const [documentFormData, setDocumentFormData] = useState({ name: "", file: null, subject: null, document_type: "ktp" });
+    const [documentFormData, setDocumentFormData] = useState({ name: "", file: null, subject: null, document_type: "ktp", language: "" });
     const [createDocumentModalOpen, setCreateDocumentModalOpen] = useState(false);
     const [editDocumentModalOpen, setEditDocumentModalOpen] = useState(false);
     const [editDocumentId, setEditDocumentId] = useState(null);
@@ -33,15 +32,35 @@ const KtpAdmin = () => {
     const [deleteSubjectId, setDeleteSubjectId] = useState(null);
     const [deleteDocumentId, setDeleteDocumentId] = useState(null);
     const [openPDF, setOpenPDF] = useState(false);
+    const [showLanguageChoice, setShowLanguageChoice] = useState(false);
+    const [selectedLanguage, setSelectedLanguage] = useState(null);
+    const [showMode, setShowMode] = useState(null)
+
+
+    const navigate = useNavigate();
+    const location = useLocation();
+
+
+    useEffect(() => {
+        const params = new URLSearchParams();
+        if (selectedGrade !== null) params.set('grade', selectedGrade);
+        if (selectedSubject !== null) params.set('subject', selectedSubject);
+        if (selectedLanguage) params.set('lang', selectedLanguage);
+        navigate(`?${params.toString()}`, { replace: true });
+    }, [selectedGrade, selectedSubject, selectedLanguage]);
+
+
+
+
 
     useEffect(() => {
         if (selectedGrade !== null) {
+            setShowLanguageChoice(false)
             setLoading(true);
             fetchSubjects(selectedGrade)
                 .then(data => setSubjects(data))
                 .catch(err => setError(err.message))
                 .finally(() => {
-                    setShowSubjects(true);
                     setLoading(false)
                 });
         }
@@ -50,18 +69,18 @@ const KtpAdmin = () => {
     useEffect(() => {
         if (selectedSubject !== null) {
             setLoading(true);
-            fetchDocuments("ktp", selectedSubject)
+            fetchDocuments("ktp", selectedSubject, selectedLanguage)
                 .then(data => setDocuments(data))
                 .catch(err => setError(err.message))
                 .finally(() => setLoading(false));
         }
-    }, [selectedSubject]);
+    }, [selectedSubject, selectedLanguage]);
 
 
     const refreshDocuments = () => {
         if (selectedSubject !== null) {
             setLoading(true);
-            fetchDocuments("ktp", selectedSubject)
+            fetchDocuments("ktp", selectedSubject, selectedLanguage)
                 .then(data => {
                     setDocuments(data)
                     notifySuccess("Документы обновлены успешно");
@@ -94,14 +113,25 @@ const KtpAdmin = () => {
     const handleGradeChange = (e) => {
         const grade = parseInt(e.target.value);
         setSelectedGrade(grade);
+        setOpenPDF(false)
         setSelectedSubject(null);
         setDocuments([]);
     };
 
-    const handleSubjectSelect = (subjectId) => {
-        setSelectedSubject(subjectId);
-        setShowSubjects(false);
-        setShowDocuments(true);
+    const handleLanguageChange = (e) => {
+        const language = e.target.value;
+        setSelectedLanguage(language);
+    }
+
+
+    const handleLanguageSelectForm = (e) => {
+        setDocumentFormData({ ...documentFormData, language: e.target.value });
+    }
+
+    const handleSubjectSelect = (subject) => {
+        setSelectedSubject(subject);
+        setShowLanguageChoice(true)
+        setShowMode("documents")
     };
 
     const handleSubjectDelete = (subjectId) => {
@@ -119,7 +149,6 @@ const KtpAdmin = () => {
                     setDeleteSubjectId(null);
                     setSelectedSubject(null);
                     setDocuments([]);
-                    setShowSubjects(true);
                     setAreYouSure({ show: false, type: "" });
                     notifySuccess("Предмет удален успешно");
                 })
@@ -171,6 +200,65 @@ const KtpAdmin = () => {
         });
     };
 
+
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        const grade = params.get('grade');
+        const subject = params.get('subject')
+        const lang = params.get('lang')
+
+        if (grade) {
+            setSelectedGrade(parseInt(grade));
+            setShowMode("subjects")
+        }
+
+        if (subject) {
+            setSelectedSubject(parseInt(subject))
+            setShowMode("documents")
+        }
+
+        if (lang) {
+            if (lang === "kz" || lang === "ru") {
+                setSelectedLanguage(lang)
+            }
+        }
+
+
+
+    }, [location.search]);
+
+
+    const handleEditDocumentSubmit = (e) => {
+        e.preventDefault();
+
+        // Create a copy of documentFormData
+        let updatedDocumentData = { ...documentFormData };
+
+        // If file is not updated, remove the file field
+        if (!documentFormData.file) {
+            delete updatedDocumentData.file;
+        }
+
+        // Now proceed with updating the document (with or without the file)
+        updateDocument(editDocumentId, updatedDocumentData)
+            .then(() => {
+                fetchDocuments("ktp", selectedSubject)
+                    .then(data => setDocuments(data))
+                    .catch(err => setError(err.message))
+                    .finally(() => setLoading(false));
+                setEditDocumentModalOpen(false);
+                setDocumentFormData({ name: "", file: null, subject: null, document_type: "ktp", language: "" });
+                setEditDocumentId(null);
+                setLoading(false);
+                notifySuccess("Документ обновлен успешно");
+            })
+            .catch(err => {
+                notifyError("Ошибка при обновлений документа: " + err);
+                setLoading(false);
+            });
+    };
+
+
     return (
         <>
 
@@ -194,7 +282,7 @@ const KtpAdmin = () => {
                         </div>
 
                         {/* Subjects Management */}
-                        {selectedGrade !== null && showSubjects && (
+                        {showMode === "subjects" && (
                             <div>
                                 <h2>Предметы {selectedGrade} класса</h2>
                                 <button className={styles.simpleButton} onClick={() => refreshSubjects()}>Обновить</button>
@@ -223,14 +311,26 @@ const KtpAdmin = () => {
                             </div>
                         )}
 
-                        {/* Documents Management */}
-                        {selectedSubject && showDocuments && (
+                        {/* Language Selection */}
+                        {showLanguageChoice && (
                             <div>
-                                <h2>Документы</h2>
+                                <div className={styles.dropdownContainer}>
+                                    <select value={selectedLanguage || ""} onChange={handleLanguageChange} className={styles.dropdown}>
+                                        <option value="" disabled>Выберите язык</option>
+                                        <option value="kz">Казахский</option>
+                                        <option value="ru">Русский</option>
+                                    </select>
+                                </div>
+                            </div>
+                        )}
+                        {/* Documents Management */}
+                        {showMode === "documents" && (
+                            <div>
+                                <h2>Документы {selectedSubject}</h2>
                                 <button className={styles.simpleButton} onClick={() => {
                                     console.log("Back to subjects");
-                                    setShowDocuments(false);
-                                    setShowSubjects(true);
+                                    setShowMode("subjects")
+                                    setShowLanguageChoice(false);
                                 }}>Назад</button>
                                 <button onClick={() => {
                                     refreshDocuments();
@@ -244,10 +344,10 @@ const KtpAdmin = () => {
                                 {documents.length > 0 ? (
                                     documents.map(document => (
                                         <div key={document.id} className={styles.documentRow}>
-                                            <span>{document.name}</span>
+                                            <span>{document.name} <br /> Язык: <strong>{document.language === "ru" ? "Русский" : document.language === "kz" ? "Казахский" : "Не уточнен"}</strong></span>
                                             <button onClick={() => {
-                                                setShowDocuments(false);
                                                 setOpenPDF(document.file)
+                                                setShowMode("none")
                                             }}>Просмотреть</button>
 
                                             <button onClick={() => {
@@ -255,6 +355,7 @@ const KtpAdmin = () => {
                                                 setEditDocumentId(document.id);
                                                 setEditDocumentModalOpen(true);
                                                 setDocumentFormData(document);
+                                                delete documentFormData.file
                                             }}>Редактировать</button>
                                             <button onClick={() => {
                                                 console.log("Delete document", document.id)
@@ -368,6 +469,11 @@ const KtpAdmin = () => {
                                             className={styles.inputField}
                                         />
                                         <input type="file" onChange={(e) => setDocumentFormData({ ...documentFormData, file: e.target.files[0] })} />
+                                        <select value={selectedLanguage || ""} onChange={handleLanguageSelectForm} className={styles.dropdown}>
+                                            <option value="" disabled>Выберите язык</option>
+                                            <option value="kz">Казахский</option>
+                                            <option value="ru">Русский</option>
+                                        </select>
                                         <button type="submit" className={styles.submitButton} onClick={() => {
                                             documentFormData.subject = selectedSubject;
                                             setCreateDocumentModalOpen(false);
@@ -391,7 +497,10 @@ const KtpAdmin = () => {
 
 
                                         }}>Добавить</button>
-                                        <button type="button" className={styles.cancelSubjectButton} onClick={() => setCreateDocumentModalOpen(false)}>Отменить</button>
+                                        <button type="button" className={styles.cancelSubjectButton} onClick={() => {
+                                            setDocumentFormData({ name: "", file: null, subject: null, document_type: "ktp", language: "" });
+                                            setCreateDocumentModalOpen(false)
+                                        }}>Отменить</button>
                                     </form>
                                 </div>
                             </div>
@@ -402,10 +511,7 @@ const KtpAdmin = () => {
                             <div className={styles.modalOverlay}>
                                 <div className={styles.modalContent}>
                                     <h2>Редактировать документ</h2>
-                                    <form onSubmit={(e) => {
-                                        e.preventDefault();
-                                        console.log("Edit document", documentFormData);
-                                    }}>
+                                    <form onSubmit={handleEditDocumentSubmit}>
 
                                         <input type="text" required className={styles.inputField} placeholder="Название документа(Тема)" value={documentFormData.name} onChange={(e) => setDocumentFormData({ ...documentFormData, name: e.target.value })} />
                                         {documentFormData.file && (
@@ -419,32 +525,17 @@ const KtpAdmin = () => {
                                                     Открыть в новой вкладке
                                                 </a>
                                             </span>)}
-                                        <input type="file" required className={styles.inputField} onChange={(e) => setDocumentFormData({ ...documentFormData, file: e.target.files[0] })} />
+                                        <input type="file" className={styles.inputField} onChange={(e) => setDocumentFormData({ ...documentFormData, file: e.target.files[0] })} />
+                                        <select value={documentFormData.language || ""} onChange={handleLanguageSelectForm} className={styles.dropdown}>
+                                            <option value="" disabled>Выберите язык</option>
+                                            <option value="kz">Казахский</option>
+                                            <option value="ru">Русский</option>
+                                        </select>
                                         <button type="submit" className={styles.submitButton} onClick={() => {
-                                            setLoading(true);
-                                            updateDocument(editDocumentId, documentFormData)
-                                                .then(() => {
-                                                    fetchDocuments("ktp", selectedSubject)
-                                                        .then(data => setDocuments(data))
-                                                        .catch(err => setError(err.message))
-                                                        .finally(() => setLoading(false));
-                                                    setEditDocumentModalOpen(false);
-                                                    setDocumentFormData({ name: "", file: null, subject: null, document_type: "ktp" });
-                                                    setEditDocumentId(null);
-                                                    setShowSubjects(false)
-                                                    setLoading(false);
-                                                    setShowDocuments(true);
-                                                    notifySuccess("Документ обновлен успешно");
-                                                }
-                                                )
-                                                .catch(err => {
-                                                    notifyError("Ошибка при обновлений документы: " + err)
-                                                    setLoading(false);
-                                                })
                                         }}>Обновить</button>
                                         <button type="button" className={styles.cancelSubjectButton} onClick={() => {
                                             setEditDocumentModalOpen(false);
-                                            setDocumentFormData({ name: "", file: null, subject: null, document_type: "ktp" });
+                                            setDocumentFormData({ name: "", file: null, subject: null, document_type: "ktp", language: "" });
                                         }}>Отменить</button>
                                     </form>
                                 </div>
@@ -465,7 +556,7 @@ const KtpAdmin = () => {
                             <div className={styles.pdfModal}>
                                 <PDFViewer pdfUrl={openPDF} onClose={() => {
                                     setOpenPDF(null)
-                                    setShowDocuments(true)
+                                    setShowMode("documents")
                                 }} />
                             </div>
                         )}
