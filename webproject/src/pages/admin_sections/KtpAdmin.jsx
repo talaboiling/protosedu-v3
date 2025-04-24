@@ -32,13 +32,16 @@ const KtpAdmin = () => {
     const [deleteSubjectId, setDeleteSubjectId] = useState(null);
     const [deleteDocumentId, setDeleteDocumentId] = useState(null);
     const [openPDF, setOpenPDF] = useState(false);
-    const [showLanguageChoice, setShowLanguageChoice] = useState(false);
-    const [selectedLanguage, setSelectedLanguage] = useState(null);
+    const [selectedLanguage, setSelectedLanguage] = useState("kz");
     const [showMode, setShowMode] = useState(null)
+    const [replaceFile, setReplaceFile] = useState(false);
+
 
 
     const navigate = useNavigate();
     const location = useLocation();
+    const currentDocument = documents.find(doc => doc.id === editDocumentId);
+
 
 
     useEffect(() => {
@@ -49,13 +52,8 @@ const KtpAdmin = () => {
         navigate(`?${params.toString()}`, { replace: true });
     }, [selectedGrade, selectedSubject, selectedLanguage]);
 
-
-
-
-
     useEffect(() => {
         if (selectedGrade !== null) {
-            setShowLanguageChoice(false)
             setLoading(true);
             fetchSubjects(selectedGrade)
                 .then(data => setSubjects(data))
@@ -123,6 +121,17 @@ const KtpAdmin = () => {
         setSelectedLanguage(language);
     }
 
+    const handleAddSubjectClick = () => {
+        setCreateSubjectModalOpen(true);
+    }
+
+    const handleEditSubjectClick = (subject) => {
+        setEditSubjectId(subject.id);
+        setSubjectFormData(subject);
+        setEditSubjectModalOpen(true);
+    }
+
+
 
     const handleLanguageSelectForm = (e) => {
         setDocumentFormData({ ...documentFormData, language: e.target.value });
@@ -130,7 +139,6 @@ const KtpAdmin = () => {
 
     const handleSubjectSelect = (subject) => {
         setSelectedSubject(subject);
-        setShowLanguageChoice(true)
         setShowMode("documents")
     };
 
@@ -141,7 +149,6 @@ const KtpAdmin = () => {
     }
 
     const handleConfirmDelete = () => {
-        console.log("Confirm delete", areYouSure.type, areYouSure.show, deleteSubjectId);
         if (areYouSure.type === "subject" && deleteSubjectId !== null) {
             deleteSubject(deleteSubjectId)
                 .then(() => {
@@ -229,33 +236,29 @@ const KtpAdmin = () => {
 
 
     const handleEditDocumentSubmit = (e) => {
+        setReplaceFile(false)
         e.preventDefault();
 
         // Create a copy of documentFormData
         let updatedDocumentData = { ...documentFormData };
 
-        // If file is not updated, remove the file field
-        if (!documentFormData.file) {
-            delete updatedDocumentData.file;
-        }
-
         // Now proceed with updating the document (with or without the file)
+        setLoading(true);
         updateDocument(editDocumentId, updatedDocumentData)
             .then(() => {
-                fetchDocuments("ktp", selectedSubject)
-                    .then(data => setDocuments(data))
-                    .catch(err => setError(err.message))
-                    .finally(() => setLoading(false));
                 setEditDocumentModalOpen(false);
                 setDocumentFormData({ name: "", file: null, subject: null, document_type: "ktp", language: "" });
                 setEditDocumentId(null);
-                setLoading(false);
                 notifySuccess("Документ обновлен успешно");
+                setTimeout(() => {
+                    refreshDocuments()
+                }, 1000);
             })
             .catch(err => {
                 notifyError("Ошибка при обновлений документа: " + err);
                 setLoading(false);
             });
+        setLoading(false);
     };
 
 
@@ -271,6 +274,7 @@ const KtpAdmin = () => {
                     <div className={styles.container}>
 
                         <h1 className={styles.title}>Админ-панель КТП</h1>
+
                         {/* Grade Selection */}
                         <div className={styles.dropdownContainer}>
                             <select value={selectedGrade || ""} onChange={handleGradeChange} className={styles.dropdown}>
@@ -281,29 +285,22 @@ const KtpAdmin = () => {
                             </select>
                         </div>
 
+                        {/* Language Selection */}
+
+
                         {/* Subjects Management */}
                         {showMode === "subjects" && (
                             <div>
                                 <h2>Предметы {selectedGrade} класса</h2>
-                                <button className={styles.simpleButton} onClick={() => refreshSubjects()}>Обновить</button>
-                                <button className={styles.simpleButton} onClick={() => {
-                                    console.log("Open add subject modal")
-                                    setCreateSubjectModalOpen(true);
-                                }}>+ Добавить предмет</button>
+                                <button className={styles.simpleButton} onClick={refreshSubjects}>Обновить</button>
+                                <button className={styles.simpleButton} onClick={handleAddSubjectClick}>+ Добавить предмет</button>
                                 {subjects.map(subject => (
                                     <div key={subject.id} className={styles.subjectRow}>
                                         <span>{subject.name}</span>
                                         <button onClick={() =>
                                             handleSubjectSelect(subject.id)}>Управление документами</button>
+                                        <button onClick={() => handleEditSubjectClick(subject)}>Редактировать</button>
                                         <button onClick={() => {
-                                            console.log("Edit subject", subject.id)
-                                            setEditSubjectId(subject.id);
-                                            setSubjectFormData(subject);
-                                            setEditSubjectModalOpen(true);
-                                        }}>Редактировать</button>
-                                        <button onClick={() => {
-                                            console.log("Delete subject", subject.id)
-                                            subjectFormData.id = subject.id;
                                             handleSubjectDelete(subject.id);
                                         }}>Удалить</button>
                                     </div>
@@ -311,63 +308,62 @@ const KtpAdmin = () => {
                             </div>
                         )}
 
-                        {/* Language Selection */}
-                        {showLanguageChoice && (
-                            <div>
-                                <div className={styles.dropdownContainer}>
-                                    <select value={selectedLanguage || ""} onChange={handleLanguageChange} className={styles.dropdown}>
-                                        <option value="" disabled>Выберите язык</option>
-                                        <option value="kz">Казахский</option>
-                                        <option value="ru">Русский</option>
-                                    </select>
-                                </div>
-                            </div>
-                        )}
+
                         {/* Documents Management */}
                         {showMode === "documents" && (
                             <div>
+                                <div>
+                                    <div className={styles.dropdownContainer}>
+                                        <select value={selectedLanguage || ""} onChange={handleLanguageChange} className={styles.dropdown}>
+                                            <option value="" disabled>Выберите язык</option>
+                                            <option value="kz">Казахский</option>
+                                            <option value="ru">Русский</option>
+                                        </select>
+                                    </div>
+                                </div>
                                 <h2>Документы {selectedSubject}</h2>
                                 <button className={styles.simpleButton} onClick={() => {
-                                    console.log("Back to subjects");
                                     setShowMode("subjects")
-                                    setShowLanguageChoice(false);
                                 }}>Назад</button>
                                 <button onClick={() => {
                                     refreshDocuments();
                                 }} className={styles.simpleButton}>Обновить</button>
                                 <button className={styles.simpleButton} onClick={() => {
-                                    console.log("Open add document modal")
                                     setCreateDocumentModalOpen(true);
                                 }}>+ Добавить документ</button>
 
-                                {/* Check if there are documents */}
-                                {documents.length > 0 ? (
-                                    documents.map(document => (
-                                        <div key={document.id} className={styles.documentRow}>
-                                            <span>{document.name} <br /> Язык: <strong>{document.language === "ru" ? "Русский" : document.language === "kz" ? "Казахский" : "Не уточнен"}</strong></span>
-                                            <button onClick={() => {
-                                                setOpenPDF(document.file)
-                                                setShowMode("none")
-                                            }}>Просмотреть</button>
+                                {selectedLanguage ? (
+                                    documents.length > 0 ? (
+                                        documents.map(document => (
+                                            <div key={document.id} className={styles.documentRow}>
+                                                <span>{document.name} <br /> Язык: <strong>{document.language === "ru" ? "Русский" : document.language === "kz" ? "Казахский" : "Не уточнен"}</strong></span>
+                                                <button onClick={() => {
+                                                    setShowMode("none")
+                                                    setOpenPDF(document.file)
+                                                }}>Просмотреть</button>
 
-                                            <button onClick={() => {
-                                                console.log("Edit document", document.id)
-                                                setEditDocumentId(document.id);
-                                                setEditDocumentModalOpen(true);
-                                                setDocumentFormData(document);
-                                                delete documentFormData.file
-                                            }}>Редактировать</button>
-                                            <button onClick={() => {
-                                                console.log("Delete document", document.id)
-                                                setDeleteDocumentId(document.id);
-                                                setAreYouSure({ show: true, type: "document" });
-                                            }}>Удалить</button>
-                                        </div>
-                                    ))
-                                ) : (
-                                    // If no documents, show this message
-                                    <p className={styles.noDocuments}>Нет доступных документов</p>
-                                )}
+                                                <button onClick={() => {
+                                                    setEditDocumentId(document.id);
+                                                    setEditDocumentModalOpen(true);
+                                                    setDocumentFormData({ ...document, file: null });
+                                                }}>Редактировать</button>
+                                                <button onClick={() => {
+                                                    console.log("Delete document", document.id)
+                                                    setDeleteDocumentId(document.id);
+                                                    setAreYouSure({ show: true, type: "document" });
+                                                }}>Удалить</button>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <p className={styles.noDocuments}>Нет доступных документов</p>
+                                    )
+
+                                ) :
+                                    (
+                                        <p className={styles.noDocuments}>Выберите язык</p>
+                                    )
+                                }
+
                             </div>
                         )}
 
@@ -514,18 +510,24 @@ const KtpAdmin = () => {
                                     <form onSubmit={handleEditDocumentSubmit}>
 
                                         <input type="text" required className={styles.inputField} placeholder="Название документа(Тема)" value={documentFormData.name} onChange={(e) => setDocumentFormData({ ...documentFormData, name: e.target.value })} />
-                                        {documentFormData.file && (
-                                            <span style={{ textAlign: "left" }}>
-                                                Текущий файл: { }
+                                        {currentDocument && currentDocument.file && (
+                                            <button type="button" className={styles.simpleButton}>
                                                 <a
-                                                    href={documentFormData.file}
+                                                    style={{ textDecoration: "none", color: "white" }}
+                                                    href={currentDocument.file}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
                                                 >
-                                                    Открыть в новой вкладке
+                                                    Открыть текущий файл
                                                 </a>
-                                            </span>)}
-                                        <input type="file" className={styles.inputField} onChange={(e) => setDocumentFormData({ ...documentFormData, file: e.target.files[0] })} />
+                                            </button>
+                                        )}
+
+                                        <button type="button" onClick={() => setReplaceFile(!replaceFile)} className={styles.simpleButton}>{replaceFile ? "Не заменять файл" : "Заменить файл"}</button>
+                                        {replaceFile && (
+                                            <input type="file" className={styles.inputField} onChange={(e) => setDocumentFormData({ ...documentFormData, file: e.target.files[0] })} />
+                                        )}
+                                        <br />
                                         <select value={documentFormData.language || ""} onChange={handleLanguageSelectForm} className={styles.dropdown}>
                                             <option value="" disabled>Выберите язык</option>
                                             <option value="kz">Казахский</option>
@@ -535,6 +537,7 @@ const KtpAdmin = () => {
                                         }}>Обновить</button>
                                         <button type="button" className={styles.cancelSubjectButton} onClick={() => {
                                             setEditDocumentModalOpen(false);
+                                            setReplaceFile(false)
                                             setDocumentFormData({ name: "", file: null, subject: null, document_type: "ktp", language: "" });
                                         }}>Отменить</button>
                                     </form>
@@ -553,12 +556,15 @@ const KtpAdmin = () => {
                         )}
 
                         {openPDF && (
-                            <div className={styles.pdfModal}>
-                                <PDFViewer pdfUrl={openPDF} onClose={() => {
-                                    setOpenPDF(null)
-                                    setShowMode("documents")
-                                }} />
-                            </div>
+                            openPDF !== null ? (
+                                <div className={styles.pdfModal}>
+                                    <PDFViewer pdfUrl={openPDF} onClose={() => {
+                                        setOpenPDF(null)
+                                        setShowMode("documents")
+                                    }} />
+                                </div>
+                            ) :
+                                (<p>nety documenta</p>)
                         )}
 
 
