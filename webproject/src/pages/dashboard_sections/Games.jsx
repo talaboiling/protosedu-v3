@@ -147,17 +147,17 @@ const Games = () => {
           {/* <button onClick={() => openGameWindow("https://cdn.htmlgames.com/ConnectTheBlocks/", true)} className="game-button">Connect The Blocks</button> */}
           <div className="game-container">
             <span className="game-cost">{GAME_COST} ⭐</span>
-            <button onClick={() => openGameWindow("/games/3ryad/index.html")} className="game-button">Fantasy Forest</button>
+            <button onClick={() => openGameWindow("https://cdn.htmlgames.com/ConnectTheBlocks/", true)} className="game-button">Fantasy Forest</button>
           </div>
           <div className="game-container">
             <span className="game-cost">{GAME_COST} ⭐</span>
 
-            <button onClick={() => openGameWindow("/games/duckhunt/index.html")} className="game-button">Duck Hunt</button>
+            <button onClick={() => openGameWindow("https://cdn.htmlgames.com/BubbleThrow/")} className="game-button">Duck Hunt</button>
           </div>
           <div className="game-container">
             <span className="game-cost">{GAME_COST} ⭐</span>
 
-            <button onClick={() => openGameWindow("/games/gonki/index.html")} className="game-button">RACE GAME</button>
+            <button onClick={() => openGameWindow("https://cdn.htmlgames.com/ZigZagGate/")} className="game-button">RACE GAME</button>
           </div>
           <div className="game-container">
             <span className="game-cost">{GAME_COST} ⭐</span>
