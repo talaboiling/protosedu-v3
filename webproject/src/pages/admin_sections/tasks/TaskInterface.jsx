@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import Canvas from './Canvas'
 import ToolsBar from './ToolsBar'
 import { initializeFabric, handleCanvasMouseDown, handleResize } from '../../../lib/canvas'
-import {fabric} from "fabric";
+import { fabric } from "fabric";
 import Settings from './canvas/Settings'
 import TaskInterfaceProvider from './TaskContext'
 import ToolsBar2 from './ToolsBar2';
@@ -13,7 +13,7 @@ const TaskInterface = ({
     handleSelectCorrectAnswer,
     setContent,
     handleCorrectAnswer,
-    content, 
+    content,
     setCurrentQuestion,
     showDemo
 }) => {
@@ -24,7 +24,7 @@ const TaskInterface = ({
     const selectedShapeRef = useState("rectangle");
     const [canvas, setCanvas] = useState(null);
 
-    useEffect(()=>{
+    useEffect(() => {
         const initCanvas = initializeFabric({
             canvasRef, fabricRef
         });
@@ -51,12 +51,12 @@ const TaskInterface = ({
     }, []);
 
     const addRectangle = () => {
-        if (canvas){
+        if (canvas) {
             const rectangle = new fabric.Rect({
-                top:100,
-                left:50,
-                width:100,
-                height:100,
+                top: 100,
+                left: 50,
+                width: 100,
+                height: 100,
                 fill: "#d84d42"
             });
             canvas.add(rectangle);
@@ -64,11 +64,11 @@ const TaskInterface = ({
     }
 
     const addCircle = () => {
-        if (canvas){
+        if (canvas) {
             const circle = new fabric.Circle({
-                top:100,
-                left:50,
-                radius:50,
+                top: 100,
+                left: 50,
+                radius: 50,
                 fill: "#2f4dc6"
             });
             canvas.add(circle);
@@ -76,7 +76,7 @@ const TaskInterface = ({
     }
 
     const onBackspace = (event) => {
-        if (event.key=="Backspace"){
+        if (event.key == "Backspace") {
             console.log("pressed");
         }
     }
@@ -87,9 +87,9 @@ const TaskInterface = ({
         <div className="taskCreationHeader">
             <TaskInterfaceProvider setCurrentQuestion={setCurrentQuestion} handleCorrectAnswer={handleCorrectAnswer} setContent={setContent} canvas={canvas} currentQuestion={currentQuestion} content={content}>
                 <ToolsBar2 canvas={canvas} />
-                <div style={{position: "relative", display: "inline-block", height: "100%"}}>
-                    <Canvas onBackspace={onBackspace} canvasRef={canvasRef} currentQuestion={currentQuestion} handleSelectCorrectAnswer={handleSelectCorrectAnswer}/>
-                    {showDemo && <div 
+                <div style={{ position: "relative", display: "inline-block", height: "100%" }}>
+                    <Canvas onBackspace={onBackspace} canvasRef={canvasRef} currentQuestion={currentQuestion} handleSelectCorrectAnswer={handleSelectCorrectAnswer} />
+                    {showDemo && <div
                         id="canvas-overlay"
                         className="taskPreview"
                         style={{
@@ -135,29 +135,28 @@ const TaskInterface = ({
                             </p>
                             <div className="previewOptions">
                                 {currentQuestion.options.map((option, index) => {
-                                    if (!option){
+                                    if (!option) {
                                         return;
                                     }
                                     return <div
                                         key={index}
-                                        className={`previewOption ${
-                                            currentQuestion.correct_answer === index + 1
-                                            ? "correct-answer"
-                                            : ""
-                                        }`}
+                                        className={`previewOption ${currentQuestion.correct_answer === index + 1
+                                                ? "correct-answer"
+                                                : ""
+                                            }`}
                                         onClick={() => handleSelectCorrectAnswer(index)}
                                     >
-                                    {currentQuestion.question_type ==
-                                        "multiple_choice_text" && (
-                                            <p>{option}</p>
-                                        )}
+                                        {currentQuestion.question_type ==
+                                            "multiple_choice_text" && (
+                                                <p>{option}</p>
+                                            )}
                                     </div>
                                 })}
                             </div>
                         </div>
                     </div>}
                 </div>
-                <ToolsBar canvas={canvas} functions={{addRectangle, addCircle}} />
+                <ToolsBar canvas={canvas} functions={{ addRectangle, addCircle }} />
             </TaskInterfaceProvider>
         </div>
     )

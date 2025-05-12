@@ -223,6 +223,9 @@ const SchoolDetails = () => {
                   <option value="kz">Казахский</option>
                   <option value="ru">Русский</option>
                 </select>
+                <b>
+                  { } {classItem.num_students} учеников
+                </b>
               </li  >
             ))}
           </ul>
