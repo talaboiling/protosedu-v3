@@ -27,7 +27,7 @@ const SectionContent = ({
   // const xOffset = 220;
   // const yOffset = 150;
   let isBlocked = !hasSubscription;
-  let completedTill = 0;
+  let completedTill = -1;
   let tasks = chapter.contents.filter(content=>content.content_type==="task");
   console.log(tasks);
   for (let i=0;i<tasks.length;i++){
@@ -38,11 +38,12 @@ const SectionContent = ({
   }
   for (let i=completedTill+1;i<chapter.contents.length;i++){
     let content = chapter.contents[i];
-    if (content.is_completed){
+    if (content.content_type==="task"){
       completedTill = i;
       break;
     }
   }
+  console.log(completedTill)
   // if (chapter.contents) {
   //   containerHeight = chapter.contents.length * 160;
   // };

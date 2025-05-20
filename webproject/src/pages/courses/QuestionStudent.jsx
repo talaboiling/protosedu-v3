@@ -289,9 +289,36 @@ const QuestionStudent = ({currentQuestion, showFeedback, handleSubmit,
                                     >
                                         <strong>{currentQuestionIndex + 1}. </strong>
                                         <i>{currentQuestion.title}:</i> <br />
-                                        <strong>
+                                        {currentQuestion.question_text.length<=36 && 
+                                            <strong style={{fontSize: "27px"}}>
                                             {currentQuestion.question_text}
-                                        </strong>
+                                            </strong>
+                                        }
+                                        {currentQuestion.question_text.length>36 && currentQuestion.question_text.length<=54 &&
+                                            <strong style={{fontSize: "24px"}}>
+                                            {currentQuestion.question_text}
+                                            </strong>
+                                        }
+                                        {currentQuestion.question_text.length>54 && currentQuestion.question_text.length<=72 &&
+                                            <strong style={{fontSize: "21px"}}>
+                                            {currentQuestion.question_text}
+                                            </strong>
+                                        }
+                                        {currentQuestion.question_text.length>72 && currentQuestion.question_text.length<=84 &&
+                                            <strong style={{fontSize: "18px"}}>
+                                            {currentQuestion.question_text}
+                                            </strong>
+                                        }
+                                        {currentQuestion.question_text.length>84 && currentQuestion.question_text.length<=112 &&
+                                            <strong style={{fontSize: "15px"}}>
+                                            {currentQuestion.question_text}
+                                            </strong>
+                                        }
+                                        {currentQuestion.question_text.length>112 && 
+                                            <strong style={{fontSize: "12px"}}>
+                                            {currentQuestion.question_text}
+                                            </strong>
+                                        }
                                     </span>
                                     {currentQuestion.is_attempted && (
                                         <strong

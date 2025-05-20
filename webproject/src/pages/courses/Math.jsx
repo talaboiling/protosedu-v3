@@ -397,6 +397,8 @@ const Math = ({config}) => {
         childId
       );
 
+      console.log(responseData);
+
       let isCorrect;
 
       if (responseData.is_correct == true) {
