@@ -5,23 +5,23 @@ import logo from "../../assets/NAV_LOGO.webp";
 import { useTranslation } from "react-i18next";
 import classes from "./style.module.css"
 import tests_button from "../../../src/assets/tests button.png"
+import { useNavigate } from 'react-router-dom';
 
 const JuniorSidebar = ({user, isMenuOpen, goBack, handleLogout}) => {
     const { t } = useTranslation();
+    const navigate = useNavigate();
     console.log(user);
     return (
         <div className={`sidebar  ${classes["sidebar-junior"]} ${isMenuOpen ? "activeMenu" : ""}`} style={{backgroundColor: user.grade<=4 ? "#97D4E7" : ""}}>
         <Link to={"/"}>
             <img src={logo} alt="logo" className="dashsidelogo" />
         </Link>
-        <Link to={"/dashboard/tests"}>
-            <img src={tests_button} alt="Test_button" className="testslogo" />
-        </Link>
 
         <div className="excSideLogo">
             <ul className="sideItems">
             {SidebarData.map((item, index) => {
-                const isActive = location.pathname === item.link;
+                console.log(window.location.pathname, item.link);
+                const isActive = window.location.pathname + window.location.search === item.link;
                 const activeColor = isActive ? '#007599' : 'white';
                 const newIcon = React.cloneElement(item.icon, 
                     item.icon.props.sx 
@@ -38,7 +38,7 @@ const JuniorSidebar = ({user, isMenuOpen, goBack, handleLogout}) => {
                     className="linkbuttons"
                     id={window.location.pathname === item.link ? "active" : ""}
                     onClick={() => {
-                        window.location.pathname = item.link;
+                        navigate(item.link);
                 }}
                 >
                 <NavLink to={item.link} className={`${classes["linkbuttonVal"]}`} style={{textDecoration: "none"}}>

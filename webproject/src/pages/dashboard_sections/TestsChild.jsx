@@ -102,52 +102,6 @@ const TestsChild = () => {
             marginBottom: "20px",
           }}
         >
-          <ul style={{ display: "flex", gap: 8, fontSize: "20px" }}>
-            <li
-              style={{
-                backgroundColor: type == "modo" ? "orange" : "",
-                padding: "5px",
-                borderRadius: "10px",
-              }}
-            >
-              <NavLink to="?type=modo" style={{ textDecoration: "none" }}>
-                Модо
-              </NavLink>
-            </li>
-            <li
-              style={{
-                backgroundColor: type == "ent" ? "orange" : "",
-                padding: "5px",
-                borderRadius: "10px",
-              }}
-            >
-              <NavLink to="?type=ent" style={{ textDecoration: "none" }}>
-                Ент
-              </NavLink>
-            </li>
-            <li
-              style={{
-                backgroundColor: type == "diagnostic" ? "orange" : "",
-                padding: "5px",
-                borderRadius: "10px",
-              }}
-            >
-              <NavLink to="?type=diagnostic" style={{ textDecoration: "none" }}>
-                Диагностический тест
-              </NavLink>
-            </li>
-            <li
-              style={{
-                backgroundColor: type == "others" ? "orange" : "",
-                padding: "5px",
-                borderRadius: "10px",
-              }}
-            >
-              <NavLink to="?type=others" style={{ textDecoration: "none" }}>
-                Другие
-              </NavLink>
-            </li>
-          </ul>
         </div>
         <div
           style={{

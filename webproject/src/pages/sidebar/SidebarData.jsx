@@ -7,12 +7,22 @@ import prog from "../../assets/sideprog.webp";
 import game from "../../assets/sidegame.webp";
 import { icon } from "@fortawesome/fontawesome-svg-core";
 import { BookCheck, ScrollText, Users } from "lucide-react";
-
+import { BookOpenCheck } from "lucide-react";
 export const SidebarData = [
   {
     title: "Главная",
     icon: <HomeIcon sx={{ color: "#8A8A8A", fontSize: 50 }} />,
     link: "/dashboard",
+  },
+  {
+    title: "МОДО",
+    icon: <BookOpenCheck alt="modo" size={32} color="#8A8A8A"/>,
+    link: "/dashboard/tests?type=modo",
+  },
+  {
+    title: "ЕНТ",
+    icon: <BookCheck alt="ent" size={32} color="#8A8A8A"/>,
+    link: "/dashboard/tests?type=ent",
   },
   {
     title: "Рейтинг",
