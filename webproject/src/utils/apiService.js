@@ -976,7 +976,6 @@ export const initiatePayment = async (duration) => {
 };
 
 export const importSchoolExcel = async (formData, school_id) => {
-  console.log(formData);
   try {
     const response = await instance.post(
       "/schools/upload-excel/?school_id=" + school_id,
@@ -989,7 +988,12 @@ export const importSchoolExcel = async (formData, school_id) => {
     );
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || "Failed to import data");
+    const serverError = error.response?.data;
+
+    throw {
+      message: serverError?.message || error.message || "Failed to import data",
+      exceptions: serverError?.exceptions || [],
+    };
   }
 };
 

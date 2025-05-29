@@ -37,7 +37,10 @@ const SchoolDetails = () => {
 
   const [showUploadModal, setShowUploadModal] = useState(false); // Modal for Excel upload
   const [excelFile, setExcelFile] = useState(null);  // State for Excel file
+  const [formPlan, setFormPlan] = useState("annual"); // State for plan selection
   const [uploadStatus, setUploadStatus] = useState(null);  // State for upload status
+  const [errorMessage, setErrorMessage] = useState("");
+  const [errorDetails, setErrorDetails] = useState([]);
 
 
   useEffect(() => {
@@ -142,6 +145,7 @@ const SchoolDetails = () => {
     }
     const formData = new FormData();
     formData.append("file", excelFile);
+    formData.append("plan", formPlan);
 
     try {
       setUploadStatus("loading");
@@ -152,8 +156,9 @@ const SchoolDetails = () => {
       const updatedClasses = await fetchClassesData(schoolId);
       setClasses(updatedClasses);
     } catch (error) {
-      console.error("Ошибка загрузки:", error);
       setUploadStatus("error");
+      setErrorMessage(error.message);
+      setErrorDetails(error.exceptions);
     }
   };
 
@@ -375,6 +380,11 @@ const SchoolDetails = () => {
                 onChange={handleFileChange}
                 style={{ marginTop: "20px", marginBottom: "20px" }}
               />
+              <label style={{ fontSize: "20px" }} htmlFor="plan">План</label>
+              <select name="plan" id="plan" onChange={(e) => setFormPlan(e.target.value)} value={formPlan} style={{ marginBottom: "20px", padding: "10px", fontSize: "large" }}>
+                <option value="annual">Годовой</option>
+                <option value="monthly">Ежемесячный</option>
+              </select>
               <button
                 onClick={handleUploadExcel}
                 style={{
@@ -397,10 +407,18 @@ const SchoolDetails = () => {
                 </p>
               )}
               {uploadStatus === "error" && (
-                <p style={{ color: "red", marginTop: "10px" }}>
-                  Ошибка при загрузке файла.
-                </p>
+                <div className="error-box">
+                  <p><strong>Error:</strong> {errorMessage}</p>
+                  {errorDetails.length > 0 && (
+                    <ul>
+                      {errorDetails.map((err, idx) => (
+                        <li key={idx}>{err}</li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
               )}
+
             </div>
           </dialog>
         )}
