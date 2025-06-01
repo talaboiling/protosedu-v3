@@ -6,8 +6,12 @@ const CourseCard = ({ course, t }) => {
   return (
     <div className="courseItem" key={course.id}>
       <div className="courseItemLeft">
+        <p style={{ margin: "0" }}>
+          {course.grade === -1 ? "General" : course.grade + " класс"}
+        </p>
+        <p style={{ margin: "0" }}>{course.language === "ru" ? t("russian") : course.language === "kz" ? t("kazakh") : course.language === "en" ? t("english") : course.language === "cm" ? t("common") : course.language}</p>
         <p style={{ margin: "0" }}>{course.name}</p>
-        <progress value={course.percentage_completed/100} />
+        <progress value={course.percentage_completed / 100} />
         <p className="defaultStyle">
           {t("completedTasks1")}
           {course.completed_tasks}
