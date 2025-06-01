@@ -43,7 +43,7 @@ const JuniorSidebar = ({user, isMenuOpen, goBack, handleLogout}) => {
                 >
                 <NavLink to={item.link} className={`${classes["linkbuttonVal"]}`} style={{textDecoration: "none"}}>
                     {newIcon}
-                    <span className="linkTitle" style={{color: activeColor}}>
+                    <span className="linkTitle" style={{color: activeColor,maxWidth: "135px"}}>
                         {item.title}
                     </span>
                 </NavLink>

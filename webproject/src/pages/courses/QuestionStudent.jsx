@@ -5,6 +5,7 @@ import Outside from './Outside';
 import correctlion from "../../assets/lion_correct.webp";
 import wronglion from "../../assets/lion_incorrect.webp";
 import { useTranslation } from 'react-i18next';
+import { getFontSize } from './helpers/question';
 
 const QuestionStudent = ({currentQuestion, showFeedback, handleSubmit, 
     selectedOption, setSelectedOption, handleOptionClick, 
@@ -156,7 +157,6 @@ const QuestionStudent = ({currentQuestion, showFeedback, handleSubmit,
     }
 
     console.log(outsideElements);
-
     return (
         <div className={`studtaskDetails ${currentQuestion?.template
                 ? `template-${currentQuestion.template}`
@@ -287,38 +287,15 @@ const QuestionStudent = ({currentQuestion, showFeedback, handleSubmit,
                                                 : ""
                                             }`}
                                     >
-                                        <strong>{currentQuestionIndex + 1}. </strong>
-                                        <i>{currentQuestion.title}:</i> <br />
-                                        {currentQuestion.question_text.length<=36 && 
-                                            <strong style={{fontSize: "27px"}}>
-                                            {currentQuestion.question_text}
+                                        {currentQuestion.question_text && (
+                                        <>
+                                            <strong style={{fontSize: `${getFontSize(currentQuestion.question_text.length, 1.25)}px`}}>{currentQuestionIndex + 1}. </strong>
+                                            <i style={{fontSize: `${getFontSize(currentQuestion.question_text.length, 1.1)}px`}}>{currentQuestion.title}:</i> <br />
+                                            <strong style={{fontSize: `${getFontSize(currentQuestion.question_text.length)}px`}}>
+                                                {currentQuestion.question_text}
                                             </strong>
-                                        }
-                                        {currentQuestion.question_text.length>36 && currentQuestion.question_text.length<=54 &&
-                                            <strong style={{fontSize: "24px"}}>
-                                            {currentQuestion.question_text}
-                                            </strong>
-                                        }
-                                        {currentQuestion.question_text.length>54 && currentQuestion.question_text.length<=72 &&
-                                            <strong style={{fontSize: "21px"}}>
-                                            {currentQuestion.question_text}
-                                            </strong>
-                                        }
-                                        {currentQuestion.question_text.length>72 && currentQuestion.question_text.length<=84 &&
-                                            <strong style={{fontSize: "18px"}}>
-                                            {currentQuestion.question_text}
-                                            </strong>
-                                        }
-                                        {currentQuestion.question_text.length>84 && currentQuestion.question_text.length<=112 &&
-                                            <strong style={{fontSize: "15px"}}>
-                                            {currentQuestion.question_text}
-                                            </strong>
-                                        }
-                                        {currentQuestion.question_text.length>112 && 
-                                            <strong style={{fontSize: "12px"}}>
-                                            {currentQuestion.question_text}
-                                            </strong>
-                                        }
+                                        </>
+                                        )}
                                     </span>
                                     {currentQuestion.is_attempted && (
                                         <strong
@@ -388,7 +365,7 @@ const QuestionStudent = ({currentQuestion, showFeedback, handleSubmit,
                                                         style={{ width: "100px", height: "100px" }}
                                                     />
                                                 ) : (
-                                                    option.value
+                                                    <p style={{fontSize: `${getFontSize(currentQuestion.question_text.length, 0.9)}px`}}>{option.value}</p>
                                                 )}
                                             </li>
                                         ))}
