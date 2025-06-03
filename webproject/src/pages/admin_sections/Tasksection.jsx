@@ -33,6 +33,7 @@ import { DndContext, useDraggable, useDroppable } from "@dnd-kit/core";
 import DraggableDroppableTask from "./DraggableDroppableTask";
 import QuestionsList from "./QuestionsList";
 import { useLocation } from "react-router-dom";
+import Modal from "../../helpers/Modal";
 
 const Tasksection = () => {
   const { courseId, sectionId, chapterId } = useParams();
@@ -42,6 +43,7 @@ const Tasksection = () => {
   const [course, setCourse] = useState();
   const [loading, setLoading] = useState(true);
   const [showTaskModal, setShowTaskModal] = useState(false);
+  const [showNodeModal, setShowNodeModal] = useState(false);
   const [showVideoModal, setShowVideoModal] = useState(false);
   const [showQuestionsModal, setShowQuestionsModal] = useState(false);
   const [showQuestionModal, setShowQuestionModal] = useState(false);
@@ -202,6 +204,10 @@ const Tasksection = () => {
     setShowVideoModal(false);
     resetVideoDetails();
   };
+
+  const handleNodeSubmit = async () => {
+
+  }
 
   const resetVideoDetails = () => {
     setVideoDetails({
@@ -653,11 +659,66 @@ const Tasksection = () => {
             >
               Задание
             </button>
+            <button
+              className="adderBtn"
+              onClick={() => {
+                setShowNodeModal(true);
+              }}
+            >
+              Урок
+            </button>
           </div>
         </div>
 
       </div>
-
+      {showNodeModal && (
+          <dialog
+            open={showNodeModal}
+            onClose={() => setShowNodeModal(false)}
+            className="modal supermodal"
+            style={{ padding: "60px" }}
+          >
+            <div className="modal-content">
+              <div className="modalHeader">
+                <button
+                  style={{
+                    border: "none",
+                    float: "right",
+                    backgroundColor: "transparent",
+                    boxShadow: "none",
+                    padding: "0",
+                  }}
+                  onClick={() => setShowNodeModal(false)}
+                >
+                  <CloseIcon sx={{ color: "gray" }} />
+                </button>
+              </div>
+              <form onSubmit={handleNodeSubmit}>
+                <div style={{display: "flex", flexDirection: "column"}}>
+                  <label htmlFor="test_type">Video</label>
+                  <select name="test_type" style={{width: "fit-content"}}>
+                      <option value="modo">Modo</option>
+                      <option value="ent">Ent</option>
+                      <option value="diagnostic">Диагностический</option>
+                  </select>
+                  <label htmlFor="test_type">Task</label>
+                  <select name="test_type" style={{width: "fit-content"}}>
+                      <option value="modo">Modo</option>
+                      <option value="ent">Ent</option>
+                      <option value="diagnostic">Диагностический</option>
+                  </select>
+                </div>
+                <button
+                  type="submit"
+                  className="superBtn"
+                  style={{ marginTop: "30px" }}
+                >
+                  {isEditingVideo ? "Сохранить" : "Добавить"}
+                </button>
+              </form>
+            </div>
+          </dialog>
+      )}
       {showVideoModal && (
         <dialog
           open={showVideoModal}

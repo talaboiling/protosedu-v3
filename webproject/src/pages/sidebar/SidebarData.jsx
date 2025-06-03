@@ -30,11 +30,6 @@ export const SidebarData = [
     link: "/dashboard/tests?type=pisa",
   },
   {
-    title: "Диагностический тест",
-    icon: <BookCheck alt="ent" size={32} color="#8A8A8A"/>,
-    link: "/dashboard/tests?type=diagnostic",
-  },
-  {
     title: "Рейтинг",
     icon: <Users alt="achievements" size={32} color="#8A8A8A"/>,
     link: "/dashboard/rating",

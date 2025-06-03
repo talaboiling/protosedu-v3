@@ -168,7 +168,10 @@ export const fetchCourse = async (courseId, child_id) => {
 
 export const fetchTests = async () => {
   try {
-    const endpoint = "modo/tests/";
+    let endpoint = "modo/tests";
+    if (localStorage.getItem('child_id')){
+      endpoint+= `?child_id=${localStorage.getItem('child_id')}`
+    }
     const response = await instance.get(endpoint);
     return response.data;
   } catch (error) {
@@ -178,7 +181,10 @@ export const fetchTests = async () => {
 
 export const fetchTest = async (testId) => {
   try {
-    const endpoint = `modo/tests/${testId}`;
+    let endpoint = `modo/tests/${testId}/`;
+    if (localStorage.getItem('child_id')){
+      endpoint+= `?child_id=${localStorage.getItem('child_id')}`
+    }
     const response = await instance.get(endpoint);
     return response.data;
   } catch (error) {
@@ -188,14 +194,77 @@ export const fetchTest = async (testId) => {
 
 export const createTest = async (testData) => {
   try {
-    const endpoint = "modo/tests/";
-    const response = await instance.post(endpoint, testData);
+    const endpoint = "modo/tests/create-full/";
+    const response = await instance.post(endpoint, testData,{
+      headers:{
+        'Content-Type': 'multipart/form-data'
+      }
+    });
     console.log(response.data);
     return response.data;
   } catch (error) {
     throw new Error(error || "Something went wrong");
   }
 };
+
+export const answerTestQuestion = async (question_id, answer_option) => {
+  try {
+    let endpoint = "modo/answer-question/";
+    endpoint += `?question_id=${question_id}`;
+    if (localStorage.getItem('child_id')){
+      endpoint+= `&child_id=${localStorage.getItem('child_id')}`
+    }
+    const response = await instance.post(endpoint, {answer_option});
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    throw new Error(error || "Something went wrong");
+  }
+};
+
+export const getTestReview = async (test_id) => {
+  try {
+    let endpoint = "modo/test-review/";
+    endpoint += `?test_id=${test_id}`;
+    if (localStorage.getItem('child_id')){
+      endpoint+= `&child_id=${localStorage.getItem('child_id')}`
+    }
+    const response = await instance.get(endpoint);
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    throw new Error(error || "Something went wrong");
+  }
+};
+
+export const updateTest = async (testData, id) => {
+  try {
+    const endpoint = `modo/tests/${id}/update-full/`;
+    const response = await instance.put(endpoint, testData,{
+      headers:{
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    throw new Error(error || "Something went wrong");
+  }
+};
+
+export const deleteTest = async (id) => {
+  try {
+    const endpoint = `modo/tests/${id}/`;
+    const response = await instance.delete(endpoint);
+
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    throw new Error(error || "Something went wrong");
+  }
+}
 
 export const createCourse = async (courseData) => {
   try {

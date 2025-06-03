@@ -12,15 +12,17 @@ const Quiz = ({questions}) => {
     const [currentAnswerIndex, setCurrentAnswerIndex] = useState(-1);
     console.log(userAnswers);
     const [correctAnswers, setCorrectAnswers] = useState(0);
+    const [currentAnswerId, setCurrentAnswerId] = useState(null);
 
     const [activeQuestionIndex, setActiveQuestionIndex] = useState(0);
     const [quizState, setQuizState] = useState("quiz");
 
     const handleSelectAnswer = useCallback((selectedAnswer, index) =>{
-        const {text: answerText, is_correct} = selectedAnswer;
+        const {text: answerText, is_correct, id} = selectedAnswer;
         console.log(selectedAnswer);
         setCurrentAnswer(answerText);
         setCurrentAnswerIndex(index);
+        setCurrentAnswerId(id);
         setAnswerState('answered')
         const currentUserAnswers = [...userAnswers];
         currentUserAnswers[index] = {...selectedAnswer, index};
@@ -67,6 +69,9 @@ const Quiz = ({questions}) => {
     const questionData = questions[activeQuestionIndex]
 
     function goNext(){
+        if (activeQuestionIndex==questions.length-1){
+            return finishQuiz();
+        }
         setActiveQuestionIndex(prev=>{
             if (prev<questions.length){
                 return prev+1;
@@ -117,6 +122,8 @@ const Quiz = ({questions}) => {
                             answerState={answerState}
                             selectedAnswer={userAnswers[activeQuestionIndex]}
                             onSelect = {handleSelectAnswer}
+                            currentAnswerId={currentAnswerId}
+                            goNext={goNext}
                         />
                     </div>
                     <FooterNavigation 
@@ -130,6 +137,7 @@ const Quiz = ({questions}) => {
                 }
                 {quizState==="review" && (
                     <QuizReview
+                        questionData={questionData}
                         questions={questions}
                         userAnswers={userAnswers}
                     />

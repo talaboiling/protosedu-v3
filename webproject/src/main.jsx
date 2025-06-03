@@ -52,6 +52,7 @@ import Quotes from "./pages/admin_sections/Quotes.jsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Complaints from "./pages/admin_sections/Complaints.jsx";
 import DashboardLayout from "./pages/DashboardLayout.jsx";
+import { ToastContainer } from "react-toastify";
 
 const router = createBrowserRouter([
   { path: "/", element: <App /> },
@@ -248,5 +249,6 @@ const queryClient = new QueryClient();
 ReactDOM.createRoot(document.getElementById("root")).render(
   <QueryClientProvider client={queryClient}>
     <RouterProvider router={router} />
+    <ToastContainer/>
   </QueryClientProvider>
 );

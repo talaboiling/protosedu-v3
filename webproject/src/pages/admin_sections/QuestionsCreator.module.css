@@ -10,6 +10,7 @@
     margin-bottom: 1rem;
     background-color: #fff;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    position: relative;
 }
   
 .questionHeading {
@@ -31,12 +32,18 @@
 /* Container for the answers section */
 .answers {
     display: flex;
+    flex-direction: column;
+    margin: auto;
     justify-content: space-between;
     gap: 0.5rem;
 }
   
 .answer {
     flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
     padding: 0.5rem;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -57,7 +64,6 @@
   /* For image type answers: style the file input button */
 .answerImageInput {
     display: block;
-    width: 80%;
     padding: 0.5rem;
     margin-top: 0.5rem;
     border: 1px solid #ccc;

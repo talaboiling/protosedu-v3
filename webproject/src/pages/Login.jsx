@@ -334,7 +334,6 @@ function Login() {
 
 
         </div>
-        <ToastContainer />
       </div >
     </>
   );

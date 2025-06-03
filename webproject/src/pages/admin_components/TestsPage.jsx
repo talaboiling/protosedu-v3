@@ -4,10 +4,10 @@ import "../../tailwind.css";  // Import Tailwind CSS
 import Superside from "./Superside";
 import { capitalizeFirstLetter } from "../../lib/helperFunctions";
 import TestCreationModal from "./tests/TestCreationModal";
-import { fetchTests } from "../../utils/apiService";
+import { fetchTest, fetchTests } from "../../utils/apiService";
 
 const createTest = async (test) => console.log("Test Created:", test);
-const featuredTypes = ["modo", "ent", "diagnostic"];
+const featuredTypes = ["modo", "ent", "diagnostic", "pisa"];
 
 const TestsPage = () => {
     const [tests, setTests] = useState([]);
@@ -24,6 +24,10 @@ const TestsPage = () => {
     }, [searchParams]);
 
     const navigate = useNavigate();
+
+    const [testData, setTestData] = useState({id:-1}); 
+    const [testLoading, setTestLoading] = useState();
+    const [mode, setMode] = useState(null);
 
     useEffect(() => {
         const loadTests = async () => {
@@ -60,12 +64,24 @@ const TestsPage = () => {
         filteredTests = filteredTests.filter(test=>!featuredTypes.includes(test.test_type))
     }
 
-    function navigateToTest(testId){
-        navigate(`${testId}`);
+    async function openTest(testId){
+        setTestLoading(true);
+        setIsModalOpen(true);
+        const currentTest = tests.filter(test=>test.id==testId)[0];
+        setTestData(currentTest);
+        setMode("update");
     }
+    console.log(testData);
+
 
     function handleClose(){
         setIsModalOpen(false);
+    }
+
+    function testCreationButton(){
+        setIsModalOpen(true);
+        setMode("creation");
+        testData({id:-1});
     }
 
     return (
@@ -95,21 +111,23 @@ const TestsPage = () => {
                     <li style={{backgroundColor: type=="modo" ? "orange" : "", padding: "5px", borderRadius: "10px"  }}><NavLink to="?type=modo">Модо</NavLink></li>
                     <li style={{backgroundColor: type=="ent" ? "orange" : "", padding: "5px", borderRadius: "10px" }}><NavLink to="?type=ent">Ент</NavLink></li>
                     <li style={{backgroundColor: type=="diagnostic" ? "orange" : "", padding: "5px", borderRadius: "10px" }}><NavLink to="?type=diagnostic">Диагностический тест</NavLink></li>
+                    <li style={{backgroundColor: type=="pisa" ? "orange" : "", padding: "5px", borderRadius: "10px"  }}><NavLink to="?type=pisa">Pisa</NavLink></li>
                     <li style={{backgroundColor: type=="others" ? "orange" : "", padding: "5px", borderRadius: "10px"  }}><NavLink to="?type=others">Другие</NavLink></li>
                 </ul>
-                <button onClick={()=>setIsModalOpen(true)}>
+                <button onClick={testCreationButton}>
                     Создать тест
                 </button>
             </div>
-            <div className="superCont" style={{display: "flex", gap: "1rem"}}>
+            <div className="superCont" style={{display: "flex", gap: "1rem", flexWrap: "wrap"}}>
               {filteredTests.length>0 && filteredTests.map(test=>(
-                <div key={test.id} className="addedCourses" style={{width: "200px", cursor: "pointer"}} onClick={()=>navigateToTest(test.id)}>
+                <div key={test.id} className="addedCourses" style={{width: "18%", cursor: "pointer"}} onClick={()=>openTest(test.id)}>
                     <div
                         style={{
                             display: "flex",
                             flexDirection: "column",
                             alignItems: "center",
                             gap: "0.5rem",
+                            padding: "1rem"
                         }}
                     >
                         <h3
@@ -128,7 +146,7 @@ const TestsPage = () => {
                 </div>
               ))}
             </div>
-            {isModalOpen && <TestCreationModal onClose={handleClose}/>}
+            {isModalOpen && <TestCreationModal mode={mode} testData={testData} onClose={handleClose}/>}
           </div>
     
         </div>

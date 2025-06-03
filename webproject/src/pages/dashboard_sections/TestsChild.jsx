@@ -21,7 +21,7 @@ import { NavLink, useNavigate, useSearchParams } from "react-router-dom";
 import { capitalizeFirstLetter } from "../../lib/helperFunctions";
 import TestsTable from "./TestsTable";
 
-const featuredTypes = ["modo", "ent"];
+const featuredTypes = ["modo", "ent", "diagnostic", "pisa"];
 
 const TestsChild = () => {
   const { t } = useTranslation();
@@ -39,7 +39,7 @@ const TestsChild = () => {
 
   useEffect(() => {
     if (searchParams && searchParams.has("type")) {
-      setType(searchParams.get("type"));
+      setType(searchParams.get("type").toLowerCase());
     }
   }, [searchParams]);
 
@@ -67,6 +67,8 @@ const TestsChild = () => {
 
   console.log(tests);
   let filteredTests = [...tests];
+
+  console.log(type);
 
   if (type && featuredTypes.includes(type)) {
     filteredTests = filteredTests.filter((test) => test.test_type == type);
@@ -116,7 +118,7 @@ const TestsChild = () => {
               <div
                 key={test.id}
                 className="addedCourses"
-                style={{ width: "200px", cursor: "pointer", padding:"20px" }}
+                style={{ width: "30%", cursor: "pointer", padding:"20px" }}
                 onClick={() => navigateToTest(test.id)}
               >
                 <div
