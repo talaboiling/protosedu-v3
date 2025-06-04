@@ -1,0 +1,26 @@
+.answer-button:hover .maximize-btn{
+    display: inline;
+}
+
+.answer-button:hover img{
+    filter: brightness(50%);
+}
+.maximize-btn{
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    stroke: grey;
+}
+.maximize-btn-bg{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 40px;
+    height: 40px;
+    transform: translate(-50%,-50%);
+}
+.maximize-btn-bg:hover .maximize-btn{
+    stroke: white;
+}
