@@ -11,6 +11,8 @@ import i18next from "i18next";
 import { NavLink, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { capitalizeFirstLetter } from "../../../lib/helperFunctions";
 import Quiz from "./Quiz";
+import Modal from "../../../helpers/Modal";
+import HPBs_Form from "./HPBs_Form";
 
 const featuredTypes = ["modo", "ent"];
 
@@ -26,6 +28,9 @@ const TestChild = () => {
 
     const [test, setTest] = useState(null);
     const {testId} = useParams();
+    const [isFinished, setIsFinished] = useState(false);
+
+    const navigate = useNavigate();
     
     console.log(testId);
 
@@ -39,6 +44,9 @@ const TestChild = () => {
             const testData = await fetchTest(testId);
             setUser(userData);
             setTest(testData);
+            if (testData.is_finished){
+              setIsFinished(true);
+            }
           } catch (error) {
             console.error("Error fetching data:", error);
           } finally {
@@ -75,7 +83,25 @@ const TestChild = () => {
                 <Quiz questions={test.questions}/>
             </div>
         )}
-        
+        {isFinished && <Modal onClose={()=> setIsFinished(false)}>
+          <HPBs_Form 
+            header="Вы уже прошли этот тест!" 
+            paragraph="Вы можете пройти этот тест еще раз, но это не даст вам дополнительных баллов."
+            buttons={[
+              {
+                onClick: ()=> navigate("/dashboard/tests"),
+                label: "Посмотреть другие тесты"
+              },
+              {
+                onClick: ()=> setIsFinished(false),
+                label: "Пройти снова",
+                styles: {
+                  backgroundColor: "grey"
+                }
+              }
+            ]}
+          />
+        </Modal>}
       </div>
     </div>
   );

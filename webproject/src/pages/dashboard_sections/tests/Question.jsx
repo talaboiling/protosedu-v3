@@ -15,6 +15,7 @@ const Question = ({id, questionData, onSkip, selectedAnswer,
             toast.error(e.message || `Error happened`);
         }
     }
+    
     return (
         <div id={id ? id : 'question'} style={{position: "relative"}}>
             <p style={{fontSize: "20px"}}>{questionData.order}. {questionData.title}</p>

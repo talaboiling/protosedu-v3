@@ -1,0 +1,44 @@
+/* HPBs_Form.module.css */
+.container {
+    max-width: 24rem; /* ~384px */
+    margin: 0 auto;
+    padding: 1.5rem; /* 24px */
+    background-color: #ffffff;
+    border-radius: 0.5rem; /* 8px */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .header {
+    font-size: 1.5rem; /* 24px */
+    font-weight: 600;
+    margin-bottom: 1rem; /* 16px */
+  }
+  
+  .paragraph {
+    color: #4a5568; /* gray-600 */
+    text-align: center;
+    margin-bottom: 1.5rem; /* 24px */
+  }
+  
+  .buttonsContainer {
+    display: flex;
+    gap: 1rem; /* 16px */
+  }
+  
+  .button {
+    padding: 0.5rem 1rem; /* 8px 16px */
+    background-color: #4299e1; /* blue-500 */
+    color: #ffffff;
+    border: none;
+    border-radius: 0.25rem; /* 4px */
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+  }
+  
+  .button:hover {
+    background-color: #2b6cb0; /* blue-600 */
+  }
+  

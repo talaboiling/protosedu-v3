@@ -7,7 +7,12 @@ const Answers = ({answers,selectedAnswer,answerState, onSelect, index, mode, isC
             {answers.map(answer=>{
                 let isSelected = false;
                 if (selectedAnswer && selectedAnswer.text === answer.text){
-                    isSelected = true;
+                    if (answer.option_type=="image" && selectedAnswer.image==answer.image){
+                        isSelected = true;
+                    }else if (answer.option_type=="text" && selectedAnswer.text==answer.text){
+                        isSelected = true;
+                    }
+                    
                 }
                 let cssClasses = ''
                 if (isSelected){
@@ -18,26 +23,45 @@ const Answers = ({answers,selectedAnswer,answerState, onSelect, index, mode, isC
                 }
 
                 if (mode==="review"){
+                    if (answer.option_type==="text"){
+                        return (
+                            <li key={answer.id} className='answer'>
+                                <button key={answer.id}
+                                    style={{backgroundColor: isSelected ? "green" : ""}}
+                                >
+                                    {answer.text}
+                                </button>
+                            </li>
+                        )
+                    }else if (answer.option_type==="image"){
+                        return <li key={answer.id} className='answer'>
+                                <button key={answer.id}
+                                    style={{backgroundColor: isSelected ? "green" : ""}}
+                                >
+                                    <img src={answer.image} style={{width: "100px"}}/>
+                                </button>
+                        </li>
+                    }
+                }
+                if (answer.option_type==="text"){
                     return (
-                        <li key={answer} className='answer'>
-                            <button key={answer.id} 
-                                style={{
-                                    backgroundColor: isSelected ? isCorrect ? "green" : "red" : "",
-                                    cursor: "default",
-                                }}
+                        <li key={answer.id} className='answer'>
+                            <button key={answer.id} onClick={()=>onSelect(answer, index)} 
+                                style={{backgroundColor: isSelected ? "green" : ""}}
                             >
                                 {answer.text}
                             </button>
                         </li>
                     )
+                }else if (answer.option_type==="image"){
+                    return <li key={answer.id} className='answer'>
+                            <button key={answer.id} onClick={()=>onSelect(answer, index)} 
+                                style={{backgroundColor: isSelected ? "green" : ""}}
+                            >
+                                <img src={answer.image} style={{width: "100px"}}/>
+                            </button>
+                    </li>
                 }
-                return (<li key={answer} className='answer'>
-                    <button key={answer.id} onClick={()=>onSelect(answer, index)} 
-                        style={{backgroundColor: isSelected ? "green" : ""}}
-                    >
-                        {answer.text}
-                    </button>
-                </li>)
                     })}
         </ul>
     )

@@ -94,13 +94,14 @@ const QuestionsCreator = ({questions, setQuestions}) => {
           >
             <X size={28} color="red"/>
           </div>
-          <input
-            type="text"
+          <textarea
             placeholder="Question title"
             value={question.title}
             onChange={(e) =>
               handleQuestionChange(qIndex, "title", e.target.value)
             }
+            style={{height: "200px", overflow:"auto", border: "1px solid black", padding: "1rem", fieldSizing: "normal"}}
+            contentEditable={true}
             className={styles.questionHeading}
           />
 

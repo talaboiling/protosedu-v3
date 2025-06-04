@@ -18,9 +18,13 @@ const Quiz = ({questions}) => {
     const [quizState, setQuizState] = useState("quiz");
 
     const handleSelectAnswer = useCallback((selectedAnswer, index) =>{
-        const {text: answerText, is_correct, id} = selectedAnswer;
+        const {text: answerText, image ,is_correct, id, option_type} = selectedAnswer;
         console.log(selectedAnswer);
-        setCurrentAnswer(answerText);
+        if (option_type==="text"){
+            setCurrentAnswer(answerText);
+        }else if (option_type==="image"){
+            setCurrentAnswer(image);
+        }
         setCurrentAnswerIndex(index);
         setCurrentAnswerId(id);
         setAnswerState('answered')
