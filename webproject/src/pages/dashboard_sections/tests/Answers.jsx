@@ -5,7 +5,7 @@ import Modal from '../../../helpers/Modal';
 import HPBs_Form from './HPBs_Form';
 
 const Answers = ({answers,selectedAnswer,answerState, onSelect, index, mode, isCorrect}) => {
-    console.log(selectedAnswer, answers);
+    console.log(selectedAnswer, answers, answerState);
 
     const [showModal, setShowModal] = useState(false);
     const [answerImage, setAnswerImage] = useState(null);
@@ -32,7 +32,12 @@ const Answers = ({answers,selectedAnswer,answerState, onSelect, index, mode, isC
                 }
                 let cssClasses = ''
                 if (isSelected){
-                    cssClasses = 'selected'
+                    cssClasses = 'selected';
+                    if (selectedAnswer.is_correct){
+                        answerState="correct";
+                    }else{
+                        answerState="wrong";
+                    }
                 }
                 if ((answerState==='correct' || answerState==='wrong') && isSelected){
                     cssClasses = answerState
@@ -43,7 +48,7 @@ const Answers = ({answers,selectedAnswer,answerState, onSelect, index, mode, isC
                         return (
                             <li key={answer.id} className='answer'>
                                 <button key={answer.id}
-                                    style={{backgroundColor: isSelected ? "green" : ""}}
+                                    style={{backgroundColor: cssClasses ? cssClasses==="correct" ? "green" : "red" : ""}}
                                 >
                                     {answer.text}
                                 </button>
@@ -52,7 +57,7 @@ const Answers = ({answers,selectedAnswer,answerState, onSelect, index, mode, isC
                     }else if (answer.option_type==="image"){
                         return <li key={answer.id} className='answer'>
                                 <button key={answer.id}
-                                    style={{backgroundColor: isSelected ? "green" : ""}}
+                                    style={{backgroundColor: cssClasses ? cssClasses==="correct" ? "green" : "red" : ""}}
                                 >
                                     <img src={answer.image} style={{width: "100px"}}/>
                                 </button>

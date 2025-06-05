@@ -10,7 +10,7 @@ import { Loader, X } from 'lucide-react'
 const mockQuestions = [
     {
       title: "",
-      image: "",
+      contents: [],
       answer_options: [
         {text: "", option_type:"text", is_correct: false}, 
         {text:"", option_type:"text", is_correct: false}, 
@@ -21,7 +21,7 @@ const mockQuestions = [
     },
     {
       title: "",
-      image: "",
+      contents: [],
       answer_options: [
         {text:"", option_type:"text", is_correct: false}, 
         {text:"", option_type:"text", is_correct: false}, 

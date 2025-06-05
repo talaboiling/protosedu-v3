@@ -6,7 +6,14 @@ const QuestionsCreator = ({questions, setQuestions}) => {
   console.log(questions);
   const handleQuestionChange = (qIndex, field, value) => {
     const newQuestions = [...questions];
-    newQuestions[qIndex][field] = value;
+    if (field=="contents"){
+      newQuestions[qIndex][field] = [{
+        content_type: "image",
+        image: value
+      }]
+    }else{
+      newQuestions[qIndex][field] = value;
+    }
     setQuestions(newQuestions);
   };
 
@@ -51,8 +58,7 @@ const QuestionsCreator = ({questions, setQuestions}) => {
   const handleImageChange = (qIndex, event) => {
     const file = event.target.files[0];
     if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      handleQuestionChange(qIndex, "image", imageUrl);
+      handleQuestionChange(qIndex, "contents", file);
     }
   };
 
@@ -69,7 +75,7 @@ const QuestionsCreator = ({questions, setQuestions}) => {
     newQuestions[qIndex].answer_options=newQuestions[qIndex].answer_options.map(answer=>({...answer, is_correct: false}));
     newQuestions[qIndex].answer_options[aIndex].is_correct = true;
     setQuestions(newQuestions);
-  }
+  };
 
   console.log(questions);
 
@@ -112,12 +118,14 @@ const QuestionsCreator = ({questions, setQuestions}) => {
               accept="image/*"
               onChange={(e) => handleImageChange(qIndex, e)}
             />
-            {question.image && (
-              <img
-                src={question.image}
-                alt="question preview"
-                className={styles.questionImage}
-              />
+            {question.contents && question.contents.map(content=>
+              (
+                <img
+                  src={content.image}
+                  alt="question preview"
+                  className={styles.questionImage}
+                />
+              )
             )}
           </div>
 

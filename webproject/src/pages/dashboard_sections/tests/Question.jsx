@@ -15,10 +15,18 @@ const Question = ({id, questionData, onSkip, selectedAnswer,
             toast.error(e.message || `Error happened`);
         }
     }
-    
+    const correctAnswer = questionData.answer_options.find(answer_option=>answer_option.is_correct==true);
+    console.log(correctAnswer);
     return (
         <div id={id ? id : 'question'} style={{position: "relative"}}>
             <p style={{fontSize: "20px"}}>{questionData.order}. {questionData.title}</p>
+            {questionData?.contents && questionData.contents.map(content=>{
+                if (content?.content_type==="text"){
+                    return <p style={{fontSize:"16px"}}>{content.text}</p>
+                }else if (content?.content_type==="image"){
+                    return <img src={content.image} style={{maxHeight:"300px"}}/>
+                }
+            })}
             <Answers 
                 answers={questionData.answer_options}
                 selectedAnswer = {selectedAnswer}
@@ -28,6 +36,7 @@ const Question = ({id, questionData, onSkip, selectedAnswer,
                 mode={mode}
                 isCorrect={isCorrect}
             />
+            {mode==="review" && correctAnswer && <div style={{fontWeight: "bold"}}>Правильный ответ: {correctAnswer.option_type==="text" ? <span>{correctAnswer.text}</span> : <img src={correctAnswer.image} style={{width:"200px"}}/>}</div>}
             {mode!="review" && <button style={{position: "absolute", right: "20px", bottom: "0px"}} onClick={submitQuestionAnswer}>Ответить</button>}
         </div>
     )
