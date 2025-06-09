@@ -169,8 +169,8 @@ export const fetchCourse = async (courseId, child_id) => {
 export const fetchTests = async () => {
   try {
     let endpoint = "modo/tests";
-    if (localStorage.getItem('child_id')){
-      endpoint+= `?child_id=${localStorage.getItem('child_id')}`
+    if (localStorage.getItem("child_id")) {
+      endpoint += `?child_id=${localStorage.getItem("child_id")}`;
     }
     const response = await instance.get(endpoint);
     return response.data;
@@ -182,8 +182,8 @@ export const fetchTests = async () => {
 export const fetchTest = async (testId) => {
   try {
     let endpoint = `modo/tests/${testId}/`;
-    if (localStorage.getItem('child_id')){
-      endpoint+= `?child_id=${localStorage.getItem('child_id')}`
+    if (localStorage.getItem("child_id")) {
+      endpoint += `?child_id=${localStorage.getItem("child_id")}`;
     }
     const response = await instance.get(endpoint);
     return response.data;
@@ -195,10 +195,10 @@ export const fetchTest = async (testId) => {
 export const createTest = async (testData) => {
   try {
     const endpoint = "modo/tests/create-full/";
-    const response = await instance.post(endpoint, testData,{
-      headers:{
-        'Content-Type': 'multipart/form-data'
-      }
+    const response = await instance.post(endpoint, testData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     });
     console.log(response.data);
     return response.data;
@@ -211,10 +211,10 @@ export const answerTestQuestion = async (question_id, answer_option) => {
   try {
     let endpoint = "modo/answer-question/";
     endpoint += `?question_id=${question_id}`;
-    if (localStorage.getItem('child_id')){
-      endpoint+= `&child_id=${localStorage.getItem('child_id')}`
+    if (localStorage.getItem("child_id")) {
+      endpoint += `&child_id=${localStorage.getItem("child_id")}`;
     }
-    const response = await instance.post(endpoint, {answer_option});
+    const response = await instance.post(endpoint, { answer_option });
     console.log(response.data);
     return response.data;
   } catch (error) {
@@ -226,8 +226,8 @@ export const getTestReview = async (test_id) => {
   try {
     let endpoint = "modo/test-review/";
     endpoint += `?test_id=${test_id}`;
-    if (localStorage.getItem('child_id')){
-      endpoint+= `&child_id=${localStorage.getItem('child_id')}`
+    if (localStorage.getItem("child_id")) {
+      endpoint += `&child_id=${localStorage.getItem("child_id")}`;
     }
     const response = await instance.get(endpoint);
     console.log(response.data);
@@ -240,10 +240,10 @@ export const getTestReview = async (test_id) => {
 export const updateTest = async (testData, id) => {
   try {
     const endpoint = `modo/tests/${id}/update-full/`;
-    const response = await instance.put(endpoint, testData,{
-      headers:{
-        'Content-Type': 'multipart/form-data'
-      }
+    const response = await instance.put(endpoint, testData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     });
     console.log(response.data);
     return response.data;
@@ -264,7 +264,7 @@ export const deleteTest = async (id) => {
     console.log(error);
     throw new Error(error || "Something went wrong");
   }
-}
+};
 
 export const createCourse = async (courseData) => {
   try {
@@ -1381,6 +1381,51 @@ export const updateComplaint = async (complaintId, formData) => {
   } catch (error) {
     throw new Error(
       error.response?.data?.message || "Failed to update complaint"
+    );
+  }
+};
+
+export const listSchoolsCredentials = async () => {
+  try {
+    const response = await instance.get("/schools/list-credentials/");
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message || "Failed to fetch schools credentials"
+    );
+  }
+};
+
+export const downloadSchoolCredential = async (filename) => {
+  try {
+    const url = `/schools/download-credential/?filename=${encodeURIComponent(
+      filename
+    )}`;
+
+    const response = await instance.get(url, { responseType: "blob" });
+    const blob = new Blob([response.data], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = filename;
+    link.click();
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message || "Failed to download credentials file"
+    );
+  }
+};
+
+export const deleteSchoolCredential = async (filename) => {
+  try {
+    const response = await instance.delete(
+      `/schools/delete-credential/?filename=${encodeURIComponent(filename)}`
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message || "Failed to delete credentials file"
     );
   }
 };

@@ -53,6 +53,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Complaints from "./pages/admin_sections/Complaints.jsx";
 import DashboardLayout from "./pages/DashboardLayout.jsx";
 import { ToastContainer } from "react-toastify";
+import SchoolCredentials from "./pages/admin_sections/SchoolCredentials.jsx";
 
 const router = createBrowserRouter([
   { path: "/", element: <App /> },
@@ -82,64 +83,64 @@ const router = createBrowserRouter([
   {
     path: "/dashboard",
     element: (
-      <AuthRoute 
-        element={<DashboardLayout />} 
-        allowedRoles={["student", "parent"]} 
+      <AuthRoute
+        element={<DashboardLayout />}
+        allowedRoles={["student", "parent"]}
       />
     ),
     children: [
-    {
-      path: "", 
-      element: <Dashboard/>
-    },
-    {
-      path: "rating", 
-      element: <Rating/>
-    },
-    {
-      path: "progress", 
-      element: <Progress/>
-    },
-    {
-      path: "lessons", 
-      element: <Lessons/>
-    },
-    {
-      path: "tests", 
-      element: <TestsChild/>
-    },
-    {
-      path: "games", 
-      element: <Games/>
-    }, 
-    {
-      path: "/dashboard/courses/:courseId/sections",
-      element: (
-        <AuthRoute
-          element={<CourseContent />}
-          allowedRoles={["student", "parent"]}
-        />
-      ),
-    },
-    {
-      path: "/dashboard/courses/:courseId/sections/:sectionId/chapters",
-      element: (
-        <AuthRoute
-          element={<ChapterContent />}
-          allowedRoles={["student", "parent"]}
-        />
-      ),
-    },
-    {
-      path: "/dashboard/courses/:courseId/sections/:sectionId/chapters/:chapterId/lessons",
-      element: (
-        <AuthRoute
-          element={<MathCourse config={{noProfile: true}}/>}
-          allowedRoles={["student", "parent"]}
-        />
-      ),
-    }
-  ]
+      {
+        path: "",
+        element: <Dashboard />
+      },
+      {
+        path: "rating",
+        element: <Rating />
+      },
+      {
+        path: "progress",
+        element: <Progress />
+      },
+      {
+        path: "lessons",
+        element: <Lessons />
+      },
+      {
+        path: "tests",
+        element: <TestsChild />
+      },
+      {
+        path: "games",
+        element: <Games />
+      },
+      {
+        path: "/dashboard/courses/:courseId/sections",
+        element: (
+          <AuthRoute
+            element={<CourseContent />}
+            allowedRoles={["student", "parent"]}
+          />
+        ),
+      },
+      {
+        path: "/dashboard/courses/:courseId/sections/:sectionId/chapters",
+        element: (
+          <AuthRoute
+            element={<ChapterContent />}
+            allowedRoles={["student", "parent"]}
+          />
+        ),
+      },
+      {
+        path: "/dashboard/courses/:courseId/sections/:sectionId/chapters/:chapterId/lessons",
+        element: (
+          <AuthRoute
+            element={<MathCourse config={{ noProfile: true }} />}
+            allowedRoles={["student", "parent"]}
+          />
+        ),
+      }
+    ]
   },
   {
     path: "/dashboard/tests/:testId",
@@ -197,6 +198,12 @@ const router = createBrowserRouter([
     ),
   },
   {
+    path: "/admindashboard/school-credentials",
+    element: (
+      <AuthRoute element={<SchoolCredentials />} allowedRoles={["superadmin"]} />
+    ),
+  },
+  {
     path: "/schools/:schoolId",
     element: (
       <AuthRoute
@@ -249,6 +256,5 @@ const queryClient = new QueryClient();
 ReactDOM.createRoot(document.getElementById("root")).render(
   <QueryClientProvider client={queryClient}>
     <RouterProvider router={router} />
-    <ToastContainer/>
   </QueryClientProvider>
 );

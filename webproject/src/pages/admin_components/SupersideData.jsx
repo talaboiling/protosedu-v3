@@ -10,10 +10,15 @@ export const SupersideData = [
         link: '/admindashboard'
     },
     {
-        title: 'Все Студенты',
-        icon: <SchoolIcon />,
-        link: '/admindashboard/students'
+        title: 'Данные для входа',
+        icon: <SchoolIcon sx={{ color: "white", fontSize: 20 }} />,
+        link: '/admindashboard/school-credentials'
     },
+    // {
+    //     title: 'Все Студенты',
+    //     icon: <SchoolIcon />,
+    //     link: '/admindashboard/students'
+    // },
     {
         title: 'Задания',
         icon: <BarChartIcon />,
