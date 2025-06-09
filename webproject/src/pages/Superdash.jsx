@@ -22,6 +22,7 @@ const Superdash = () => {
     email: "",
   });
   const [loading, setLoading] = useState(true); // Add loading state
+  const [totalStudents, setTotalStudents] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -149,6 +150,10 @@ const Superdash = () => {
         </button>
         <p style={{ fontSize: "xx-large", fontWeight: "500", color: "#666" }}>
           Платформы
+        </p>
+        <p style={{ fontSize: "large", color: "#666" }}>
+          Всего платформ: {filteredSchools.length} | Всего учеников:{" "}
+          {filteredSchools.reduce((acc, school) => acc + school.student_number, 0)}
         </p>
         <div className="addschool">
           <button
