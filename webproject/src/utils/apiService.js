@@ -1429,3 +1429,50 @@ export const deleteSchoolCredential = async (filename) => {
     );
   }
 };
+
+export const fetchTutorChatSessions = async () => {
+  try {
+    const response = await instance.get(`/tutor/sessions/`);
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message || "Failed to fetch chat sessions"
+    );
+  }
+};
+
+export const createTutorChatSession = async (formData) => {
+  try {
+    const response = await instance.post(`/tutor/sessions/`, formData);
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message || "Failed to fetch chat sessions"
+    );
+  }
+};
+
+export const fetchTutorChatSessionMessages = async (chat_id) => {
+  try {
+    const response = await instance.get(`/tutor/sessions/${chat_id}/messages/`);
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message || "Failed to fetch chat sessions"
+    );
+  }
+};
+
+export const sendTutorChatMessage = async (chat_id, formData) => {
+  try {
+    const response = await instance.post(
+      `/tutor/sessions/${chat_id}/send/`,
+      formData
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message || "Failed to fetch chat sessions"
+    );
+  }
+};

@@ -6,7 +6,7 @@ import cert from "../../assets/sideachieve.webp";
 import prog from "../../assets/sideprog.webp";
 import game from "../../assets/sidegame.webp";
 import { icon } from "@fortawesome/fontawesome-svg-core";
-import { BookCheck, ScrollText, Users } from "lucide-react";
+import { BookCheck, ScrollText, Users, BrainCog } from "lucide-react";
 import { BookOpenCheck } from "lucide-react";
 export const SidebarData = [
   {
@@ -16,27 +16,33 @@ export const SidebarData = [
   },
   {
     title: "МОДО",
-    icon: <BookOpenCheck alt="modo" size={32} color="#8A8A8A"/>,
+    icon: <BookOpenCheck alt="modo" size={32} color="#8A8A8A" />,
     link: "/dashboard/tests?type=modo",
   },
   {
     title: "ЕНТ",
-    icon: <BookCheck alt="ent" size={32} color="#8A8A8A"/>,
+    icon: <BookCheck alt="ent" size={32} color="#8A8A8A" />,
     link: "/dashboard/tests?type=ent",
   },
   {
     title: "PISA",
-    icon: <BookOpenCheck alt="modo" size={32} color="#8A8A8A"/>,
+    icon: <BookOpenCheck alt="modo" size={32} color="#8A8A8A" />,
     link: "/dashboard/tests?type=pisa",
   },
   {
+    title: "ИИ Репетитор",
+    icon: <BrainCog alt="ai tutor" size={32} color="#8A8A8A" />,
+    link: "/dashboard/ai-tutor",
+    isNew: true
+  },
+  {
     title: "Рейтинг",
-    icon: <Users alt="achievements" size={32} color="#8A8A8A"/>,
+    icon: <Users alt="achievements" size={32} color="#8A8A8A" />,
     link: "/dashboard/rating",
   },
   {
     title: "Сертификаты",
-    icon: <ScrollText alt="certificates" size={32} color="#8A8A8A"/>,
+    icon: <ScrollText alt="certificates" size={32} color="#8A8A8A" />,
     link: "/dashboard/lessons",
   },
   {

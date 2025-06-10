@@ -54,6 +54,7 @@ import Complaints from "./pages/admin_sections/Complaints.jsx";
 import DashboardLayout from "./pages/DashboardLayout.jsx";
 import { ToastContainer } from "react-toastify";
 import SchoolCredentials from "./pages/admin_sections/SchoolCredentials.jsx";
+import Tutor from "./pages/dashboard_sections/Tutor.jsx";
 
 const router = createBrowserRouter([
   { path: "/", element: <App /> },
@@ -150,6 +151,15 @@ const router = createBrowserRouter([
         allowedRoles={["student", "parent"]}
       />
     ),
+  },
+  {
+    path: "/dashboard/ai-tutor",
+    element: (
+      <AuthRoute
+        element={<Tutor />}
+        allowedRoles={["student", "parent"]}
+      />
+    )
   },
   {
     path: "/admindashboard",

@@ -59,3 +59,13 @@
 .exitButton:hover {
     background-color: white;
 }
+
+.beta-tag {
+    background-color: #007599; /* A light blue or green often works well */
+    color: white;
+    font-size: 0.7em; /* Smaller font size */
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 8px; /* Space between title and tag */
+    vertical-align: middle; /* Align with the text */
+}
