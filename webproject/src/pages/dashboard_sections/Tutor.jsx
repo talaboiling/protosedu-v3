@@ -22,6 +22,9 @@ import {
     MenuItem
 } from '@mui/material';
 import { WS_URL } from "../../utils/config";
+import rehypeHighlight from 'rehype-highlight';
+import 'highlight.js/styles/github.css';
+import rehypeRaw from 'rehype-raw';
 
 // WebSocket hook for managing connections
 const useWebSocket = (chatId, onMessage) => {
@@ -604,14 +607,15 @@ const Tutor = () => {
                     <div className={styles.headerContent}>
                         <div className={styles.headerInfo}>
                             <h1>{currentChat?.title || "AI Tutor"}</h1>
-                            <p>Ask me anything to get started learning</p>
+                            <div className={styles.statusIndicator}>
+                                <div className={`${styles.statusDot} ${isConnected ? styles.connected : ''}`}></div>
+                                <span className={styles.statusText}>
+                                    {isConnected ? 'Online' : 'Offline'}
+                                </span>
+
+                            </div>
                         </div>
-                        <div className={styles.statusIndicator}>
-                            <div className={`${styles.statusDot} ${isConnected ? styles.connected : ''}`}></div>
-                            <span className={styles.statusText}>
-                                {isConnected ? 'Connected' : 'Offline'}
-                            </span>
-                        </div>
+
                     </div>
                 </div>
 
@@ -635,7 +639,7 @@ const Tutor = () => {
                                         </div>
                                         <div className={`${styles.messageInfo} ${styles[message.role]}`}>
                                             <div className={`${styles.messageBubble} ${styles[message.role]}`}>
-                                                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                                <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeHighlight, rehypeRaw]}>
                                                     {message.content}
                                                 </ReactMarkdown>
                                             </div>
@@ -656,7 +660,7 @@ const Tutor = () => {
                                         </div>
                                         <div className={`${styles.messageInfo} ${styles[pendingMessage.role]}`}>
                                             <div className={`${styles.messageBubble} ${styles[pendingMessage.role]}`}>
-                                                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                                <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeHighlight, rehypeRaw]}>
                                                     {pendingMessage.content}
                                                 </ReactMarkdown>
                                             </div>
@@ -759,7 +763,7 @@ const Tutor = () => {
             </Dialog>
 
             <ToastContainer />
-        </div>
+        </div >
     );
 };
 
