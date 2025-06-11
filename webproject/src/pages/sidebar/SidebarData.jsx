@@ -18,23 +18,28 @@ export const SidebarData = [
     title: "МОДО",
     icon: <BookOpenCheck alt="modo" size={32} color="#8A8A8A" />,
     link: "/dashboard/tests?type=modo",
+    isNew: true,
+
   },
   {
     title: "ЕНТ",
     icon: <BookCheck alt="ent" size={32} color="#8A8A8A" />,
     link: "/dashboard/tests?type=ent",
+    isNew: true,
+
   },
   {
     title: "PISA",
     icon: <BookOpenCheck alt="modo" size={32} color="#8A8A8A" />,
     link: "/dashboard/tests?type=pisa",
+    isNew: true,
   },
-  {
-    title: "ИИ Репетитор",
-    icon: <BrainCog alt="ai tutor" size={32} color="#8A8A8A" />,
-    link: "/dashboard/ai-tutor",
-    isNew: true
-  },
+  // {
+  //   title: "ИИ Репетитор",
+  //   icon: <BrainCog alt="ai tutor" size={32} color="#8A8A8A" />,
+  //   link: "/dashboard/ai-tutor",
+  //   isNew: true
+  // },
   {
     title: "Рейтинг",
     icon: <Users alt="achievements" size={32} color="#8A8A8A" />,
