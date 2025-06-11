@@ -1486,3 +1486,79 @@ export const sendTutorChatMessage = async (chat_id, formData) => {
     );
   }
 };
+
+export const incrementSchoolGrades = async (schoolId) => {
+  try {
+    const response = await instance.patch(
+      `/schools/${schoolId}/increment-grade/`
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message || "Failed to increment school grades"
+    );
+  }
+};
+
+export const decrementSchoolGrades = async (schoolId) => {
+  try {
+    const response = await instance.patch(
+      `/schools/${schoolId}/decrement-grade/`
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message || "Failed to decrement school grades"
+    );
+  }
+};
+
+export const incrementClassGrades = async (schoolId, classId) => {
+  try {
+    const response = await instance.patch(
+      `/schools/${schoolId}/classes/${classId}/increment-grade/`
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message || "Failed to increment class grades"
+    );
+  }
+};
+
+export const decrementClassGrades = async (schoolId, classId) => {
+  try {
+    const response = await instance.patch(
+      `/schools/${schoolId}/classes/${classId}/decrement-grade/`
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message || "Failed to decrement class grades"
+    );
+  }
+};
+
+export const incrementClassGradesGlobally = async () => {
+  try {
+    const response = await instance.patch(`/schools/increment-grades-global/`);
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message ||
+        "Failed to increment class grades globally"
+    );
+  }
+};
+
+export const decrementClassGradesGlobally = async () => {
+  try {
+    const response = await instance.patch(`/schools/decrement-grades-global/`);
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message ||
+        "Failed to decrement class grades globally"
+    );
+  }
+};

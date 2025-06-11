@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { useParams } from "react-router-dom";
 import CloseIcon from "@mui/icons-material/Close";
 import Superside from "../admin_components/Superside.jsx";
@@ -7,8 +6,26 @@ import {
   addStudent,
   fetchClass,
   fetchStudentsOfClass,
+  incrementClassGrades,
+  decrementClassGrades
 } from "../../utils/apiService.js";
 import Loader from "../Loader.jsx";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Button,
+  Stack,
+} from "@mui/material";
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { ToastContainer, toast } from 'react-toastify';
+
+
 
 const ClassDetails = () => {
   const { schoolId, classId } = useParams();
@@ -24,6 +41,40 @@ const ClassDetails = () => {
     gender: "",
     phone_number: "",
   });
+  const [confirmAction, setConfirmAction] = useState(null);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+
+
+  const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+  const handleConfirmedAction = async () => {
+    setShowConfirmModal(false);
+    try {
+      toast.info("Идёт обновление классов...", {
+        autoClose: 1000,
+      });
+
+      if (confirmAction === "increment") {
+        await incrementClassGrades(schoolId, classId);
+      } else if (confirmAction === "decrement") {
+        await decrementClassGrades(schoolId, classId);
+      }
+
+      await sleep(1000);
+      await fetchData();
+
+      toast.success(
+        confirmAction === "increment"
+          ? "Класс успешно повышен!"
+          : "Класс успешно понижен!"
+      );
+    } catch (error) {
+      console.error("Ошибка при обновлении класса:", error);
+      toast.error("Ошибка при обновлении класса.");
+    } finally {
+      setConfirmAction(null);
+    }
+  };
 
   useEffect(() => {
     fetchData();
@@ -82,6 +133,36 @@ const ClassDetails = () => {
           Класс: {class_info.grade}
           {class_info.section}{" "}
         </h2>
+        <h4>ID: {class_info.id}</h4>
+
+
+        <Stack direction="row" spacing={2} alignItems="center" sx={{ mt: 1 }}>
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<ExpandLessIcon />}
+            onClick={() => {
+              setConfirmAction("increment");
+              setShowConfirmModal(true);
+            }}
+
+          >
+            Повысить класс
+          </Button>
+
+          <Button
+            variant="contained"
+            color="secondary"
+            startIcon={<ExpandMoreIcon />}
+            onClick={() => {
+              setConfirmAction("decrement");
+              setShowConfirmModal(true);
+            }}
+
+          >
+            Понизить класс
+          </Button>
+        </Stack>
         {students.length === 0 ? (
           <div
             className="classList"
@@ -97,23 +178,39 @@ const ClassDetails = () => {
             </p>
           </div>
         ) : (
-          <ul className="classList">
-            {students.map((student) => (
-              <li key={student.id} className="classItem">
-                <b>
-                  {student.user.first_name} {student.user.last_name}
-                </b> <br />
-                <strong>{student.user.username}</strong>
-                <br /> {student.user.email} <br />
-                {student.user.phone_number}
-                Язык обучения: {student.language === "ru"
-                  ? "Русский"
-                  : student.language === "kz"
-                    ? "Казахский"
-                    : student.language}
-              </li>
-            ))}
-          </ul>
+          <TableContainer component={Paper} sx={{ marginTop: 2 }}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell><b>ФИО</b></TableCell>
+                  <TableCell><b>Имя пользователя</b></TableCell>
+                  <TableCell><b>Email</b></TableCell>
+                  <TableCell><b>Телефон</b></TableCell>
+                  <TableCell><b>Язык обучения</b></TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {students.map((student) => (
+                  <TableRow key={student.id}>
+                    <TableCell>
+                      {student.user.first_name} {student.user.last_name}
+                    </TableCell>
+                    <TableCell>{student.user.username}</TableCell>
+                    <TableCell>{student.user.email}</TableCell>
+                    <TableCell>{student.user.phone_number || "—"}</TableCell>
+                    <TableCell>
+                      {student.language === "ru"
+                        ? "Русский"
+                        : student.language === "kz"
+                          ? "Казахский"
+                          : student.language}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+
         )}
 
         <button
@@ -201,7 +298,53 @@ const ClassDetails = () => {
             </div>
           </dialog>
         )}
+
+        {showConfirmModal && (
+          <dialog open className="modal supermodal">
+            <div className="modal-content">
+              <button
+                style={{
+                  border: "none",
+                  float: "right",
+                  backgroundColor: "transparent",
+                  boxShadow: "none",
+                }}
+                onClick={() => setShowConfirmModal(false)}
+              >
+                <CloseIcon sx={{ color: "gray" }} />
+              </button>
+              <h2 style={{ marginTop: "10px" }}>
+                {confirmAction === "increment"
+                  ? "Вы уверены, что хотите повысить класс?"
+                  : "Вы уверены, что хотите понизить класс?"}
+              </h2>
+              <div style={{ marginTop: "20px", display: "flex", gap: "1rem" }}>
+                <button
+                  className="superBtn"
+                  onClick={handleConfirmedAction}
+                  style={{ padding: "10px 20px", fontSize: "large" }}
+                >
+                  Подтвердить
+                </button>
+                <button
+                  onClick={() => setShowConfirmModal(false)}
+                  style={{
+                    padding: "10px 20px",
+                    fontSize: "large",
+                    backgroundColor: "#ccc",
+                    border: "none",
+                    borderRadius: "4px",
+                  }}
+                >
+                  Отмена
+                </button>
+              </div>
+            </div>
+          </dialog>
+        )}
       </div>
+      <ToastContainer />
+
     </div>
   );
 };

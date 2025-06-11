@@ -10,8 +10,25 @@ import {
   assignSupervisor,
   deassignSupervisor,
   importSchoolExcel,
-  changeClassLanguage
+  changeClassLanguage,
+  incrementSchoolGrades,
+  decrementSchoolGrades
 } from "../../utils/apiService.js";
+import {
+  Card,
+  CardContent,
+  Typography,
+  Button,
+  Select,
+  MenuItem,
+  Grid,
+  Stack
+} from "@mui/material";
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { ToastContainer, toast } from 'react-toastify';
+
+
 
 import Loader from "../Loader.jsx";
 
@@ -41,13 +58,16 @@ const SchoolDetails = () => {
   const [uploadStatus, setUploadStatus] = useState(null);  // State for upload status
   const [errorMessage, setErrorMessage] = useState("");
   const [errorDetails, setErrorDetails] = useState([]);
+  const [confirmAction, setConfirmAction] = useState(null); // 'increment' or 'decrement'
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
 
+
+  const fetchData = async () => {
+    await fetchSchoolDetails();
+    await fetchClasses();
+  };
   useEffect(() => {
-    const fetchData = async () => {
-      await fetchSchoolDetails();
-      await fetchClasses();
-    };
     fetchData();
   }, [schoolId]);
 
@@ -172,6 +192,38 @@ const SchoolDetails = () => {
     }
   };
 
+  const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+  const handleConfirmedAction = async () => {
+    setShowConfirmModal(false);
+    try {
+      toast.info("Идёт обновление классов...", {
+        autoClose: 1000,
+      });
+
+      if (confirmAction === "increment") {
+        await incrementSchoolGrades(schoolId);
+      } else if (confirmAction === "decrement") {
+        await decrementSchoolGrades(schoolId);
+      }
+
+      await sleep(1000);
+      await fetchData()
+
+      toast.success(
+        confirmAction === "increment"
+          ? "Классы успешно повышены!"
+          : "Классы успешно понижены!"
+      );
+    } catch (error) {
+      console.error("Ошибка при обновлении классов:", error);
+      toast.error("Ошибка при обновлении классов.");
+    } finally {
+      setConfirmAction(null);
+    }
+  };
+
+
   if (loading) {
     return <Loader></Loader>;
   }
@@ -182,21 +234,44 @@ const SchoolDetails = () => {
       <div className="superMain schoolCont">
         <h2>{school.name}</h2>
         <div className="schooldetails">
-          <p className="defaultStyle">
-            <b>Город:</b> {school.city}
-          </p>
-          <p className="defaultStyle">
-            <b>Email:</b> {school.email}
-          </p>
-          <p className="defaultStyle">
-            <b>Количество учеников:</b> {school.student_number}
-          </p>
+          <Typography className="defaultStyle"><b>Город:</b> {school.city}</Typography>
+          <Typography className="defaultStyle"><b>Email:</b> {school.email}</Typography>
+          <Typography className="defaultStyle"><b>Количество учеников:</b> {school.student_number}</Typography>
+          <Typography className="defaultStyle"><b>Год обучения:</b> {school.school_year}</Typography>
+
+
+          <Stack direction="row" spacing={2} alignItems="center" sx={{ mt: 1 }}>
+            <Button
+              variant="contained"
+              color="primary"
+              startIcon={<ExpandLessIcon />}
+              onClick={() => {
+                setConfirmAction("increment");
+                setShowConfirmModal(true);
+              }}
+
+            >
+              Повысить классы
+            </Button>
+
+            <Button
+              variant="contained"
+              color="secondary"
+              startIcon={<ExpandMoreIcon />}
+              onClick={() => {
+                setConfirmAction("decrement");
+                setShowConfirmModal(true);
+              }}
+
+            >
+              Понизить классы
+            </Button>
+          </Stack>
         </div>
 
-        <h3>Классы</h3>
+        <h2>Классы</h2>
         {classes.length === 0 ? (
           <div
-            className="classList"
             style={{
               display: "flex",
               justifyContent: "center",
@@ -204,36 +279,49 @@ const SchoolDetails = () => {
               marginBottom: "10px",
             }}
           >
-            <p style={{ color: "lightgray" }}>Классы еще не добавлены :(</p>
+            <Typography color="textSecondary">
+              Классы еще не добавлены :(
+            </Typography>
           </div>
         ) : (
-          <ul className="classList">
+          <Grid container spacing={2} className="classList">
             {classes.map((classItem) => (
-              <li
-                key={classItem.id}
-                className="classItem"
-              >
-                Класс:{" "}
-                <b>
-                  {classItem.grade} {classItem.section}
-                </b>
-                <button onClick={() =>
-                  navigate(`/schools/${schoolId}/classes/${classItem.id}`)
-                }>Перейти в класс</button>
-                <select
-                  name="language"
-                  value={classItem.language}
-                  onChange={(e) => handleLanguageChange(classItem.id, e.target.value)}
-                >
-                  <option value="kz">Казахский</option>
-                  <option value="ru">Русский</option>
-                </select>
-                <b>
-                  { } {classItem.num_students} учеников
-                </b>
-              </li  >
+              <Grid item xs={12} sm={6} md={4} key={classItem.id}>
+                <Card variant="outlined" className="classItem">
+                  <CardContent>
+                    <Typography variant="h6" gutterBottom>
+                      Класс: <b>{classItem.grade} {classItem.section}</b> <br />ID: <b>{classItem.id}</b>
+                    </Typography>
+
+                    <Typography color="textSecondary" gutterBottom>
+                      Учеников: <b>{classItem.num_students}</b>
+                    </Typography>
+
+                    <Select
+                      fullWidth
+                      name="language"
+                      value={classItem.language}
+                      onChange={(e) => handleLanguageChange(classItem.id, e.target.value)}
+                      sx={{ mt: 1, mb: 2 }}
+                    >
+                      <MenuItem value="kz">Казахский</MenuItem>
+                      <MenuItem value="ru">Русский</MenuItem>
+                    </Select>
+
+                    <Button
+                      variant="contained"
+                      fullWidth
+                      onClick={() =>
+                        navigate(`/schools/${schoolId}/classes/${classItem.id}`)
+                      }
+                    >
+                      Перейти в класс
+                    </Button>
+                  </CardContent>
+                </Card>
+              </Grid>
             ))}
-          </ul>
+          </Grid>
         )}
         <button
           onClick={() => setShowUploadModal(true)}
@@ -424,6 +512,52 @@ const SchoolDetails = () => {
         )}
 
 
+        {showConfirmModal && (
+          <dialog open className="modal supermodal">
+            <div className="modal-content">
+              <button
+                style={{
+                  border: "none",
+                  float: "right",
+                  backgroundColor: "transparent",
+                  boxShadow: "none",
+                }}
+                onClick={() => setShowConfirmModal(false)}
+              >
+                <CloseIcon sx={{ color: "gray" }} />
+              </button>
+              <h2 style={{ marginTop: "10px" }}>
+                {confirmAction === "increment"
+                  ? "Вы уверены, что хотите повысить классы?"
+                  : "Вы уверены, что хотите понизить классы?"}
+              </h2>
+              <div style={{ marginTop: "20px", display: "flex", gap: "1rem" }}>
+                <button
+                  className="superBtn"
+                  onClick={handleConfirmedAction}
+                  style={{ padding: "10px 20px", fontSize: "large" }}
+                >
+                  Подтвердить
+                </button>
+                <button
+                  onClick={() => setShowConfirmModal(false)}
+                  style={{
+                    padding: "10px 20px",
+                    fontSize: "large",
+                    backgroundColor: "#ccc",
+                    border: "none",
+                    borderRadius: "4px",
+                  }}
+                >
+                  Отмена
+                </button>
+              </div>
+            </div>
+          </dialog>
+        )}
+
+
+
         {supervisorModal && (
           <dialog open className="modal supermodal">
             <div className="modal-content">
@@ -503,6 +637,7 @@ const SchoolDetails = () => {
           </dialog>
         )}
       </div>
+      <ToastContainer />
     </div>
   );
 };

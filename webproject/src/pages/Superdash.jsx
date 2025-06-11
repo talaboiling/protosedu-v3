@@ -4,11 +4,24 @@ import Superside from "./admin_components/Superside.jsx";
 import { useNavigate } from "react-router-dom";
 import CloseIcon from "@mui/icons-material/Close";
 import "/src/superdash.css";
-import { addSchool, fetchSchools } from "../utils/apiService.js";
+import { addSchool, decrementClassGradesGlobally, fetchSchools, incrementClassGradesGlobally } from "../utils/apiService.js";
 import Loader from "./Loader.jsx";
 import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
 import { logout } from "../utils/authService.js";
+import { ToastContainer, toast } from 'react-toastify';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import {
+  Card,
+  CardContent,
+  Typography,
+  Button,
+  Select,
+  MenuItem,
+  Grid,
+  Stack
+} from "@mui/material";
 
 const Superdash = () => {
   const navigate = useNavigate();
@@ -23,19 +36,23 @@ const Superdash = () => {
   });
   const [loading, setLoading] = useState(true); // Add loading state
   const [totalStudents, setTotalStudents] = useState(0);
+  const [confirmAction, setConfirmAction] = useState(null); // 'increment' or 'decrement'
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+
+
+  const fetchData = async () => {
+    try {
+      const schoolData = await fetchSchools();
+      setFilteredSchools(schoolData);
+      setSchools(schoolData);
+    } catch (error) {
+      console.error("Error fetching the data", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const schoolData = await fetchSchools();
-        setFilteredSchools(schoolData);
-        setSchools(schoolData);
-      } catch (error) {
-        console.error("Error fetching the data", error);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchData();
   }, []);
 
@@ -133,6 +150,37 @@ const Superdash = () => {
     saveAs(data, "schools.xlsx");
   };
 
+  const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+  const handleConfirmedAction = async () => {
+    setShowConfirmModal(false);
+    try {
+      toast.info("Идёт обновление классов...", {
+        autoClose: 5000,
+      });
+
+      if (confirmAction === "increment") {
+        await incrementClassGradesGlobally();
+      } else if (confirmAction === "decrement") {
+        await decrementClassGradesGlobally();
+      }
+
+      await sleep(5000);
+      await fetchData(); // Refresh the school data after the action
+
+      toast.success(
+        confirmAction === "increment"
+          ? "Классы успешно повышены!"
+          : "Классы успешно понижены!"
+      );
+    } catch (error) {
+      console.error("Ошибка при обновлении классов:", error);
+      toast.error("Ошибка при обновлении классов.");
+    } finally {
+      setConfirmAction(null);
+    }
+  };
+
   if (loading) {
     return <Loader></Loader>;
   }
@@ -181,7 +229,36 @@ const Superdash = () => {
           >
             Скачать Excel
           </button>
-        </div>
+
+        </div >
+        <div className="addschool">
+          <Stack direction="row" spacing={2} alignItems="center" sx={{ mt: 1 }}>
+            <Button
+              variant="contained"
+              color="primary"
+              startIcon={<ExpandLessIcon />}
+              onClick={() => {
+                setConfirmAction("increment");
+                setShowConfirmModal(true);
+              }}
+
+            >
+              Повысить классы
+            </Button>
+
+            <Button
+              variant="contained"
+              color="secondary"
+              startIcon={<ExpandMoreIcon />}
+              onClick={() => {
+                setConfirmAction("decrement");
+                setShowConfirmModal(true);
+              }}
+
+            >
+              Понизить классы
+            </Button>
+          </Stack></div>
         <div className="superCont">
           <div className="superSearch">
             <input
@@ -218,6 +295,7 @@ const Superdash = () => {
                 >
                   Количество учеников: {school.student_number}
                 </p>
+                <p>Год обучения: {school.school_year}</p>
               </li>
             ))}
           </ul>
@@ -295,6 +373,51 @@ const Superdash = () => {
           </div>
         </dialog>
       )}
+
+      {showConfirmModal && (
+        <dialog open className="modal supermodal">
+          <div className="modal-content">
+            <button
+              style={{
+                border: "none",
+                float: "right",
+                backgroundColor: "transparent",
+                boxShadow: "none",
+              }}
+              onClick={() => setShowConfirmModal(false)}
+            >
+              <CloseIcon sx={{ color: "gray" }} />
+            </button>
+            <h2 style={{ marginTop: "10px" }}>
+              {confirmAction === "increment"
+                ? "Вы уверены, что хотите повысить классы?"
+                : "Вы уверены, что хотите понизить классы?"}
+            </h2>
+            <div style={{ marginTop: "20px", display: "flex", gap: "1rem" }}>
+              <button
+                className="superBtn"
+                onClick={handleConfirmedAction}
+                style={{ padding: "10px 20px", fontSize: "large" }}
+              >
+                Подтвердить
+              </button>
+              <button
+                onClick={() => setShowConfirmModal(false)}
+                style={{
+                  padding: "10px 20px",
+                  fontSize: "large",
+                  backgroundColor: "#ccc",
+                  border: "none",
+                  borderRadius: "4px",
+                }}
+              >
+                Отмена
+              </button>
+            </div>
+          </div>
+        </dialog>
+      )}
+      <ToastContainer />
     </div>
   );
 };
