@@ -154,6 +154,16 @@ export const fetchCourses = async (childId) => {
   }
 };
 
+export const changeCourseActivity = async (courseId, isActive) => {
+  try {
+    const endpoint = `/courses/${courseId}/`;
+    const response = await instance.patch(endpoint, { is_active: isActive });
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response.data.message || "Something went wrong");
+  }
+};
+
 export const fetchCourse = async (courseId, child_id) => {
   try {
     const endpoint = child_id

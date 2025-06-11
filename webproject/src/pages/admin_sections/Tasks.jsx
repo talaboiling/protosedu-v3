@@ -15,7 +15,9 @@ import {
   createSections,
   updateSection,
   fetchCourse,
+  changeCourseActivity
 } from "../../utils/apiService";
+import Switch from '@mui/material/Switch';
 
 import Loader from "../Loader";
 
@@ -204,6 +206,31 @@ const Tasks = () => {
     navigate(`/admindashboard/tasks/courses/${courseId}/sections/${sectionId}`);
   };
 
+  const handleToggleCourse = async (courseId, isActive) => {
+    try {
+      await changeCourseActivity(courseId, isActive);
+      const updatedCourses = courses.map((course) =>
+        course.id === courseId ? { ...course, is_active: isActive } : course
+      );
+      setCourses(updatedCourses);
+    } catch (error) {
+      console.error("Error toggling course activity:", error);
+    }
+  };
+
+  const formatLanguage = (lang) => {
+    switch (lang) {
+      case "ru":
+        return "Русский";
+      case "kz":
+        return "Казахский";
+      case "cm":
+        return "Общий для всех";
+      default:
+        return "Неизвестный язык";
+    }
+  };
+
   if (loading) {
     return <Loader></Loader>;
   }
@@ -253,11 +280,17 @@ const Tasks = () => {
                   {course.name}
                 </h3>
                 <p className="defaultStyle" style={{ color: "#666" }}>
-                  {course.grade} класс
+                  <b>{course.grade}</b> класс | <b>{formatLanguage(course.language)}</b> язык обучения
                 </p>
                 <p className="defaultStyle" style={{ color: "#666" }}>
                   {course.description}
                 </p>
+                <label htmlFor="">Видимость курса</label>
+                <Switch
+                  checked={course.is_active}
+                  onChange={(e) => handleToggleCourse(course.id, e.target.checked)}
+                  color="primary"
+                />
               </div>
 
               <ul className="sectListInfo">
