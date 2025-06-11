@@ -499,3 +499,25 @@
       height: calc(100vh - 200px);
     }
   }
+
+.emptyState {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+    color: #80b3d6;
+  }
+  
+.emptyStateHeading{
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.emptyStateText {
+    font-size: 16px;
+    margin-bottom: 16px;
+}
+

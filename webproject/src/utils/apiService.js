@@ -1462,6 +1462,17 @@ export const createTutorChatSession = async (formData) => {
   }
 };
 
+export const deleteTutorChatSession = async (chat_id) => {
+  try {
+    const response = await instance.delete(`/tutor/sessions/${chat_id}/`);
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message || "Failed to delete chat session"
+    );
+  }
+};
+
 export const fetchTutorChatSessionMessages = async (chat_id) => {
   try {
     const response = await instance.get(`/tutor/sessions/${chat_id}/messages/`);
