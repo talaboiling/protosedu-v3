@@ -179,8 +179,8 @@ export const fetchCourse = async (courseId, child_id) => {
 export const fetchTests = async () => {
   try {
     let endpoint = "modo/tests";
-    if (localStorage.getItem("child_id")) {
-      endpoint += `?child_id=${localStorage.getItem("child_id")}`;
+    if (localStorage.getItem('child_id')){
+      endpoint+= `?child_id=${localStorage.getItem('child_id')}`
     }
     const response = await instance.get(endpoint);
     return response.data;
@@ -192,8 +192,8 @@ export const fetchTests = async () => {
 export const fetchTest = async (testId) => {
   try {
     let endpoint = `modo/tests/${testId}/`;
-    if (localStorage.getItem("child_id")) {
-      endpoint += `?child_id=${localStorage.getItem("child_id")}`;
+    if (localStorage.getItem('child_id')){
+      endpoint+= `?child_id=${localStorage.getItem('child_id')}`
     }
     const response = await instance.get(endpoint);
     return response.data;
@@ -205,10 +205,10 @@ export const fetchTest = async (testId) => {
 export const createTest = async (testData) => {
   try {
     const endpoint = "modo/tests/create-full/";
-    const response = await instance.post(endpoint, testData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
+    const response = await instance.post(endpoint, testData,{
+      headers:{
+        'Content-Type': 'multipart/form-data'
+      }
     });
     console.log(response.data);
     return response.data;
@@ -221,10 +221,10 @@ export const answerTestQuestion = async (question_id, answer_option) => {
   try {
     let endpoint = "modo/answer-question/";
     endpoint += `?question_id=${question_id}`;
-    if (localStorage.getItem("child_id")) {
-      endpoint += `&child_id=${localStorage.getItem("child_id")}`;
+    if (localStorage.getItem('child_id')){
+      endpoint+= `&child_id=${localStorage.getItem('child_id')}`
     }
-    const response = await instance.post(endpoint, { answer_option });
+    const response = await instance.post(endpoint, {answer_option});
     console.log(response.data);
     return response.data;
   } catch (error) {
@@ -236,8 +236,8 @@ export const getTestReview = async (test_id) => {
   try {
     let endpoint = "modo/test-review/";
     endpoint += `?test_id=${test_id}`;
-    if (localStorage.getItem("child_id")) {
-      endpoint += `&child_id=${localStorage.getItem("child_id")}`;
+    if (localStorage.getItem('child_id')){
+      endpoint+= `&child_id=${localStorage.getItem('child_id')}`
     }
     const response = await instance.get(endpoint);
     console.log(response.data);
@@ -250,10 +250,10 @@ export const getTestReview = async (test_id) => {
 export const updateTest = async (testData, id) => {
   try {
     const endpoint = `modo/tests/${id}/update-full/`;
-    const response = await instance.put(endpoint, testData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
+    const response = await instance.put(endpoint, testData,{
+      headers:{
+        'Content-Type': 'multipart/form-data'
+      }
     });
     console.log(response.data);
     return response.data;
@@ -274,7 +274,7 @@ export const deleteTest = async (id) => {
     console.log(error);
     throw new Error(error || "Something went wrong");
   }
-};
+}
 
 export const createCourse = async (courseData) => {
   try {
@@ -1394,6 +1394,57 @@ export const updateComplaint = async (complaintId, formData) => {
     );
   }
 };
+
+
+export const addTestBeforeChapter = async (courseId, sectionId, chapterId, testId) => {
+  try {
+    const response = await instance.patch(
+      `/courses/${courseId}/sections/${sectionId}/chapters/${chapterId}/`,
+      {
+        "before_diagnostic_test": testId
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message || "Failed to add before test"
+    );
+  }
+}
+
+export const addTestAfterChapter = async (courseId, sectionId, chapterId, testId) => {
+  try {
+    const response = await instance.patch(
+      `/courses/${courseId}/sections/${sectionId}/chapters/${chapterId}/`,
+      {
+        "after_diagnostic_test": testId
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message || "Failed to add after test"
+    );
+  }
+}
+
+
+export const fetchTestAttempt = async (testId, attemptId) => {
+  let endpoint = `/modo/test-review/?test_id=${testId}&attempt_number=${attemptId}`;
+  if (localStorage.getItem('child_id')){
+    endpoint += `&child_id=${localStorage.getItem('child_id')}`
+  }
+  try {
+    const response = await instance.get(
+      endpoint
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message || "Failed to fetch test attempt"
+    );
+  }
+}
 
 export const listSchoolsCredentials = async () => {
   try {

@@ -13,6 +13,7 @@ import { capitalizeFirstLetter } from "../../../lib/helperFunctions";
 import Quiz from "./Quiz";
 import Modal from "../../../helpers/Modal";
 import HPBs_Form from "./HPBs_Form";
+import PreviousAttemptsList from "../PreviousAttemptsList";
 
 const featuredTypes = ["modo", "ent"];
 
@@ -100,6 +101,9 @@ const TestChild = () => {
                 }
               }
             ]}
+            additionalContent={
+              <PreviousAttemptsList previousAttemps={test.test_results} testId={testId}/>
+            }
           />
         </Modal>}
       </div>

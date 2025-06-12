@@ -21,7 +21,13 @@ import {
   deleteChapter,
   updateChapter,
   fetchChapters,
+  fetchTests,
+  addTestBeforeChapter,
+  addTestAfterChapter,
 } from "../../utils/apiService";
+import DataList from "./DataList";
+import test from "node:test";
+import { toast } from "react-toastify";
 
 const Chapters = () => {
   const { courseId, sectionId } = useParams();
@@ -33,6 +39,13 @@ const Chapters = () => {
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [chapterTitle, setChapterTitle] = useState("");
   const [selectedChapter, setSelectedChapter] = useState(null);
+  const [selectedDTest, setSelectedDTest] = useState(null);
+  
+  const [addTestDialog, setAddTestDialog] = useState(false);
+
+  const [chapterTest, setChapterTest] = useState(null);
+  const [orderType, setOrderType] = useState(null);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -57,6 +70,10 @@ const Chapters = () => {
   const handleOpenAddDialog = () => {
     setChapterTitle("");
     setOpenAddDialog(true);
+  };
+
+  const handleOpenAddTestDialog = () => {
+    setAddTestDialog(true);
   };
 
   const handleCloseAddDialog = () => {
@@ -112,6 +129,34 @@ const Chapters = () => {
       `/admindashboard/tasks/courses/${courseId}/sections/${sectionId}/chapters/${chapterId}`
     );
   };
+
+
+  async function handleAddTest(){
+    console.log(selectedDTest, chapterTest, orderType);
+    const courseId = section.course;
+    const sectionId = section.id;
+    const chapterId = chapterTest;
+    const testId = selectedDTest;
+
+    if (orderType==="before"){
+      try {
+        const responseData = await addTestBeforeChapter(courseId, sectionId, chapterId, testId);
+        console.log(responseData);
+      } catch (error) {
+        toast.error("Failed to add before chapter");
+      }
+    }else if (orderType==="after"){
+      try {
+        const responseData = await addTestAfterChapter(courseId, sectionId, chapterId, testId);
+        console.log(responseData);
+      } catch (error) {
+        toast.error("Failed to add after chapter");
+      }
+    }
+  };
+
+  console.log(selectedDTest);
+  console.log(section);
 
   if (loading) {
     return <Loader />;
@@ -171,10 +216,14 @@ const Chapters = () => {
             Главы
           </p>
           <div className="chapters">
-            <div className="addChapter">
+            <div className="addChapter" style={{display:"flex"}}>
               <button className="chapterAdder" onClick={handleOpenAddDialog}>
                 <AddIcon sx={{ fontSize: 30 }} />
                 Добавить главы
+              </button>
+              <button className="chapterAdder" onClick={handleOpenAddTestDialog}>
+                <AddIcon sx={{ fontSize: 30 }} />
+                Добавить Диагностический тест
               </button>
             </div>
 
@@ -254,11 +303,48 @@ const Chapters = () => {
             value={chapterTitle}
             onChange={(e) => setChapterTitle(e.target.value)}
           />
+          <div style={{display: "flex", fontSize: "14px", gap: "1rem"}}>
+            <p>Тест до:</p>
+            {
+              selectedChapter?.before_diagnostic_test_detail 
+                ? <button style={{paddingInline: "5px"}} onClick={()=> navigate(`/admindashboard/tests`)}>{selectedChapter.before_diagnostic_test_detail.title}</button>
+                : <p>{' - '}</p>
+
+            }
+          </div>
+          <div style={{display: "flex", fontSize: "14px", gap: "1rem"}}>
+            <p>Тест после: </p>
+            {
+              selectedChapter?.after_diagnostic_test_detail 
+                ? <button style={{paddingInline: "5px"}}>{selectedChapter.after_diagnostic_test_detail.title}</button>
+                : <p>{' - '}</p>
+
+            }
+          </div>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseEditDialog}>Отменить</Button>
           <Button onClick={handleEditChapter} disabled={!chapterTitle}>
             Сохранить
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={addTestDialog} onClose={()=>setAddTestDialog(false)}>
+        <DialogTitle>Добавить Тест</DialogTitle>
+        <DialogContent>
+          <p>Тест привязан к главе. Выберите тест и главу к которой хотите привязать этот тест</p>
+          <p>Выберите тест</p>
+          <DataList type="async" asyncFunction={fetchTests} actionFunction={(test)=>setSelectedDTest(test)}/>
+          <p>Выберите Главу для теста</p>
+          <DataList type="sync" data={section.chapters} actionFunction={(chapterId)=>setChapterTest(chapterId)}/>
+          <p>Выберите Порядок</p>
+          <DataList type="sync" data={[{title:"До", id: 'before'}, {title:"После", id: 'after'}]} actionFunction={(orderType)=>setOrderType(orderType)}/>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={()=>setAddTestDialog(false)}>Отменить</Button>
+          <Button onClick={handleAddTest} disabled={!selectedDTest}>
+            Добавить
           </Button>
         </DialogActions>
       </Dialog>
