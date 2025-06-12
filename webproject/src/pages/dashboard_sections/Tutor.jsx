@@ -25,6 +25,11 @@ import { WS_URL } from "../../utils/config";
 import rehypeHighlight from 'rehype-highlight';
 import 'highlight.js/styles/github.css';
 import rehypeRaw from 'rehype-raw';
+import rehypeKatex from 'rehype-katex';
+import remarkMath from 'remark-math';
+import 'katex/dist/katex.min.css';
+
+
 
 // WebSocket hook for managing connections
 const useWebSocket = (chatId, onMessage) => {
@@ -124,6 +129,10 @@ const Tutor = () => {
     const [newChatSubject, setNewChatSubject] = useState('');
     const [initialLoading, setInitialLoading] = useState(true);
     const [pendingMessage, setPendingMessage] = useState(null);
+    const [isTypingInterrupted, setIsTypingInterrupted] = useState(false);
+    const [isDisabled, setIsDisabled] = useState(false);
+    const loadingRef = useRef(false);
+
 
 
     const messagesEndRef = useRef(null);
@@ -151,18 +160,19 @@ const Tutor = () => {
                 created_at: message.created_at
             });
             setIsLoading(false)
+            setIsDisabled(true);
 
             let index = 0;
-            const typingInterval = 5;
             const type = () => {
+                const chunkSize = 10; // Or 10, to type 5–10 characters at once
                 if (index < fullText.length) {
-                    currentText += fullText.charAt(index);
+                    currentText += fullText.slice(index, index + chunkSize);
                     setPendingMessage(prev => ({
                         ...prev,
                         content: currentText
                     }));
-                    index++;
-                    setTimeout(type, typingInterval);
+                    index += chunkSize;
+                    setTimeout(type, 1);
                 } else {
                     // Done typing, push message into chats
                     setChats(prev => prev.map(chat =>
@@ -181,6 +191,7 @@ const Tutor = () => {
                     ));
                     setPendingMessage(null);
                     setIsLoading(false);
+                    setIsDisabled(false);
                 }
             };
 
@@ -376,7 +387,7 @@ const Tutor = () => {
 
     // Handle sending messages
     const handleSendMessage = useCallback(async () => {
-        if (!inputMessage.trim() || !activeChat || isLoading) return;
+        if (!inputMessage.trim() || !activeChat || loadingRef.current) return;
 
         const userMessage = {
             id: `temp-${Date.now()}`, // Temporary ID
@@ -417,17 +428,14 @@ const Tutor = () => {
         try {
             // Send user message via HTTP API
             // The server will process it and send AI response back via WebSocket
+            setIsLoading(true);
             await sendTutorChatMessage(activeChat, {
                 content: messageContent
             });
 
-            // Don't set isLoading to false here - wait for WebSocket response
-            // The AI response will come through handleWebSocketMessage which will set isLoading to false
-
         } catch (error) {
             console.error("Error sending message:", error);
             toast.error("Failed to send message");
-            setIsLoading(false);
 
             // Clear timeout on error
             if (messageTimeoutRef.current) {
@@ -443,8 +451,10 @@ const Tutor = () => {
                     }
                     : chat
             ));
+        } finally {
+            // setIsLoading(false);
         }
-    }, [inputMessage, activeChat, isLoading]);
+    }, [inputMessage, activeChat]);
 
     // Handle key press
     const handleKeyPress = useCallback((e) => {
@@ -639,7 +649,7 @@ const Tutor = () => {
                                         </div>
                                         <div className={`${styles.messageInfo} ${styles[message.role]}`}>
                                             <div className={`${styles.messageBubble} ${styles[message.role]}`}>
-                                                <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeHighlight, rehypeRaw]}>
+                                                <ReactMarkdown remarkPlugins={[remarkGfm, remarkMath]} rehypePlugins={[rehypeHighlight, rehypeKatex, rehypeRaw]}>
                                                     {message.content}
                                                 </ReactMarkdown>
                                             </div>
@@ -660,7 +670,7 @@ const Tutor = () => {
                                         </div>
                                         <div className={`${styles.messageInfo} ${styles[pendingMessage.role]}`}>
                                             <div className={`${styles.messageBubble} ${styles[pendingMessage.role]}`}>
-                                                <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeHighlight, rehypeRaw]}>
+                                                <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeHighlight, rehypeKatex]}>
                                                     {pendingMessage.content}
                                                 </ReactMarkdown>
                                             </div>
@@ -708,12 +718,12 @@ const Tutor = () => {
                                 placeholder="Type your question here..."
                                 className={styles.textInput}
                                 rows={1}
-                                disabled={isLoading || !activeChat}
+                                disabled={isLoading || !activeChat || isDisabled}
                             />
                         </div>
                         <button
                             onClick={handleSendMessage}
-                            disabled={!inputMessage.trim() || isLoading || !activeChat}
+                            disabled={!inputMessage.trim() || isLoading || !activeChat || isDisabled}
                             className={styles.sendButton}
                         >
                             <Send size={18} />
