@@ -462,12 +462,33 @@ const SchoolDetails = () => {
               <h2 style={{ color: "#4F4F4F", fontSize: "x-large" }}>
                 Импортировать школы
               </h2>
-              <input
-                type="file"
-                accept=".xlsx, .xls"
-                onChange={handleFileChange}
-                style={{ marginTop: "20px", marginBottom: "20px" }}
-              />
+              {!excelFile ? (
+                <input
+                  type="file"
+                  accept=".xlsx, .xls"
+                  onChange={handleFileChange}
+                  style={{ marginTop: "20px", marginBottom: "20px" }}
+                />
+              ) : (
+                <div style={{ marginBottom: "20px" }}>
+                  <p style={{ margin: "5px 0" }}>Выбран файл: {excelFile.name}</p>
+                  <button
+                    onClick={() => setExcelFile(null)}
+                    style={{
+                      padding: "6px 12px",
+                      backgroundColor: "#e74c3c",
+                      color: "#fff",
+                      border: "none",
+                      borderRadius: "4px",
+                      cursor: "pointer",
+                      fontSize: "small",
+                    }}
+                  >
+                    Очистить файл
+                  </button>
+                </div>
+              )}
+
               <label style={{ fontSize: "20px" }} htmlFor="plan">План</label>
               <select name="plan" id="plan" onChange={(e) => setFormPlan(e.target.value)} value={formPlan} style={{ marginBottom: "20px", padding: "10px", fontSize: "large" }}>
                 <option value="annual">Годовой</option>
