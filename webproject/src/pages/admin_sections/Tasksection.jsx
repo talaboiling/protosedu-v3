@@ -76,6 +76,12 @@ const Tasksection = () => {
   const [isEditingVideo, setIsEditingVideo] = useState(false);
   const [move, setMove] = useState(false);
 
+  const [nodeData, setNodeData] = useState({
+    video: null,
+    task: null
+  });
+
+
   useEffect(() => {
     const fetchContentsData = async () => {
       try {
@@ -695,17 +701,21 @@ const Tasksection = () => {
               </div>
               <form onSubmit={handleNodeSubmit}>
                 <div style={{display: "flex", flexDirection: "column"}}>
-                  <label htmlFor="test_type">Video</label>
-                  <select name="test_type" style={{width: "fit-content"}}>
-                      <option value="modo">Modo</option>
-                      <option value="ent">Ent</option>
-                      <option value="diagnostic">Диагностический</option>
+                  <label htmlFor="video">Video</label>
+                  <select name="video" style={{width: "fit-content"}}>
+                      {contents.map(content=>{
+                        if (content.content_type==="lesson"){
+                          return <option value={content.id}><p>{content.title}: {content.description}</p></option>
+                        }
+                      })}
                   </select>
-                  <label htmlFor="test_type">Task</label>
-                  <select name="test_type" style={{width: "fit-content"}}>
-                      <option value="modo">Modo</option>
-                      <option value="ent">Ent</option>
-                      <option value="diagnostic">Диагностический</option>
+                  <label htmlFor="task">Task</label>
+                  <select name="task" style={{width: "fit-content"}}>
+                      {contents.map(content=>{
+                        if (content.content_type==="task"){
+                          return <option value={content.id}><p>{content.title}: {content.description}</p></option>
+                        }
+                      })}
                   </select>
                 </div>
                 <button
