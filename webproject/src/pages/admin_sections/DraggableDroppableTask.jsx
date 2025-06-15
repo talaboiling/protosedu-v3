@@ -7,7 +7,7 @@ import bgtask from "../../assets/bgtask.svg";
 import Loader from "../Loader";
 import { useDraggable, useDroppable } from '@dnd-kit/core';
 import bgvideo from "../../assets/videolessonthumb.svg";
-const DraggableDroppableTask = ({ contentIndex, content, xOffset,
+const DraggableDroppableTask = ({contentIndex, content, xOffset,
   itemWidth, containerWidth, yOffset, openLesson,
   handleEditContent, handleTaskClick, handleEditTask, handleDeleteContent, move, htmlId }
 ) => {
@@ -58,7 +58,7 @@ const DraggableDroppableTask = ({ contentIndex, content, xOffset,
   return <div
     id={htmlId}
     ref={setCombinedRef}
-    key={contentIndex}
+    key={content.id}
     {...(move ? { ...draggable.listeners, ...draggable.attributes } : {})}
     className={`vidBlock ${content.content_type} ${content.template ? `template-${content.template}` : ""
       }`}
@@ -69,13 +69,13 @@ const DraggableDroppableTask = ({ contentIndex, content, xOffset,
         <div
           className="thumbcontainer"
           style={{ position: "relative" }}
-          onClick={() => openLesson(contentIndex)}
-          key={contentIndex}
+          onClick={() => openLesson(content)}
+          key={content.id}
         >
           <button
             onClick={(e) => {
               e.stopPropagation();
-              handleEditContent(contentIndex);
+              handleEditContent(content);
             }}
             className="deleteBtn editBtn"
           >
@@ -115,8 +115,8 @@ const DraggableDroppableTask = ({ contentIndex, content, xOffset,
             scale: "1.3",
             overflow: "hidden",
           }}
-          onClick={() => handleTaskClick(contentIndex)}
-          key={contentIndex}
+          onClick={() => handleTaskClick(content)}
+          key={content.id}
         />
         <div
           className={`contentTitle ${content.title.length > 15 ? "title-slider" : ""
@@ -137,7 +137,7 @@ const DraggableDroppableTask = ({ contentIndex, content, xOffset,
         <button
           onClick={(e) => {
             e.stopPropagation();
-            handleEditTask(contentIndex);
+            handleEditTask(content);
           }}
           className="deleteBtn editBtn"
         >

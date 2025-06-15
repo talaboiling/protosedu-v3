@@ -26,6 +26,9 @@ import {
   updateQuestion,
   deleteQuestion,
   updateChapterContents,
+  createNode,
+  getNodes,
+  addTaskToNode,
 } from "../../utils/apiService";
 import ToolsBar from "./tasks/ToolsBar";
 import QuestionModal from "./tasks/QuestionModal";
@@ -34,6 +37,8 @@ import DraggableDroppableTask from "./DraggableDroppableTask";
 import QuestionsList from "./QuestionsList";
 import { useLocation } from "react-router-dom";
 import Modal from "../../helpers/Modal";
+import { toast } from "react-toastify";
+import ContentNode from "./ContentNode";
 
 const Tasksection = () => {
   const { courseId, sectionId, chapterId } = useParams();
@@ -58,7 +63,7 @@ const Tasksection = () => {
     description: "",
   });
   const [questions, setQuestions] = useState([]);
-  const [selectedTaskIndex, setSelectedTaskIndex] = useState(null);
+  const [selectedTask, setSelectedTask] = useState(null);
   const [currentQuestion, setCurrentQuestion] = useState({
     question_type: "",
     template: "",
@@ -76,12 +81,11 @@ const Tasksection = () => {
   const [isEditingVideo, setIsEditingVideo] = useState(false);
   const [move, setMove] = useState(false);
 
-  const [nodeData, setNodeData] = useState({
-    video: null,
-    task: null
-  });
+  const [nodes, setNodes] = useState([]);
+  const [addTaskMode, setAddTaskMode] = useState(null);
 
-
+  console.log(contents);
+  console.log(nodes);
   useEffect(() => {
     const fetchContentsData = async () => {
       try {
@@ -99,8 +103,14 @@ const Tasksection = () => {
         setLoading(false);
       }
     };
+    const fetchNodes = async () => {
+      const payload = {courseId, sectionId, chapterId};
+      const nodes = await getNodes(payload);
+      setNodes(nodes);
+    }
 
     fetchContentsData();
+    fetchNodes();
   }, [courseId, sectionId, chapterId]);
 
 
@@ -130,6 +140,10 @@ const Tasksection = () => {
       order: contents.length + 1,
     };
 
+    if (formNode){
+      taskData["content-node"] = formNode.id;
+    }
+
     try {
       let updatedContents;
       if (isEditingTask) {
@@ -137,11 +151,11 @@ const Tasksection = () => {
           courseId,
           sectionId,
           chapterId,
-          contents[selectedTaskIndex].id,
+          selectedTask.id,
           taskData
         );
-        updatedContents = contents.map((content, index) =>
-          index === selectedTaskIndex ? updatedTask : content
+        updatedContents = contents.map((content) =>
+          content.id === selectedTask.id ? updatedTask : content
         );
       } else {
         const newTask = await createTask(courseId, sectionId, chapterId, taskData);
@@ -156,9 +170,33 @@ const Tasksection = () => {
     }
   };
 
-  const handleEditTask = (index) => {
-    const task = contents[index];
-    setSelectedTaskIndex(index);
+  const handleAddTaskToNode = async (event) => {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const task = formData.get("task");
+    const nodeId = formNode.id;
+    const payload = {
+      courseId,
+      sectionId,
+      chapterId,
+      nodeId,
+      task
+    }
+    try {
+      const data = await addTaskToNode(payload);
+      console.log("Success:", data);
+      toast.success('Сохранено');
+    } catch (error) {
+      toast.error('Ошибка');
+      console.error("Error submitting node:", error);
+    }
+  }
+
+  const handleEditTask = (task) => {
+    if (!task.content_node){
+      setFormNode(null);
+    }
+    setSelectedTask(task);
     setTaskDetails({
       title: task.title,
       description: task.description,
@@ -182,19 +220,20 @@ const Tasksection = () => {
       content_type: "lesson",
       order: contents.length + 1,
       chapter: chapterId,
+      "content-node": formNode.id
     };
-
+    
     let updatedContents;
     if (isEditingVideo) {
       const updatedLesson = await updateLesson(
         courseId,
         sectionId,
         chapterId,
-        contents[selectedTaskIndex].id,
+        selectedTask.id,
         updatedVideoDetails
       );
-      updatedContents = contents.map((content, index) =>
-        index === selectedTaskIndex ? updatedLesson : content
+      updatedContents = contents.map((content) =>
+        content.id === selectedTask.id ? updatedLesson : content
       );
     } else {
       const newLesson = await createLesson(
@@ -211,8 +250,33 @@ const Tasksection = () => {
     resetVideoDetails();
   };
 
-  const handleNodeSubmit = async () => {
+  const handleNodeSubmit = async (event) => {
+    event.preventDefault();
 
+    const formData = new FormData(event.target);
+    const clickedButton = event.nativeEvent.submitter;
+    
+    const videoId = formData.get("video");
+    const taskId = formData.get("task");
+    const title = formData.get("title");
+    const description = formData.get("description");
+
+    const payload = {
+      videoId, taskId, courseId, sectionId, chapterId, title, description
+    };
+    
+    if (clickedButton.name==="createFromBlank"){
+      payload.videoId = null;
+      payload.taskId = null;
+    }
+    try {
+      const data = await createNode(payload);
+      console.log("Success:", data);
+      toast.success('Сохранено')
+    } catch (error) {
+      toast.error('Ошибка');
+      console.error("Error submitting node:", error);
+    }
   }
 
   const resetVideoDetails = () => {
@@ -224,8 +288,7 @@ const Tasksection = () => {
     setIsEditingVideo(false);
   };
 
-  const openLesson = (index) => {
-    const lesson = contents[index];
+  const openLesson = (lesson) => {
     if (lesson.video_url) {
       window.open(lesson.video_url, "_blank");
     }
@@ -251,9 +314,9 @@ const Tasksection = () => {
     return response;
   };
 
-  const handleTaskClick = async (index) => {
-    const taskId = contents[index].id;
-    setSelectedTaskIndex(index);
+  const handleTaskClick = async (task) => {
+    const taskId = task.id;
+    setSelectedTask(task);
     setLoading(true);
     try {
       const taskQuestions = await fetchTaskQuestions(taskId);
@@ -357,7 +420,7 @@ const Tasksection = () => {
           courseId,
           sectionId,
           chapterId,
-          contents[selectedTaskIndex].id,
+          selectedTask.id,
           questions[editingQuestionIndex].id,
           formData,
           true // Indicate that this is a multipart request
@@ -371,7 +434,7 @@ const Tasksection = () => {
           courseId,
           sectionId,
           chapterId,
-          contents[selectedTaskIndex].id,
+          selectedTask.id,
           formData,
           content,
           true // Indicate that this is a multipart request
@@ -460,9 +523,8 @@ const Tasksection = () => {
     setShowQuestionModal(true);
   };
 
-  const handleEditContent = (index) => {
-    const content = contents[index];
-    setSelectedTaskIndex(index);
+  const handleEditContent = (content) => {
+    setSelectedTask(content);
     setVideoDetails(content);
     setIsEditingVideo(true);
     setShowVideoModal(true);
@@ -475,7 +537,7 @@ const Tasksection = () => {
         courseId,
         sectionId,
         chapterId,
-        contents[selectedTaskIndex].id,
+        selectedTask.id,
         questionId
       );
       const updatedQuestions = questions.filter((_, i) => i !== index);
@@ -484,6 +546,8 @@ const Tasksection = () => {
       console.error("Failed to delete question", error);
     }
   };
+
+  const [formNode, setFormNode] = useState(null);
 
   if (loading) {
     return <Loader />;
@@ -529,6 +593,29 @@ const Tasksection = () => {
   const yOffset = 150;
 
   console.log(contents);
+
+  const seperateContents = contents.filter(content=>{
+    return nodes.every(node=>node.task!==content.id && node.lesson!==content.id)
+  })
+
+  const handleAddVideoButton = (node=null) => {
+    if (node){
+      setFormNode(node);
+    }
+    setShowVideoModal(true);
+    resetVideoDetails();
+  };
+
+  const handleAddTaskButton = (node=null) => {
+    if (node){
+      setFormNode(node);
+    }
+    setShowTaskModal(true);
+    setTaskDetails({
+      title: "",
+      description: "",
+    });
+  }
 
   return (
     <div className="spdash">
@@ -578,7 +665,67 @@ const Tasksection = () => {
           </p>
 
         </div>
-
+        
+        <div className="superCont sectCont" style={{position: "relative", margin: "2rem", padding: "100px"}}>
+          <div
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '20%',
+              padding: '8px 10px',
+              background: 'linear-gradient(90deg, #ff7e5f, #feb47b)',
+              color: '#fff',
+              textAlign: 'center',
+              fontSize: '20px',
+              fontWeight: 'bold',
+              boxShadow: '0 2px 5px rgba(0, 0, 0, 0.2)',
+              zIndex: 1000,
+              borderBottomLeftRadius: '8px',
+              borderBottomRightRadius: '8px'
+            }}
+          >
+            <div
+              style={{
+                margin: 0,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: 8,
+              }}
+            >
+              <p style={{ margin: 0 }}>Пары</p>
+            </div>
+          </div>
+          <button
+              className="adderBtn"
+              style={{ position: "absolute", right: "0px", top: "0px", width: "fit-content" }}
+              onClick={() => {
+                setShowNodeModal(true);
+              }}
+            >
+              Урок
+          </button>
+          <div style={{display: "flex", flexDirection: "column", gap: "4rem"}}>
+            {nodes.length>0 && nodes.map(node=>{
+              const lessonId = node.lesson;
+              const taskId = node.task;
+              const lesson = contents.find(content=> content.content_type==="lesson" && content.id===lessonId);
+              const task = contents.find(content=> content.content_type==="task" && content.id===taskId);
+              return <ContentNode 
+                  node={node}
+                  video={lesson} 
+                  task={task} 
+                  handleEditContent={handleEditContent}
+                  handleEditTask={handleEditTask}
+                  openLesson={openLesson}
+                  handleTaskClick={handleTaskClick}
+                  handleAddTaskButton={handleAddTaskButton}
+                  handleAddVideoButton={handleAddVideoButton}
+              />
+            })}
+          </div>
+        </div>
         <div className="superCont sectCont" style={{ padding: "100px", position: "relative" }}>
           <div
             style={{
@@ -621,8 +768,8 @@ const Tasksection = () => {
             margin: "0 auto"
           }}>
             <DndContext onDragEnd={handleDragEnd}>
-              {contents &&
-                contents.map((content, contentIndex) => {
+              {seperateContents &&
+                seperateContents.map((content, contentIndex) => {
                   return <DraggableDroppableTask
                     key={contentIndex}
                     content={content}
@@ -646,22 +793,13 @@ const Tasksection = () => {
           <div className="taskAdder" style={{ position: "absolute", right: "50px", top: "50px" }}>
             <button
               className="adderBtn"
-              onClick={() => {
-                setShowVideoModal(true);
-                resetVideoDetails();
-              }}
+              onClick={handleAddVideoButton}
             >
               Видеоурок
             </button>
             <button
               className="adderBtn"
-              onClick={() => {
-                setShowTaskModal(true);
-                setTaskDetails({
-                  title: "",
-                  description: "",
-                });
-              }}
+              onClick={handleAddTaskButton}
             >
               Задание
             </button>
@@ -701,9 +839,13 @@ const Tasksection = () => {
               </div>
               <form onSubmit={handleNodeSubmit}>
                 <div style={{display: "flex", flexDirection: "column"}}>
+                  <label htmlFor="title">Title</label>
+                  <input id="title" name="title" style={{width: "200px"}}/>
+                  <label htmlFor="description">Description</label>
+                  <input id="description" name="description" style={{width: "200px"}}/>
                   <label htmlFor="video">Video</label>
                   <select name="video" style={{width: "fit-content"}}>
-                      {contents.map(content=>{
+                      {seperateContents.map(content=>{
                         if (content.content_type==="lesson"){
                           return <option value={content.id}><p>{content.title}: {content.description}</p></option>
                         }
@@ -711,7 +853,7 @@ const Tasksection = () => {
                   </select>
                   <label htmlFor="task">Task</label>
                   <select name="task" style={{width: "fit-content"}}>
-                      {contents.map(content=>{
+                      {seperateContents.map(content=>{
                         if (content.content_type==="task"){
                           return <option value={content.id}><p>{content.title}: {content.description}</p></option>
                         }
@@ -722,8 +864,17 @@ const Tasksection = () => {
                   type="submit"
                   className="superBtn"
                   style={{ marginTop: "30px" }}
+                  name="createWithExisting"
                 >
                   {isEditingVideo ? "Сохранить" : "Добавить"}
+                </button>
+                <button
+                  type="submit"
+                  className="superBtn"
+                  style={{ marginTop: "30px" }}
+                  name="createFromBlank"
+                >
+                  Добавить пустой
                 </button>
               </form>
             </div>
@@ -841,34 +992,82 @@ const Tasksection = () => {
                 <CloseIcon sx={{ color: "gray" }} />
               </button>
             </div>
-            <form onSubmit={handleTaskSubmit}>
-              <div className="formVideo">
-                <label htmlFor="taskTitle">Название задания:</label>
-                <label htmlFor="taskDescription">Описание задания:</label>
-                <input
-                  type="text"
-                  id="taskTitle"
-                  value={taskDetails.title}
-                  onChange={(e) =>
-                    setTaskDetails({
-                      ...taskDetails,
-                      title: e.target.value,
-                    })
-                  }
-                  required
-                />
+            <form onSubmit={addTaskMode==="existing" ? handleAddTaskToNode: handleTaskSubmit }>
+              <div className="formVideo" style={{display: "flex", flexDirection: "column"}}>
+                <label htmlFor="mode">Как вы хотите добавить задание:</label>
+                <select 
+                    name="mode" 
+                    style={{width: "fit-content"}} 
+                    onChange={e=>setAddTaskMode(e.target.value)}
+                  >
+                    <option value="new">Создать новый</option>
+                    <option value="existing">Взять с существующих</option>
+                </select>
+                {addTaskMode!=='existing' && (
+                <>
+                  <label htmlFor="taskTitle">Название задания:</label>
+                  <input
+                    type="text"
+                    id="taskTitle"
+                    value={taskDetails.title}
+                    onChange={(e) =>
+                      setTaskDetails({
+                        ...taskDetails,
+                        title: e.target.value,
+                      })
+                    }
+                    required
+                  />
 
-                <textarea
-                  id="taskDescription"
-                  value={taskDetails.description}
-                  onChange={(e) =>
-                    setTaskDetails({
-                      ...taskDetails,
-                      description: e.target.value,
-                    })
-                  }
-                  style={{ width: "300px", height: "40px" }}
-                />
+                  <label htmlFor="taskDescription">Описание задания:</label>
+                  <textarea
+                    id="taskDescription"
+                    value={taskDetails.description}
+                    onChange={(e) =>
+                      setTaskDetails({
+                        ...taskDetails,
+                        description: e.target.value,
+                      })
+                    }
+                    style={{ width: "300px", height: "40px" }}
+                  />
+                </>)}
+                {addTaskMode==="existing" && (
+                  <>
+                    <label htmlFor="task">Задача</label>
+                    <select 
+                      name="task" 
+                      style={{width: "fit-content"}} 
+                    >
+                      {seperateContents
+                        .filter(content=>content.content_type==="task")
+                        .map(content=><option value={content.id}><p>{content.title}: {content.description}</p></option>)
+                      }
+                    </select>
+                  </>
+                )}
+                {!formNode && !isEditingTask && <label htmlFor="node">Пара</label>}
+                {!formNode && !isEditingTask && (
+                  <select 
+                    name="node" 
+                    style={{width: "fit-content"}} 
+                    onChange={(e) => {
+                      const selectedNode = nodes.find((node) => node.id === parseInt(e.target.value));
+                      if (selectedNode) {
+                        console.log(selectedNode);
+                        setFormNode(selectedNode);
+                      }
+                    }}
+                  >
+                    <option></option>
+                    {nodes.map(node=>{
+                      if (!node.task){
+                        return <option value={node.id}><p>{node.title}: {node.description}</p></option>
+                      }
+                    })}
+                  </select>
+                )}
+                {formNode && <p>{formNode.title}: {formNode.description}</p>}
               </div>
               <button
                 type="submit"
@@ -931,8 +1130,7 @@ const Tasksection = () => {
                 Добавить вопрос
               </button>
               <div className="questionsList">
-
-                {selectedTaskIndex !== null && questions.length > 0 && (
+                {selectedTask !== null && questions.length > 0 && (
                   <QuestionsList
                     questions={questions}
                     handleEditQuestion={handleEditQuestion}

@@ -1624,3 +1624,61 @@ export const decrementClassGradesGlobally = async () => {
     );
   }
 };
+
+export const createNode = async (payload) => {
+  
+  const {videoId, taskId, courseId, sectionId, chapterId, title, description} = payload;
+  const bodyPayload = {lesson: videoId, task: taskId, title, description};
+  const endpoint = `courses/${courseId}/sections/${sectionId}/chapters/${chapterId}/content-nodes/`
+  try {
+    const response = await instance.post(endpoint, bodyPayload);
+    if (!response.ok) {
+      throw new Error("Failed to submit node");
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message ||
+      "Error submitting node"
+    );
+  }
+}
+
+export const getNodes = async (payload) => {
+
+  const {courseId, sectionId, chapterId} = payload;
+  const endpoint = `courses/${courseId}/sections/${sectionId}/chapters/${chapterId}/content-nodes/`
+  try {
+    const response = await instance.get(endpoint);
+    
+    if (response.status!==200) {
+      throw new Error("Failed to get nodes");
+    }
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message ||
+      "Error getting nodes"
+    );
+  }
+}
+
+export const addTaskToNode = async (payload) => {
+  const {courseId, sectionId, chapterId, nodeId, task} = payload;
+  const endpoint = `courses/${courseId}/sections/${sectionId}/chapters/${chapterId}/content-nodes/${nodeId}/`;
+  try {
+    const response = await instance.patch(endpoint, {task});
+    
+    if (response.status!==200) {
+      throw new Error("Failed to get nodes");
+    }
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      error.response?.data?.message ||
+      "Error getting nodes"
+    );
+  }
+
+}

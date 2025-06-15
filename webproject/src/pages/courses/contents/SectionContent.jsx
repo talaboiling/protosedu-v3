@@ -8,6 +8,7 @@ import MessageModal from "./MessageModal";
 import { Link } from "react-router-dom";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import { Check, Video } from "lucide-react";
+import SectionBody from "./SectionBody";
 
 const SectionContent = ({
   section,
@@ -15,6 +16,7 @@ const SectionContent = ({
   openVideoModal,
   openTaskModal,
   hasSubscription,
+  nodes,
   t,
 }) => {
   const [showSubscriptionError, setShowSubscriptionError] = useState(false);
@@ -82,61 +84,47 @@ const SectionContent = ({
           // }}
         >
           <div className="lessonsLinks">
+            {nodes && nodes.map(node=>{
+              const task = chapter.contents.find(content=>content.id===node.task);
+              const lesson = chapter.contents.find(content=>content.id===node.lesson);
+              if (!lesson && !task) return;
+              return (
+              <>
+                <div className="sectionItem" style={{display:"flex", fontSize: "14px"}}>
+                  {lesson && (
+                    <SectionBody 
+                      content={lesson} 
+                      openTaskModal={openTaskModal}
+                      openVideoModal={openVideoModal}
+                      setShowMessage={setShowMessage}
+                      setShowSubscriptionError={setShowSubscriptionError}
+                      isDisabled={isBlocked}
+                    />
+                  )}
+                  {task && (
+                    <SectionBody 
+                      content={task} 
+                      openTaskModal={openTaskModal}
+                      openVideoModal={openVideoModal}
+                      setShowMessage={setShowMessage}
+                      setShowSubscriptionError={setShowSubscriptionError}
+                      isDisabled={isBlocked}
+                    />
+                  )}
+                </div>
+              </>
+              )
+            })}
             {chapter.contents && chapter.contents.map((content, contentIndex) => {
               console.log(completedTill);
-              const isTask = content.content_type === "task";
-              const isLesson = content.content_type === "lesson";
-              let isDisabled = false;
-              if (isBlocked || contentIndex>completedTill) {
-                  isDisabled = true;
-                }
-              return ( 
-                <li
-                  key={content.id}
-                  className={`sectionItem ${
-                    content.is_completed ? "activeSection" : ""
-                  } ${!isDisabled ? "" : "noTask"}`}
-                >
-                  <p>{content.title}</p>
-                  <div className="sectionProgress">
-                    {/* <p className="defaultStyle">
-                      {t("completedTasks1")}
-                      {chapter.completed_tasks}
-                      {t("completedTasks2")}
-                      {chapter.total_tasks} {t("completedTasks3")}
-                    </p> */}
-                    {/* <progress 
-                      value={
-                        chapter.percentage_completed ? 
-                          chapter.percentage_completed/100 : chapter.completed_tasks/chapter.total_tasks
-                      } 
-                    /> */}
-                  </div>
-                  <button 
-                    className="orangeButton"
-                    onClick={()=>{
-                      console.log(isDisabled)
-                      if (!isDisabled){
-                        if (content.content_type==="task"){
-                          openTaskModal(content.id)
-                        }else{
-                          openVideoModal(content.video_url);
-                        }
-                      } else{
-                        if (hasSubscription){
-                          setShowMessage(true);
-                        }else{
-                          setShowSubscriptionError(true);
-                        }
-                      }
-                    }}
-                  >
-                    {isTask && !content.is_completed &&  <PlayArrowIcon />}
-                    {isTask && content.is_completed &&  <Check />}
-                    {isLesson && <Video />}
-                  </button>
-                </li>
-              )
+              return <SectionBody 
+                content={content} 
+                openTaskModal={openTaskModal}
+                openVideoModal={openVideoModal}
+                setShowMessage={setShowMessage}
+                setShowSubscriptionError={setShowSubscriptionError}
+                isDisabled={isBlocked || contentIndex>completedTill}
+              />
             })}
           </div>
         </div>

@@ -16,6 +16,7 @@ import {
   fetchTask,
   fetchQuestions,
   answerQuestion,
+  getNodes,
 } from "../../utils/apiService";
 import CourseCard from "./CourseCard";
 import SectionContent from "./contents/SectionContent";
@@ -62,6 +63,7 @@ const Math = ({config}) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAttempted, setIsAttempted] = useState(false);
 
+  const [contentNodes, setContentNodes] = useState(null);
 
   useEffect(() => {
     loadData();
@@ -100,9 +102,11 @@ const Math = ({config}) => {
         chapterId,
         child_id
       );
+      const contentNodes = await getNodes({courseId, sectionId, chapterId});
       setChapter(chapterData);
       setSection(sectionData);
       setCourse(courseData);
+      setContentNodes(contentNodes);
 
       setUser(userData);
       setHasSubscription(userData.has_subscription);
@@ -113,6 +117,8 @@ const Math = ({config}) => {
       setLoading(false);
     }
   };
+
+  console.log(contentNodes);
 
   const updateUserData = async () => {
     try {
@@ -553,6 +559,7 @@ const Math = ({config}) => {
               openVideoModal={openVideoModal}
               openTaskModal={openTaskModal}
               hasSubscription={hasSubscription}
+              nodes={contentNodes}
               t={t}
             />
           </div>
