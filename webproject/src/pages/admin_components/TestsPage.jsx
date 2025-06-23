@@ -120,7 +120,7 @@ const TestsPage = () => {
             </div>
             <div className="superCont" style={{display: "flex", gap: "1rem", flexWrap: "wrap"}}>
               {filteredTests.length>0 && filteredTests.map(test=>(
-                <div key={test.id} className="addedCourses" style={{width: "18%", cursor: "pointer"}} onClick={()=>openTest(test.id)}>
+                <div key={test.id} className="addedCourses" style={{width: "18%", cursor: "pointer"}} onClick={()=>navigate(`${test.id}`)}>
                     <div
                         style={{
                             display: "flex",
