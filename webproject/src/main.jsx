@@ -54,7 +54,7 @@ import Complaints from "./pages/admin_sections/Complaints.jsx";
 import DashboardLayout from "./pages/DashboardLayout.jsx";
 import { ToastContainer } from "react-toastify";
 import SchoolCredentials from "./pages/admin_sections/SchoolCredentials.jsx";
-import Tutor from "./pages/dashboard_sections/Tutor.jsx";
+import Tutor from "./pages/dashboard_sections/tutor/Tutor.jsx";
 
 const router = createBrowserRouter([
   { path: "/", element: <App /> },

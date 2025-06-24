@@ -1,123 +1,31 @@
 import React, { useEffect, useState, useRef, useCallback, useMemo } from "react";
-import { Send, User, Bot, Plus, MessageSquare, Edit3, Trash2 } from "lucide-react";
 import styles from './Tutor.module.css';
-import { Link } from "react-router-dom";
+// import { useLocation, useHistory } from "react-router-dom";
+import { useSearchParams } from 'react-router-dom';
 import {
     createTutorChatSession,
     fetchTutorChatSessionMessages,
     fetchTutorChatSessions,
     deleteTutorChatSession,
     sendTutorChatMessage
-} from "../../utils/apiService";
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
+} from "../../../utils/apiService";
 import { ToastContainer, toast } from 'react-toastify';
-import {
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
-    Button,
-    TextField,
-    MenuItem
-} from '@mui/material';
-import { WS_URL } from "../../utils/config";
-import rehypeHighlight from 'rehype-highlight';
+
 import 'highlight.js/styles/github.css';
-import rehypeRaw from 'rehype-raw';
-import rehypeKatex from 'rehype-katex';
-import remarkMath from 'remark-math';
 import 'katex/dist/katex.min.css';
-
-
-
-// WebSocket hook for managing connections
-const useWebSocket = (chatId, onMessage) => {
-    const wsRef = useRef(null);
-    const [isConnected, setIsConnected] = useState(false);
-    const [isConnecting, setIsConnecting] = useState(false);
-
-    const connect = useCallback(() => {
-        if (!chatId || wsRef.current?.readyState === WebSocket.OPEN) {
-            return;
-        }
-
-        setIsConnecting(true);
-        // Construct WebSocket URL properly - remove http:// and use ws://
-
-        const wsUrl = `${WS_URL}/chat/${chatId}/`;
-
-        console.log(`Connecting to WebSocket for chat ${chatId} at ${wsUrl}`);
-
-        try {
-            wsRef.current = new WebSocket(wsUrl);
-
-            wsRef.current.onopen = () => {
-                console.log(`WebSocket connected for chat ${chatId}`);
-                setIsConnected(true);
-                setIsConnecting(false);
-            };
-
-            wsRef.current.onmessage = (event) => {
-                try {
-                    const message = JSON.parse(event.data);
-                    onMessage(message);
-                } catch (error) {
-                    console.error('Error parsing WebSocket message:', error);
-                }
-            };
-
-            wsRef.current.onclose = (event) => {
-                console.log(`WebSocket closed for chat ${chatId}:`, event.code, event.reason);
-                setIsConnected(false);
-                setIsConnecting(false);
-
-                // Reconnect after delay if it wasn't a manual close
-                if (event.code !== 1000) {
-                    setTimeout(() => {
-                        if (chatId) connect();
-                    }, 3000);
-                }
-            };
-
-            wsRef.current.onerror = (error) => {
-                console.error(`WebSocket error for chat ${chatId}:`, error);
-                setIsConnecting(false);
-            };
-        } catch (error) {
-            console.error('Error creating WebSocket:', error);
-            setIsConnecting(false);
-        }
-    }, [chatId, onMessage]);
-
-    const disconnect = useCallback(() => {
-        if (wsRef.current) {
-            wsRef.current.close(1000, 'Component unmounting');
-            wsRef.current = null;
-        }
-        setIsConnected(false);
-        setIsConnecting(false);
-    }, []);
-
-    const sendMessage = useCallback((message) => {
-        if (wsRef.current?.readyState === WebSocket.OPEN) {
-            wsRef.current.send(JSON.stringify(message));
-            return true;
-        }
-        return false;
-    }, []);
-
-    useEffect(() => {
-        if (chatId) {
-            connect();
-        }
-        return disconnect;
-    }, [chatId, connect, disconnect]);
-
-    return { isConnected, isConnecting, sendMessage, disconnect };
-};
+import useWebSocket from "./hooks/useWebSocket"; // Adjust the import path as needed
+import TutorCreateChatModel from "./TutorCreateChatModel";
+import TutorChatInputArea from "./TutorChatInputArea";
+import TutorLoader from "./TutorLoader";
+import TutorTypingEffectMessage from "./TutorTypingEffectMessage";
+import TutorMessageContent from "./TutorMessageContent";
+import TutorSidebar from "./TutorSidebar";
+import { Button } from "@mui/material"
+import { Plus } from 'lucide-react'; // Ensure you have lucide-react installed
 
 const Tutor = () => {
+    const [searchParams, setSearchParams] = useSearchParams();
+
     const [chats, setChats] = useState([]);
     const [activeChat, setActiveChat] = useState(null);
     const [inputMessage, setInputMessage] = useState("");
@@ -132,18 +40,14 @@ const Tutor = () => {
     const [isTypingInterrupted, setIsTypingInterrupted] = useState(false);
     const [isDisabled, setIsDisabled] = useState(false);
     const loadingRef = useRef(false);
-
-
-
     const messagesEndRef = useRef(null);
+    const [queryChatId, setQueryChatId] = useState(searchParams.get('chatId') || null);
 
-    // Get current active chat
     const currentChat = useMemo(() =>
         chats.find(chat => chat.id === activeChat),
-        [chats, activeChat]
+        [chats, activeChat, queryChatId]
     );
 
-    // Handle incoming WebSocket messages
     const handleWebSocketMessage = useCallback((message) => {
         console.log('Received WebSocket message:', message);
 
@@ -199,10 +103,8 @@ const Tutor = () => {
         }
     }, [activeChat]);
 
-    // Add timeout for WebSocket responses
     const messageTimeoutRef = useRef(null);
 
-    // Clear timeout when component unmounts or chat changes
     useEffect(() => {
         return () => {
             if (messageTimeoutRef.current) {
@@ -211,18 +113,15 @@ const Tutor = () => {
         };
     }, [activeChat]);
 
-    // WebSocket connection for active chat
     const { isConnected, sendMessage: sendWebSocketMessage } = useWebSocket(
         activeChat,
         handleWebSocketMessage
     );
 
-    // Auto-scroll to bottom when new messages are added
     const scrollToBottom = useCallback(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }, []);
 
-    // Fetch all chats and set active chat
     const fetchChats = useCallback(async (newActiveChatId = null) => {
         try {
             setInitialLoading(true);
@@ -253,11 +152,6 @@ const Tutor = () => {
 
             setChats(formattedChats);
 
-            // Set active chat
-            // const activeChatId = newActiveChatId || chatSessions[0]?.id;
-            // if (activeChatId) {
-            //     setActiveChat(activeChatId);
-            // }
         } catch (error) {
             console.error("Failed to fetch chats:", error);
             toast.error("Failed to load chats");
@@ -266,7 +160,6 @@ const Tutor = () => {
         }
     }, []);
 
-    // Load messages for a specific chat when switching
     const loadChatMessages = useCallback(async (chatId) => {
         try {
             const messages = await fetchTutorChatSessionMessages(chatId);
@@ -281,7 +174,6 @@ const Tutor = () => {
         }
     }, []);
 
-    // Initialize chats on component mount
     useEffect(() => {
         fetchChats();
     }, [fetchChats]);
@@ -293,12 +185,10 @@ const Tutor = () => {
     }, [pendingMessage, scrollToBottom]);
 
 
-    // Scroll to bottom when messages change
     useEffect(() => {
         scrollToBottom();
     }, [currentChat?.messages, scrollToBottom]);
 
-    // Create new chat
     const createNewChat = useCallback(async (title = null, subject = "math") => {
         const chatTitle = title || `New Chat ${chats.length + 1}`;
 
@@ -312,25 +202,38 @@ const Tutor = () => {
         }
     }, [chats.length, fetchChats]);
 
-    // Switch to different chat
     const switchChat = useCallback(async (chatId) => {
         if (chatId === activeChat) return;
+        console.log("Switching to chat:", chatId);
+        console.log("Current active chat:", activeChat);
 
         setChats(prev => prev.map(chat => ({
             ...chat,
             isActive: chat.id === chatId
         })));
 
+        // if (chatId !== queryChatId) {
+        //     setSearchParams({ chatId })
+        // }
+
         setActiveChat(chatId);
 
-        // Load messages if not already loaded
         const targetChat = chats.find(chat => chat.id === chatId);
+        console.log("Target chat:", targetChat);
+        console.log("Target chat messages:", targetChat?.messages);
         if (targetChat && targetChat.messages.length === 0) {
             await loadChatMessages(chatId);
         }
-    }, [activeChat, chats, loadChatMessages]);
+    }, [activeChat, chats, loadChatMessages, queryChatId]);
 
-    // Delete chat
+
+    useEffect(() => {
+        if (queryChatId) {
+            switchChat(parseInt(queryChatId, 10));
+            console.log("Switched to chat from query:", queryChatId);
+        }
+    }, [queryChatId]);
+
     const deleteChat = useCallback(async (chatId) => {
         if (!window.confirm("Are you sure you want to delete this chat?")) {
             return;
@@ -532,83 +435,22 @@ const Tutor = () => {
     return (
         <div className={styles.container}>
             {/* Chat Sidebar */}
-            <div className={styles.sidebar}>
-                {/* Sidebar Header */}
-                <div className={styles.sidebarHeader}>
-                    <button
-                        onClick={() => setIsModalOpen(true)}
-                        className={styles.newChatButton}
-                    >
-                        <Plus size={18} />
-                        <span>New Chat</span>
-                    </button>
-                </div>
-
-                {/* Chat List */}
-                <div className={styles.chatList}>
-                    {chats.map((chat) => (
-                        <div
-                            key={chat.id}
-                            className={`${styles.chatItem} ${chat.isActive ? styles.active : ''}`}
-                            onClick={() => switchChat(chat.id)}
-                        >
-                            <div className={styles.chatContent}>
-                                <div className={styles.chatHeader}>
-                                    <MessageSquare size={16} className={styles.chatIcon} />
-                                    {editingChatId === chat.id ? (
-                                        <input
-                                            type="text"
-                                            value={editTitle}
-                                            onChange={(e) => setEditTitle(e.target.value)}
-                                            onBlur={saveEditedTitle}
-                                            onKeyPress={handleKeyPress}
-                                            className={styles.chatTitleInput}
-                                            autoFocus
-                                        />
-                                    ) : (
-                                        <h3 className={styles.chatTitle}>
-                                            {chat.title}
-                                        </h3>
-                                    )}
-                                </div>
-                                <p className={styles.chatPreview}>
-                                    {formatSubject(chat.subject)}
-                                </p>
-                            </div>
-
-                            {/* Chat Actions */}
-                            <div className={styles.chatActions}>
-                                <button
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        startEditingTitle(chat.id, chat.title);
-                                    }}
-                                    className={styles.actionButton}
-                                >
-                                    <Edit3 size={14} />
-                                </button>
-                                <button
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        deleteChat(chat.id);
-                                    }}
-                                    className={`${styles.actionButton} ${styles.deleteButton}`}
-                                >
-                                    <Trash2 size={14} />
-                                </button>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-
-                {/* Sidebar Footer */}
-                <div className={styles.sidebarFooter}>
-                    <div className={styles.footerText}>
-                        AI Tutor • {chats.length} chat{chats.length !== 1 ? 's' : ''}
-                        <button><Link to="/dashboard">Back</Link></button>
-                    </div>
-                </div>
-            </div>
+            <TutorSidebar
+                chats={chats}
+                activeChat={activeChat}
+                switchChat={switchChat}
+                createNewChat={createNewChat}
+                deleteChat={deleteChat}
+                startEditingTitle={startEditingTitle}
+                saveEditedTitle={saveEditedTitle}
+                formatSubject={formatSubject}
+                isModalOpen={isModalOpen}
+                setIsModalOpen={setIsModalOpen}
+                editingChatId={editingChatId}
+                setEditingChatId={setEditingChatId}
+                editTitle={editTitle}
+                setEditTitle={setEditTitle}
+            />
 
             {/* Main Chat Area */}
             <div className={styles.mainChat}>
@@ -635,142 +477,56 @@ const Tutor = () => {
                         <div className={styles.emptyState}>
                             <h2 className={styles.emptyStateHeading}>Select a chat to start using the AI Tutor</h2>
                             <p className={styles.emptyStateText}>You can create a new chat from the sidebar to get started.</p>
+                            <Button
+                                onClick={() => setIsModalOpen(true)}
+                            >
+                                <Plus size={18} />
+                                <span>New Chat</span>
+                            </Button>
                         </div>
                     ) : (
                         <>
-                            {currentChat.messages.map((message) => (
-                                <div
-                                    key={message.id}
-                                    className={`${styles.messageWrapper} ${styles[message.role]}`}
-                                >
-                                    <div className={`${styles.messageContent} ${styles[message.role]}`}>
-                                        <div className={`${styles.avatar} ${styles[message.role]}`}>
-                                            {message.role === 'user' ? <User size={20} /> : <Bot size={20} />}
-                                        </div>
-                                        <div className={`${styles.messageInfo} ${styles[message.role]}`}>
-                                            <div className={`${styles.messageBubble} ${styles[message.role]}`}>
-                                                <ReactMarkdown remarkPlugins={[remarkGfm, remarkMath]} rehypePlugins={[rehypeHighlight, rehypeKatex, rehypeRaw]}>
-                                                    {message.content}
-                                                </ReactMarkdown>
-                                            </div>
-                                            <span className={styles.messageTime}>
-                                                {formatTime(message.created_at)}
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
+                            <TutorMessageContent
+                                messages={currentChat.messages}
+                                formatTime={formatTime}
+                            />
 
                             {/* ✅ Typing effect message */}
-                            {pendingMessage && currentChat.id === activeChat && (
-                                <div className={`${styles.messageWrapper} ${styles[pendingMessage.role]}`}>
-                                    <div className={`${styles.messageContent} ${styles[pendingMessage.role]}`}>
-                                        <div className={`${styles.avatar} ${styles[pendingMessage.role]}`}>
-                                            <Bot size={20} />
-                                        </div>
-                                        <div className={`${styles.messageInfo} ${styles[pendingMessage.role]}`}>
-                                            <div className={`${styles.messageBubble} ${styles[pendingMessage.role]}`}>
-                                                <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeHighlight, rehypeKatex]}>
-                                                    {pendingMessage.content}
-                                                </ReactMarkdown>
-                                            </div>
-                                            <span className={styles.messageTime}>
-                                                {formatTime(pendingMessage.created_at)}
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
+                            {pendingMessage && currentChat.id === activeChat && <TutorTypingEffectMessage pendingMessage={pendingMessage} formatTime={formatTime} />}
                         </>
                     )}
 
 
 
                     {/* Loading indicator */}
-                    {isLoading && (
-                        <div className={styles.loadingWrapper}>
-                            <div className={styles.loadingContent}>
-                                <div className={`${styles.avatar} ${styles.assistant}`}>
-                                    <Bot size={16} />
-                                </div>
-                                <div className={styles.loadingBubble}>
-                                    <div className={styles.loadingDots}>
-                                        <div className={styles.loadingDot}></div>
-                                        <div className={styles.loadingDot}></div>
-                                        <div className={styles.loadingDot}></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    )}
+                    {isLoading && <TutorLoader />}
 
                     <div ref={messagesEndRef} />
                 </div>
 
                 {/* Input Area */}
-                <div className={styles.inputArea}>
-                    <div className={styles.inputWrapper}>
-                        <div className={styles.inputContainer}>
-                            <textarea
-                                value={inputMessage}
-                                onChange={(e) => setInputMessage(e.target.value)}
-                                onKeyPress={handleKeyPress}
-                                placeholder="Type your question here..."
-                                className={styles.textInput}
-                                rows={1}
-                                disabled={isLoading || !activeChat || isDisabled}
-                            />
-                        </div>
-                        <button
-                            onClick={handleSendMessage}
-                            disabled={!inputMessage.trim() || isLoading || !activeChat || isDisabled}
-                            className={styles.sendButton}
-                        >
-                            <Send size={18} />
-                        </button>
-                    </div>
-                    <p className={styles.inputHint}>
-                        Press Enter to send, Shift + Enter for new line
-                    </p>
-                </div>
+                <TutorChatInputArea
+                    inputMessage={inputMessage}
+                    setInputMessage={setInputMessage}
+                    handleKeyPress={handleKeyPress}
+                    handleSendMessage={handleSendMessage}
+                    isLoading={isLoading}
+                    activeChat={activeChat}
+                    isDisabled={isDisabled}
+                />
+
             </div>
 
-            {/* Create Chat Modal */}
-            <Dialog open={isModalOpen} onClose={() => setIsModalOpen(false)}>
-                <DialogTitle>Create New Chat</DialogTitle>
-                <DialogContent>
-                    <TextField
-                        label="Chat Title"
-                        fullWidth
-                        value={newChatTitle}
-                        onChange={(e) => setNewChatTitle(e.target.value)}
-                        margin="normal"
-                    />
-                    <TextField
-                        select
-                        label="Subject"
-                        fullWidth
-                        value={newChatSubject}
-                        onChange={(e) => setNewChatSubject(e.target.value)}
-                        margin="normal"
-                    >
-                        {[
-                            "math", "biology", "physics", "chemistry", "history", "geography",
-                            "computer_science", "art", "music", "kazakh", "russian", "english"
-                        ].map((subject) => (
-                            <MenuItem key={subject} value={subject}>
-                                {formatSubject(subject)}
-                            </MenuItem>
-                        ))}
-                    </TextField>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => setIsModalOpen(false)}>Cancel</Button>
-                    <Button variant="contained" onClick={handleCreateChatFromModal}>
-                        Create
-                    </Button>
-                </DialogActions>
-            </Dialog>
+            <TutorCreateChatModel
+                isModalOpen={isModalOpen}
+                setIsModalOpen={setIsModalOpen}
+                newChatTitle={newChatTitle}
+                setNewChatTitle={setNewChatTitle}
+                newChatSubject={newChatSubject}
+                setNewChatSubject={setNewChatSubject}
+                handleCreateChatFromModal={handleCreateChatFromModal}
+                formatSubject={formatSubject}
+            />
 
             <ToastContainer />
         </div >
