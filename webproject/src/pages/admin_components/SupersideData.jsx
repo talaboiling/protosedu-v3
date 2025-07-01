@@ -27,7 +27,7 @@ export const SupersideData = [
     {
         title: 'Тесты',
         icon: <BookCheck />,
-        link: '/admindashboard/tests'
+        link: '/admindashboard/test-categories'
     },
     {
         title: 'КТП/КСП',

@@ -176,11 +176,88 @@ export const fetchCourse = async (courseId, child_id) => {
   }
 };
 
-export const fetchTests = async () => {
+export const fetchTestCategories = async () => {
   try {
-    let endpoint = "modo/tests";
-    if (localStorage.getItem('child_id')){
-      endpoint+= `?child_id=${localStorage.getItem('child_id')}`
+    const endpoint = "modo/test-categories/";
+    const response = await instance.get(endpoint);
+    return response.data;
+  } catch (error) {
+    throw new Error(error || "Something went wrong");
+  }
+};
+
+export const createTestCategory = async (formData) => {
+  try {
+    const endpoint = "modo/test-categories/";
+    const response = await instance.post(endpoint, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    if (error.response && error.response.status === 400) {
+      throw new Error(error.response.data.message || "Bad request");
+    } else if (error.response && error.response.status === 500) {
+      throw new Error("Server error. Please try again later.");
+    }
+    throw new Error(error.message || "Something went wrong");
+  }
+};
+
+export const updateTestCategory = async (id, formData) => {
+  try {
+    const endpoint = `modo/test-categories/${id}/`;
+    const response = await instance.put(endpoint, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    if (error.response && error.response.status === 400) {
+      throw new Error(error.response.data.message || "Bad request");
+    } else if (error.response && error.response.status === 500) {
+      throw new Error("Server error. Please try again later.");
+    }
+    throw new Error(error.message || "Something went wrong");
+  }
+};
+
+export const addTestToCategory = async (testId, categoryId) => {
+  try {
+    const endpoint = `modo/tests/${testId}/`;
+    const response = await instance.patch(endpoint, {
+      category: categoryId,
+    });
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    if (error.response && error.response.status === 400) {
+      throw new Error(error.response.data.message || "Bad request");
+    } else if (error.response && error.response.status === 500) {
+      throw new Error("Server error. Please try again later.");
+    }
+    throw new Error(error.message || "Something went wrong");
+  }
+};
+
+export const fetchTests = async (testType, categoryId) => {
+  try {
+    let endpoint = "modo/tests?";
+    if (testType) {
+      endpoint += `test_type=${testType}&`;
+    }
+    if (categoryId) {
+      endpoint += `category_id=${categoryId}&`;
+    }
+    if (localStorage.getItem("child_id")) {
+      endpoint += `child_id=${localStorage.getItem("child_id")}`;
     }
     const response = await instance.get(endpoint);
     return response.data;
@@ -192,8 +269,8 @@ export const fetchTests = async () => {
 export const fetchTest = async (testId) => {
   try {
     let endpoint = `modo/tests/${testId}/`;
-    if (localStorage.getItem('child_id')){
-      endpoint+= `?child_id=${localStorage.getItem('child_id')}`
+    if (localStorage.getItem("child_id")) {
+      endpoint += `?child_id=${localStorage.getItem("child_id")}`;
     }
     const response = await instance.get(endpoint);
     return response.data;
@@ -205,10 +282,10 @@ export const fetchTest = async (testId) => {
 export const createTest = async (testData) => {
   try {
     const endpoint = "modo/tests/create-full/";
-    const response = await instance.post(endpoint, testData,{
-      headers:{
-        'Content-Type': 'multipart/form-data'
-      }
+    const response = await instance.post(endpoint, testData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     });
     console.log(response.data);
     return response.data;
@@ -221,10 +298,10 @@ export const answerTestQuestion = async (question_id, answer_option) => {
   try {
     let endpoint = "modo/answer-question/";
     endpoint += `?question_id=${question_id}`;
-    if (localStorage.getItem('child_id')){
-      endpoint+= `&child_id=${localStorage.getItem('child_id')}`
+    if (localStorage.getItem("child_id")) {
+      endpoint += `&child_id=${localStorage.getItem("child_id")}`;
     }
-    const response = await instance.post(endpoint, {answer_option});
+    const response = await instance.post(endpoint, { answer_option });
     console.log(response.data);
     return response.data;
   } catch (error) {
@@ -236,8 +313,8 @@ export const getTestReview = async (test_id) => {
   try {
     let endpoint = "modo/test-review/";
     endpoint += `?test_id=${test_id}`;
-    if (localStorage.getItem('child_id')){
-      endpoint+= `&child_id=${localStorage.getItem('child_id')}`
+    if (localStorage.getItem("child_id")) {
+      endpoint += `&child_id=${localStorage.getItem("child_id")}`;
     }
     const response = await instance.get(endpoint);
     console.log(response.data);
@@ -250,10 +327,10 @@ export const getTestReview = async (test_id) => {
 export const updateTest = async (testData, id) => {
   try {
     const endpoint = `modo/tests/${id}/update-full/`;
-    const response = await instance.put(endpoint, testData,{
-      headers:{
-        'Content-Type': 'multipart/form-data'
-      }
+    const response = await instance.put(endpoint, testData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     });
     console.log(response.data);
     return response.data;
@@ -274,7 +351,7 @@ export const deleteTest = async (id) => {
     console.log(error);
     throw new Error(error || "Something went wrong");
   }
-}
+};
 
 export const createCourse = async (courseData) => {
   try {
@@ -1395,13 +1472,17 @@ export const updateComplaint = async (complaintId, formData) => {
   }
 };
 
-
-export const addTestBeforeChapter = async (courseId, sectionId, chapterId, testId) => {
+export const addTestBeforeChapter = async (
+  courseId,
+  sectionId,
+  chapterId,
+  testId
+) => {
   try {
     const response = await instance.patch(
       `/courses/${courseId}/sections/${sectionId}/chapters/${chapterId}/`,
       {
-        "before_diagnostic_test": testId
+        before_diagnostic_test: testId,
       }
     );
     return response.data;
@@ -1410,14 +1491,19 @@ export const addTestBeforeChapter = async (courseId, sectionId, chapterId, testI
       error.response?.data?.message || "Failed to add before test"
     );
   }
-}
+};
 
-export const addTestAfterChapter = async (courseId, sectionId, chapterId, testId) => {
+export const addTestAfterChapter = async (
+  courseId,
+  sectionId,
+  chapterId,
+  testId
+) => {
   try {
     const response = await instance.patch(
       `/courses/${courseId}/sections/${sectionId}/chapters/${chapterId}/`,
       {
-        "after_diagnostic_test": testId
+        after_diagnostic_test: testId,
       }
     );
     return response.data;
@@ -1426,25 +1512,22 @@ export const addTestAfterChapter = async (courseId, sectionId, chapterId, testId
       error.response?.data?.message || "Failed to add after test"
     );
   }
-}
-
+};
 
 export const fetchTestAttempt = async (testId, attemptId) => {
   let endpoint = `/modo/test-review/?test_id=${testId}&attempt_number=${attemptId}`;
-  if (localStorage.getItem('child_id')){
-    endpoint += `&child_id=${localStorage.getItem('child_id')}`
+  if (localStorage.getItem("child_id")) {
+    endpoint += `&child_id=${localStorage.getItem("child_id")}`;
   }
   try {
-    const response = await instance.get(
-      endpoint
-    );
+    const response = await instance.get(endpoint);
     return response.data;
   } catch (error) {
     throw new Error(
       error.response?.data?.message || "Failed to fetch test attempt"
     );
   }
-}
+};
 
 export const listSchoolsCredentials = async () => {
   try {
@@ -1626,10 +1709,17 @@ export const decrementClassGradesGlobally = async () => {
 };
 
 export const createNode = async (payload) => {
-  
-  const {videoId, taskId, courseId, sectionId, chapterId, title, description} = payload;
-  const bodyPayload = {lesson: videoId, task: taskId, title, description};
-  const endpoint = `courses/${courseId}/sections/${sectionId}/chapters/${chapterId}/content-nodes/`
+  const {
+    videoId,
+    taskId,
+    courseId,
+    sectionId,
+    chapterId,
+    title,
+    description,
+  } = payload;
+  const bodyPayload = { lesson: videoId, task: taskId, title, description };
+  const endpoint = `courses/${courseId}/sections/${sectionId}/chapters/${chapterId}/content-nodes/`;
   try {
     const response = await instance.post(endpoint, bodyPayload);
     if (!response.ok) {
@@ -1638,47 +1728,36 @@ export const createNode = async (payload) => {
     const data = await response.json();
     return data;
   } catch (error) {
-    throw new Error(
-      error.response?.data?.message ||
-      "Error submitting node"
-    );
+    throw new Error(error.response?.data?.message || "Error submitting node");
   }
-}
+};
 
 export const getNodes = async (payload) => {
-
-  const {courseId, sectionId, chapterId} = payload;
-  const endpoint = `courses/${courseId}/sections/${sectionId}/chapters/${chapterId}/content-nodes/`
+  const { courseId, sectionId, chapterId } = payload;
+  const endpoint = `courses/${courseId}/sections/${sectionId}/chapters/${chapterId}/content-nodes/`;
   try {
     const response = await instance.get(endpoint);
-    
-    if (response.status!==200) {
+
+    if (response.status !== 200) {
       throw new Error("Failed to get nodes");
     }
     return response.data;
   } catch (error) {
-    throw new Error(
-      error.response?.data?.message ||
-      "Error getting nodes"
-    );
+    throw new Error(error.response?.data?.message || "Error getting nodes");
   }
-}
+};
 
 export const addTaskToNode = async (payload) => {
-  const {courseId, sectionId, chapterId, nodeId, task} = payload;
+  const { courseId, sectionId, chapterId, nodeId, task } = payload;
   const endpoint = `courses/${courseId}/sections/${sectionId}/chapters/${chapterId}/content-nodes/${nodeId}/`;
   try {
-    const response = await instance.patch(endpoint, {task});
-    
-    if (response.status!==200) {
+    const response = await instance.patch(endpoint, { task });
+
+    if (response.status !== 200) {
       throw new Error("Failed to get nodes");
     }
     return response.data;
   } catch (error) {
-    throw new Error(
-      error.response?.data?.message ||
-      "Error getting nodes"
-    );
+    throw new Error(error.response?.data?.message || "Error getting nodes");
   }
-
-}
+};

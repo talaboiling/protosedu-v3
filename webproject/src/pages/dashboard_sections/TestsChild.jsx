@@ -17,9 +17,10 @@ import {
 } from "../../utils/apiService";
 import { useTranslation } from "react-i18next";
 import i18next from "i18next";
-import { NavLink, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { capitalizeFirstLetter } from "../../lib/helperFunctions";
 import TestsTable from "./TestsTable";
+import { Button } from "@mui/material";
 
 const featuredTypes = ["modo", "ent", "diagnostic", "pisa"];
 
@@ -32,6 +33,8 @@ const TestsChild = () => {
   const [isProfileSwitched, setIsProfileSwitched] = useState(false);
   const [checked, setChecked] = useState(i18next.language === "ru");
   const [type, setType] = useState();
+  const [categoryId, setCategoryId] = useState(null);
+  const [language, setLanguage] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const [tests, setTests] = useState([]);
 
@@ -41,6 +44,12 @@ const TestsChild = () => {
     if (searchParams && searchParams.has("type")) {
       setType(searchParams.get("type").toLowerCase());
     }
+    if (searchParams && searchParams.has("category")) {
+      setCategoryId(searchParams.get("category").toLowerCase());
+    }
+    if (searchParams && searchParams.has("lang")) {
+      setLanguage(searchParams.get("lang").toLowerCase());
+    }
   }, [searchParams]);
 
   function navigateToTest(testId) {
@@ -48,13 +57,18 @@ const TestsChild = () => {
   }
 
   useEffect(() => {
-    const fetchData = async () => {
-      const childId = localStorage.getItem("child_id");
+    const fetchUserAndTests = async (childId) => {
       try {
         console.log("childId", childId);
         const userData = await fetchUserData(childId);
-        const testsData = await fetchTests();
         setUser(userData);
+
+        if (!categoryId) {
+          setLoading(false);
+          return;
+        }
+
+        const testsData = await fetchTests(type, categoryId);
         setTests(testsData);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -62,8 +76,19 @@ const TestsChild = () => {
         setLoading(false);
       }
     };
+
+    const fetchData = async () => {
+      const childId = localStorage.getItem("child_id");
+      if (!childId) {
+        console.error("No child_id found in localStorage");
+        setLoading(false);
+        return;
+      }
+      await fetchUserAndTests(childId);
+    };
+
     fetchData();
-  }, []);
+  }, [categoryId, type]);
 
   console.log(tests);
   let filteredTests = [...tests];
@@ -96,6 +121,14 @@ const TestsChild = () => {
           />
         </div>
         <h2>Тесты</h2>
+        <Link
+          to={`/dashboard/test-categories?type=${type}&language=${language}`}
+          style={{ textDecoration: "none" }} // To remove the underline from the link
+        >
+          <Button variant="contained" color="primary">
+            Назад
+          </Button>
+        </Link>
         <div
           style={{
             width: "100%",
@@ -118,7 +151,7 @@ const TestsChild = () => {
               <div
                 key={test.id}
                 className="addedCourses"
-                style={{ width: "30%", cursor: "pointer", padding:"20px" }}
+                style={{ width: "30%", cursor: "pointer", padding: "20px" }}
                 onClick={() => navigateToTest(test.id)}
               >
                 <div
@@ -132,7 +165,7 @@ const TestsChild = () => {
                 >
                   <p
                     className="defaultStyle"
-                    style={{ fontSize: "x-large", color: "black",textAlign:"center" }}
+                    style={{ fontSize: "x-large", color: "black", textAlign: "center" }}
                   >
                     {test.title}
                   </p>

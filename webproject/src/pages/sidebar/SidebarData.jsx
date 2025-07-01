@@ -17,21 +17,21 @@ export const SidebarData = [
   {
     title: "МОДО",
     icon: <BookOpenCheck alt="modo" size={32} color="#8A8A8A" />,
-    link: "/dashboard/tests?type=modo",
+    link: "/dashboard/test-categories?type=modo",
     isNew: true,
 
   },
   {
     title: "ЕНТ",
     icon: <BookCheck alt="ent" size={32} color="#8A8A8A" />,
-    link: "/dashboard/tests?type=ent",
+    link: "/dashboard/test-categories?type=ent",
     isNew: true,
 
   },
   {
     title: "PISA",
     icon: <BookOpenCheck alt="modo" size={32} color="#8A8A8A" />,
-    link: "/dashboard/tests?type=pisa",
+    link: "/dashboard/test-categories?type=pisa",
     isNew: true,
   },
   // {

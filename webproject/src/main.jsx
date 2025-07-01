@@ -55,6 +55,8 @@ import DashboardLayout from "./pages/DashboardLayout.jsx";
 import { ToastContainer } from "react-toastify";
 import SchoolCredentials from "./pages/admin_sections/SchoolCredentials.jsx";
 import Tutor from "./pages/dashboard_sections/tutor/Tutor.jsx";
+import TestCategories from "./pages/admin_components/TestCategories.jsx"
+import TestCategoriesChild from "./pages/dashboard_sections/TestCategoriesChild.jsx";
 
 const router = createBrowserRouter([
   { path: "/", element: <App /> },
@@ -109,6 +111,10 @@ const router = createBrowserRouter([
       {
         path: "tests",
         element: <TestsChild />
+      },
+      {
+        path: "test-categories",
+        element: <TestCategoriesChild />
       },
       {
         path: "games",
@@ -194,6 +200,12 @@ const router = createBrowserRouter([
   {
     path: "/admindashboard/tasks",
     element: <AuthRoute element={<Tasks />} allowedRoles={["superadmin"]} />,
+  },
+  {
+    path: "/admindashboard/test-categories",
+    element: (
+      <AuthRoute element={<TestCategories />} allowedRoles={["superadmin"]} />
+    ),
   },
   {
     path: "/admindashboard/tests",

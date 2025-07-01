@@ -19,47 +19,48 @@ const featuredTypes = ["modo", "ent"];
 
 const TestChild = () => {
 
-    const { t } = useTranslation();
-    const [user, setUser] = useState({ first_name: t("student"), last_name: "" }); // Default values
-    const [loading, setLoading] = useState(false); // Add loading state
-    const avatarUrl = user.avatar ? user.avatar : placeholderPfp; // Use placeholder if avatar is null
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [isProfileSwitched, setIsProfileSwitched] = useState(false);
-    const [checked, setChecked] = useState(i18next.language === "ru");
+  const { t } = useTranslation();
+  const [user, setUser] = useState({ first_name: t("student"), last_name: "" }); // Default values
+  const [loading, setLoading] = useState(false); // Add loading state
+  const avatarUrl = user.avatar ? user.avatar : placeholderPfp; // Use placeholder if avatar is null
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isProfileSwitched, setIsProfileSwitched] = useState(false);
+  const [checked, setChecked] = useState(i18next.language === "ru");
 
-    const [test, setTest] = useState(null);
-    const {testId} = useParams();
-    const [isFinished, setIsFinished] = useState(false);
+  const [test, setTest] = useState(null);
+  const { testId } = useParams();
+  const [isFinished, setIsFinished] = useState(false);
 
-    const navigate = useNavigate();
-    
-    console.log(testId);
+  const navigate = useNavigate();
 
-    useEffect(() => {
-        const fetchData = async () => {
-          const childId = localStorage.getItem("child_id");
-          try {
-            setLoading(true);
-            console.log("childId", childId);
-            const userData = await fetchUserData(childId);
-            const testData = await fetchTest(testId);
-            setUser(userData);
-            setTest(testData);
-            if (testData.is_finished){
-              setIsFinished(true);
-            }
-          } catch (error) {
-            console.error("Error fetching data:", error);
-          } finally {
-            setLoading(false);
-          }
-        };
-        fetchData();
-    }, [testId]);
+  console.log("EEEEE")
+  console.log(testId);
 
-    console.log(test);
+  useEffect(() => {
+    const fetchData = async () => {
+      const childId = localStorage.getItem("child_id");
+      try {
+        setLoading(true);
+        console.log("childId", childId);
+        const userData = await fetchUserData(childId);
+        const testData = await fetchTest(testId);
+        setUser(userData);
+        setTest(testData);
+        if (testData.is_finished) {
+          setIsFinished(true);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, [testId]);
 
-    return (
+  console.log(test);
+
+  return (
     <div className="rtdash rtrat ratingPage">
       <Sidebar isMenuOpen={isMenuOpen} />
       <div className="centralLessons">
@@ -76,25 +77,25 @@ const TestChild = () => {
           />
         </div>
         {test && (
-            <div>
-                <h2>{test.title}</h2>
-                <p>{test.description}</p>
-                <hr style={{width: "90%", float: "left"}}/>
-                <hr style={{width: "100%", backgroundColor: "transparent", border: "none"}}/>
-                <Quiz questions={test.questions}/>
-            </div>
+          <div>
+            <h2>{test.title}</h2>
+            <p>{test.description}</p>
+            <hr style={{ width: "90%", float: "left" }} />
+            <hr style={{ width: "100%", backgroundColor: "transparent", border: "none" }} />
+            <Quiz questions={test.questions} />
+          </div>
         )}
-        {isFinished && <Modal onClose={()=> setIsFinished(false)}>
-          <HPBs_Form 
-            header="Вы уже прошли этот тест!" 
+        {isFinished && <Modal onClose={() => setIsFinished(false)}>
+          <HPBs_Form
+            header="Вы уже прошли этот тест!"
             paragraph="Вы можете пройти этот тест еще раз, но это не даст вам дополнительных баллов."
             buttons={[
               {
-                onClick: ()=> navigate("/dashboard/tests"),
+                onClick: () => navigate("/dashboard/tests"),
                 label: "Посмотреть другие тесты"
               },
               {
-                onClick: ()=> setIsFinished(false),
+                onClick: () => setIsFinished(false),
                 label: "Пройти снова",
                 styles: {
                   backgroundColor: "grey"
@@ -102,7 +103,7 @@ const TestChild = () => {
               }
             ]}
             additionalContent={
-              <PreviousAttemptsList previousAttemps={test.test_results} testId={testId}/>
+              <PreviousAttemptsList previousAttemps={test.test_results} testId={testId} />
             }
           />
         </Modal>}
