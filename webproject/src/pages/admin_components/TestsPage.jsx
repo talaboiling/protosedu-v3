@@ -31,6 +31,10 @@ const TestsPage = () => {
         if (searchParams && searchParams.get("category")) {
             setCategoryId(searchParams.get("category"));
         }
+        if (searchParams && searchParams.get("test")) {
+            setCurrentTest(searchParams.get("test"));
+        }
+
     }, [searchParams]);
 
     const navigate = useNavigate();
@@ -38,6 +42,7 @@ const TestsPage = () => {
     const [testData, setTestData] = useState({ id: -1 });
     const [testLoading, setTestLoading] = useState();
     const [mode, setMode] = useState(null);
+    const [currentTest, setCurrentTest] = useState(null);
 
     const formatType = (type) => {
         switch (type) {
@@ -55,23 +60,48 @@ const TestsPage = () => {
     };
 
     const loadTests = async () => {
-        if (!type || !categoryId) {
-            console.log("Type or categoryId is not set, skipping loadTests.");
+        setLoading(true);
+
+        // If only `test` param is set, load all tests and find that specific test.
+        if (searchParams.get("test")) {
+            console.log("Loading all tests because 'test' param is set...");
+            const data = await fetchTests(); // Fetch all tests
+            const testId = searchParams.get("test");
+            const foundTest = data.find((test) => test.id == testId);
+            if (foundTest) {
+                setTestData(foundTest); // Set the test data to display the modal with the correct test
+                setMode("update");
+                setIsModalOpen(true);
+            } else {
+                console.log("Test not found for ID:", testId);
+            }
+            setTests(data);
+            setLoading(false);
             return;
         }
-        setLoading(true);
+
+        // If `type` and `categoryId` are both set, load tests for that category and type.
+        if (!type || !categoryId) {
+            console.log("Type or categoryId is not set, skipping loadTests.");
+            toast.error("Не указан тип тестов или категория. Пожалуйста, вернитесь во вкладку тесты.");
+            setLoading(false);
+            return;
+        }
+
         console.log("Loading tests for type:", type, "and categoryId:", categoryId);
         const data = await fetchTests(type, categoryId);
         console.log("Tests loaded:", data);
         setTests(data);
         setLoading(false);
+
         if (data.length === 0) {
             toast.info("Нет тестов в этой категории.");
-        }
-        if (data.length > 0) {
+        } else {
             toast.success("Тесты успешно загружены!");
         }
     };
+
+
 
     const loadAllTests = async () => {
         if (!type || !categoryId) return;
@@ -113,6 +143,21 @@ const TestsPage = () => {
         loadTests();
     }, [type, categoryId]);
 
+    useEffect(() => {
+        if (tests.length && searchParams.get("test")) {
+            const testId = searchParams.get("test");
+            const foundTest = tests.find((test) => test.id == testId);
+            if (foundTest) {
+                setTestData(foundTest);
+                setMode("update");
+                setIsModalOpen(true);
+                setCurrentTest(testId);
+            } else {
+                console.error("Test not found for ID:", testId);
+            }
+        }
+    }, [tests, searchParams]);
+
     const handleTestCreate = async () => {
         if (newTest.title.trim() === "") return alert("Test title cannot be empty!");
         await createTest(newTest);
@@ -133,10 +178,21 @@ const TestsPage = () => {
         const currentTest = tests.filter((test) => test.id == testId)[0];
         setTestData(currentTest);
         setMode("update");
+        setSearchParams((prevParams) => {
+            const newParams = new URLSearchParams(prevParams);
+            newParams.set("test", testId); // Add or update the test parameter
+            return newParams;
+        });
     }
 
     function handleClose() {
         setIsModalOpen(false);
+        setCurrentTest(null);
+        setSearchParams((prevParams) => {
+            const newParams = new URLSearchParams(prevParams);
+            newParams.delete("test"); // Remove the test parameter
+            return newParams;
+        });
     }
 
     function testCreationButton() {

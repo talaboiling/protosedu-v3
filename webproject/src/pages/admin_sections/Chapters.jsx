@@ -9,6 +9,9 @@ import {
   TextField,
   Button,
   IconButton,
+  ListItem,
+  ListItemText,
+  Divider,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
@@ -27,7 +30,9 @@ import {
 } from "../../utils/apiService";
 import DataList from "./DataList";
 import test from "node:test";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
+import { t } from "i18next";
+import { set } from "react-hook-form";
 
 const Chapters = () => {
   const { courseId, sectionId } = useParams();
@@ -40,7 +45,7 @@ const Chapters = () => {
   const [chapterTitle, setChapterTitle] = useState("");
   const [selectedChapter, setSelectedChapter] = useState(null);
   const [selectedDTest, setSelectedDTest] = useState(null);
-  
+
   const [addTestDialog, setAddTestDialog] = useState(false);
 
   const [chapterTest, setChapterTest] = useState(null);
@@ -48,22 +53,21 @@ const Chapters = () => {
 
   const navigate = useNavigate();
 
+  const fetchContentsData = async () => {
+    try {
+      const contentsData = await fetchChapters(courseId, sectionId);
+      setContents(contentsData);
+      const sectionData = await fetchSection(courseId, sectionId);
+      setSection(sectionData);
+      const courseData = await fetchCourse(courseId);
+      setCourse(courseData);
+    } catch (error) {
+      console.error("Failed to fetch contents", error);
+    } finally {
+      setLoading(false);
+    }
+  };
   useEffect(() => {
-    const fetchContentsData = async () => {
-      try {
-        const contentsData = await fetchChapters(courseId, sectionId);
-        setContents(contentsData);
-        const sectionData = await fetchSection(courseId, sectionId);
-        setSection(sectionData);
-        const courseData = await fetchCourse(courseId);
-        setCourse(courseData);
-      } catch (error) {
-        console.error("Failed to fetch contents", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchContentsData();
   }, [courseId, sectionId]);
 
@@ -117,10 +121,11 @@ const Chapters = () => {
   const handleDeleteChapter = async (chapterId) => {
     try {
       await deleteChapter(courseId, sectionId, chapterId);
-      const updatedChapters = await fetchChapters(courseId, sectionId);
-      setContents(updatedChapters);
+      setContents(contents.filter((chapter) => chapter.id !== chapterId));
+      toast.success("Глава успешно удалена");
     } catch (error) {
       console.error("Failed to delete chapter", error);
+      toast.error("Не удалось удалить главу");
     }
   };
 
@@ -130,29 +135,62 @@ const Chapters = () => {
     );
   };
 
+  const handleTestRemove = async (chapterId, testType) => {
+    console.log(`${testType}_diagnostic_test_detail`);
+    try {
+      if (testType === "before") {
+        await updateChapter(courseId, sectionId, chapterId, {
+          before_diagnostic_test: null,
+        });
+      } else if (testType === "after") {
+        await updateChapter(courseId, sectionId, chapterId, {
+          after_diagnostic_test: null,
+        });
+      }
 
-  async function handleAddTest(){
+      toast.success("Тест успешно удален");
+      setTimeout(async () => {
+        const updatedChapters = await fetchChapters(courseId, sectionId);
+        setContents(updatedChapters);
+      }, 2000);
+
+    } catch (error) {
+      console.error("Failed to remove test", error);
+      toast.error("Не удалось удалить тест");
+
+    }
+  };
+
+
+  async function handleAddTest() {
     console.log(selectedDTest, chapterTest, orderType);
     const courseId = section.course;
     const sectionId = section.id;
     const chapterId = chapterTest;
     const testId = selectedDTest;
 
-    if (orderType==="before"){
+    if (orderType === "before") {
       try {
         const responseData = await addTestBeforeChapter(courseId, sectionId, chapterId, testId);
         console.log(responseData);
+        toast.success("Тест успешно добавлен перед главой");
       } catch (error) {
-        toast.error("Failed to add before chapter");
+        toast.error("Тест не удалось добавить перед главой");
       }
-    }else if (orderType==="after"){
+    } else if (orderType === "after") {
       try {
         const responseData = await addTestAfterChapter(courseId, sectionId, chapterId, testId);
         console.log(responseData);
+        toast.success("Тест успешно добавлен после главы");
       } catch (error) {
-        toast.error("Failed to add after chapter");
+        toast.error("Тест не удалось добавить после главы");
       }
     }
+    setTimeout(async () => {
+      const updatedChapters = await fetchChapters(courseId, sectionId);
+      setContents(updatedChapters);
+    }, 2000);
+    setAddTestDialog(false);
   };
 
   console.log(selectedDTest);
@@ -187,7 +225,7 @@ const Chapters = () => {
             alignItems: "center",
           }}
         >
-          <Link to={"/admindashboard/tasks"} style={{color:"black"}}>
+          <Link to={"/admindashboard/tasks"} style={{ color: "black" }}>
             <p
               className="defaultStyle"
               style={{
@@ -216,7 +254,7 @@ const Chapters = () => {
             Главы
           </p>
           <div className="chapters">
-            <div className="addChapter" style={{display:"flex"}}>
+            <div className="addChapter" style={{ display: "flex" }}>
               <button className="chapterAdder" onClick={handleOpenAddDialog}>
                 <AddIcon sx={{ fontSize: 30 }} />
                 Добавить главы
@@ -229,41 +267,133 @@ const Chapters = () => {
 
             <ul className="chapterList">
               {contents.map((chapter) => (
-                <li
-                  key={chapter.id}
-                  className="chapter"
-                  onClick={() => handleChapterClick(chapter.id)}
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    padding: "10px",
-                    margin: "5px 0",
-                    border: "1px solid #ccc",
-                    borderRadius: "4px",
-                    cursor: "pointer",
-                  }}
-                >
-                  <span>{chapter.title}</span>
-                  <span>
-                    <IconButton
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleOpenEditDialog(chapter);
+                <>
+                  <Divider />
+
+                  {/* Diagnostic Test before */}
+                  {chapter.before_diagnostic_test_detail && (
+                    <ListItem
+                      key={chapter.id}
+                      sx={{
+                        backgroundColor: "#077AC2",
+                        borderRadius: "8px",
+                        marginBottom: "10px",
+                        padding: "12px",
+                        color: "#fff",
+                        fontWeight: "bold",
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
                       }}
                     >
-                      <EditIcon />
-                    </IconButton>
-                    <IconButton
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDeleteChapter(chapter.id);
+                      <Link
+                        to={`/admindashboard/tests?test=${chapter.before_diagnostic_test_detail.id}`}
+                        style={{
+                          color: "#fff",
+                          textDecoration: "none",
+                          fontSize: "16px",
+                        }}
+                      >
+                        Тест до: {chapter.before_diagnostic_test_detail.title}
+                      </Link>
+                      {/* Button to delete the test, not functional yet */}
+                      <Button
+                        variant="contained"
+                        color="error"
+                        size="small"
+                        style={{ marginLeft: '10px' }}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleTestRemove(chapter.id, "before");
+                        }} // Prevent propagation to avoid opening the chapter
+                      >
+                        Удалить
+                      </Button>
+                    </ListItem>
+                  )}
+
+                  {/* Chapter */}
+                  <ListItem
+                    key={chapter.id}
+                    sx={{
+                      padding: "10px",
+                      margin: "5px 0",
+                      border: "1px solid #ccc",
+                      borderRadius: "4px",
+                      cursor: "pointer",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                    onClick={() => handleChapterClick(chapter.id)}
+                  >
+                    <ListItemText primary={chapter.title} />
+                    <div>
+                      <IconButton
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleOpenEditDialog(chapter);
+                        }}
+                      >
+                        <EditIcon />
+                      </IconButton>
+                      <IconButton
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteChapter(chapter.id);
+                        }}
+                      >
+                        <DeleteForeverIcon />
+                      </IconButton>
+                    </div>
+                  </ListItem>
+
+
+                  {/* Diagnostic Test after */}
+                  {chapter.after_diagnostic_test_detail && (
+                    <ListItem
+                      key={chapter.id}
+                      sx={{
+                        backgroundColor: "#077AC2",
+                        borderRadius: "8px",
+                        marginBottom: "10px",
+                        padding: "12px",
+                        color: "#fff",
+                        fontWeight: "bold",
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
                       }}
                     >
-                      <DeleteForeverIcon />
-                    </IconButton>
-                  </span>
-                </li>
+                      <Link
+                        to={`/admindashboard/tests?test=${chapter.after_diagnostic_test_detail.id}`}
+                        style={{
+                          color: "#fff",
+                          textDecoration: "none",
+                          fontSize: "16px",
+                        }}
+                      >
+                        Тест после: {chapter.after_diagnostic_test_detail.title}
+                      </Link>
+                      {/* Button to delete the test, not functional yet */}
+                      <Button
+                        variant="contained"
+                        color="error"
+                        size="small"
+                        style={{ marginLeft: '10px' }}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleTestRemove(chapter.id, "after");
+                        }} // Prevent propagation to avoid opening the chapter
+                      >
+                        Удалить
+                      </Button>
+                    </ListItem>
+
+                  )}
+                  {/* <Divider /> */}
+
+                </>
               ))}
             </ul>
           </div>
@@ -303,23 +433,29 @@ const Chapters = () => {
             value={chapterTitle}
             onChange={(e) => setChapterTitle(e.target.value)}
           />
-          <div style={{display: "flex", fontSize: "14px", gap: "1rem"}}>
+          <div style={{ display: "flex", fontSize: "14px", gap: "1rem" }}>
             <p>Тест до:</p>
-            {
-              selectedChapter?.before_diagnostic_test_detail 
-                ? <button style={{paddingInline: "5px"}} onClick={()=> navigate(`/admindashboard/tests`)}>{selectedChapter.before_diagnostic_test_detail.title}</button>
-                : <p>{' - '}</p>
-
-            }
+            {selectedChapter?.before_diagnostic_test_detail ? (
+              <Link to={`/admindashboard/tests?test=${selectedChapter.before_diagnostic_test_detail.id}`}>
+                <button style={{ paddingInline: "5px" }}>
+                  {selectedChapter.before_diagnostic_test_detail.title}
+                </button>
+              </Link>
+            ) : (
+              <p>{' - '}</p>
+            )}
           </div>
-          <div style={{display: "flex", fontSize: "14px", gap: "1rem"}}>
+          <div style={{ display: "flex", fontSize: "14px", gap: "1rem" }}>
             <p>Тест после: </p>
-            {
-              selectedChapter?.after_diagnostic_test_detail 
-                ? <button style={{paddingInline: "5px"}}>{selectedChapter.after_diagnostic_test_detail.title}</button>
-                : <p>{' - '}</p>
-
-            }
+            {selectedChapter?.after_diagnostic_test_detail ? (
+              <Link to={`/admindashboard/tests?test=${selectedChapter.after_diagnostic_test_detail.id}`}>
+                <button style={{ paddingInline: "5px" }}>
+                  {selectedChapter.after_diagnostic_test_detail.title}
+                </button>
+              </Link>
+            ) : (
+              <p>{' - '}</p>
+            )}
           </div>
         </DialogContent>
         <DialogActions>
@@ -330,24 +466,25 @@ const Chapters = () => {
         </DialogActions>
       </Dialog>
 
-      <Dialog open={addTestDialog} onClose={()=>setAddTestDialog(false)}>
+      <Dialog open={addTestDialog} onClose={() => setAddTestDialog(false)}>
         <DialogTitle>Добавить Тест</DialogTitle>
         <DialogContent>
           <p>Тест привязан к главе. Выберите тест и главу к которой хотите привязать этот тест</p>
           <p>Выберите тест</p>
-          <DataList type="async" asyncFunction={fetchTests} actionFunction={(test)=>setSelectedDTest(test)}/>
+          <DataList type="async" asyncFunction={() => fetchTests("diagnostic")} actionFunction={(test) => setSelectedDTest(test)} />
           <p>Выберите Главу для теста</p>
-          <DataList type="sync" data={section.chapters} actionFunction={(chapterId)=>setChapterTest(chapterId)}/>
+          <DataList type="sync" data={section.chapters} actionFunction={(chapterId) => setChapterTest(chapterId)} />
           <p>Выберите Порядок</p>
-          <DataList type="sync" data={[{title:"До", id: 'before'}, {title:"После", id: 'after'}]} actionFunction={(orderType)=>setOrderType(orderType)}/>
+          <DataList type="sync" data={[{ title: "До", id: 'before' }, { title: "После", id: 'after' }]} actionFunction={(orderType) => setOrderType(orderType)} />
         </DialogContent>
         <DialogActions>
-          <Button onClick={()=>setAddTestDialog(false)}>Отменить</Button>
+          <Button onClick={() => setAddTestDialog(false)}>Отменить</Button>
           <Button onClick={handleAddTest} disabled={!selectedDTest}>
             Добавить
           </Button>
         </DialogActions>
       </Dialog>
+      <ToastContainer />
     </div>
   );
 };
