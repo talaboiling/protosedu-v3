@@ -20,7 +20,7 @@ import i18next from "i18next";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { capitalizeFirstLetter } from "../../lib/helperFunctions";
 import TestsTable from "./TestsTable";
-import { Button } from "@mui/material";
+import { Button, Card, CardContent, Typography, Grid } from "@mui/material";
 
 const featuredTypes = ["modo", "ent", "diagnostic", "pisa"];
 
@@ -55,6 +55,21 @@ const TestsChild = () => {
   function navigateToTest(testId) {
     navigate(`${testId}`);
   }
+
+  const formatType = (type) => {
+    switch (type) {
+      case 'modo':
+        return 'МОДО';
+      case 'ent':
+        return 'ЕНТ';
+      case 'diagnostic':
+        return 'Диагностический';
+      case 'pisa':
+        return 'PISA';
+      default:
+        return 'Неизвестный тип';
+    }
+  };
 
   useEffect(() => {
     const fetchUserAndTests = async (childId) => {
@@ -120,66 +135,61 @@ const TestsChild = () => {
             urlPath={"rating"}
           />
         </div>
-        <h2>Тесты</h2>
+        <h2 style={{ fontSize: "2rem", fontWeight: "bold", marginBottom: "20px" }}>
+          Тесты {formatType(type)}
+        </h2>
         <Link
           to={`/dashboard/test-categories?type=${type}&language=${language}`}
           style={{ textDecoration: "none" }} // To remove the underline from the link
         >
-          <Button variant="contained" color="primary">
+          <Button variant="contained" color="primary" style={{ fontSize: "1rem", padding: "10px 20px" }}>
             Назад
           </Button>
         </Link>
-        <div
-          style={{
-            width: "100%",
-            display: "flex",
-            justifyContent: "space-between",
-            marginBottom: "20px",
-          }}
-        >
-        </div>
-        <div
-          style={{
-            margin: "auto",
-            display: "flex",
-            gap: "2rem",
-            flexWrap: "wrap",
-          }}
-        >
+        <Grid container spacing={3} style={{ marginTop: "20px" }}>
           {filteredTests.length > 0 &&
             filteredTests.map((test) => (
-              <div
-                key={test.id}
-                className="addedCourses"
-                style={{ width: "30%", cursor: "pointer", padding: "20px" }}
-                onClick={() => navigateToTest(test.id)}
-              >
-                <div
+              <Grid item xs={12} sm={6} md={4} key={test.id}>
+                <Card
+                  onClick={() => navigateToTest(test.id)}
                   style={{
+                    cursor: "pointer",
+                    padding: "20px",
+                    height: "250px",
                     display: "flex",
                     flexDirection: "column",
-                    alignItems: "center",
                     justifyContent: "center",
-                    gap: "0.5rem",
+                    alignItems: "center",
                   }}
                 >
-                  <p
-                    className="defaultStyle"
-                    style={{ fontSize: "x-large", color: "black", textAlign: "center" }}
-                  >
-                    {test.title}
-                  </p>
-                  <p className="defaultStyle" style={{ color: "#666" }}>
-                    {test.description}
-                  </p>
-                  <p className="defaultStyle" style={{ color: "#666" }}>
-                    Test type: {capitalizeFirstLetter(test.test_type)}
-                  </p>
-                </div>
-              </div>
+                  <CardContent>
+                    <Typography
+                      variant="h5"
+                      component="div"
+                      style={{
+                        textAlign: "center",
+                        fontWeight: "bold",
+                        fontSize: "1.2rem",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      {test.title}
+                    </Typography>
+                    <Typography
+                      variant="body1"
+                      color="textSecondary"
+                      style={{
+                        textAlign: "center",
+                        fontSize: "1rem",
+                      }}
+                    >
+                      {test.description}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
             ))}
-        </div>
-        {/* {tests.length>0 && <TestsTable data={tests}/>} */}
+        </Grid>
       </div>
     </div>
   );
