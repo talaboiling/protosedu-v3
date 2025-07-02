@@ -4,10 +4,11 @@ import "../../tailwind.css"; // Import Tailwind CSS
 import Superside from "./Superside";
 import { capitalizeFirstLetter } from "../../lib/helperFunctions";
 import TestCreationModal from "./tests/TestCreationModal";
-import { fetchTests } from "../../utils/apiService";
+import { fetchTests, removeTestFromCategory } from "../../utils/apiService";
 import Loader from "../Loader";
 import TestsListModal from "./tests/TestsListModal";
 import { Card, CardContent, Typography, Button, Grid } from "@mui/material";
+import { ToastContainer, toast } from "react-toastify";
 
 const createTest = async (test) => console.log("Test Created:", test);
 const featuredTypes = ["modo", "ent", "diagnostic", "pisa"];
@@ -64,6 +65,12 @@ const TestsPage = () => {
         console.log("Tests loaded:", data);
         setTests(data);
         setLoading(false);
+        if (data.length === 0) {
+            toast.info("Нет тестов в этой категории.");
+        }
+        if (data.length > 0) {
+            toast.success("Тесты успешно загружены!");
+        }
     };
 
     const loadAllTests = async () => {
@@ -87,6 +94,20 @@ const TestsPage = () => {
     const updateTestList = (tests) => {
         setTestList(tests);
     };
+
+    const handleRemoveFromCategory = async (testId) => {
+        if (!categoryId) return;
+        try {
+            await removeTestFromCategory(testId, categoryId);
+            setTests(tests.filter((test) => test.id !== testId));
+            toast.success("Тест успешно убран из категории!");
+        } catch (error) {
+            console.error("Error removing test from category:", error);
+            toast.error("Не удалось убрать тест из категории. Пожалуйста, попробуйте позже.");
+        }
+    };
+
+
 
     useEffect(() => {
         loadTests();
@@ -141,6 +162,9 @@ const TestsPage = () => {
                     <Link to={"/admindashboard/test-categories"}>
                         <Button variant="contained">Назад</Button>
                     </Link>
+                    <Button variant="contained" color="success" onClick={loadTests}>
+                        Обновить
+                    </Button>
                     <Button variant="contained" color="warning" onClick={openTestListModal}>
                         Добавить существующий тест
                     </Button>
@@ -155,10 +179,7 @@ const TestsPage = () => {
                     {filteredTests.length > 0 &&
                         filteredTests.map((test) => (
                             <Grid item xs={12} sm={6} md={4} lg={3} key={test.id}>
-                                <Card
-                                    onClick={() => openTest(test.id)}
-                                    style={{ cursor: "pointer", height: "100%" }}
-                                >
+                                <Card style={{ cursor: "pointer", height: "100%" }}>
                                     <CardContent style={{ display: "flex", flexDirection: "column", height: "100%" }}>
                                         <Typography variant="h6" style={{ color: "black" }}>
                                             {test.title}
@@ -166,6 +187,27 @@ const TestsPage = () => {
                                         <Typography variant="body2" style={{ color: "#666", flexGrow: 1 }}>
                                             Описание: {test.description}
                                         </Typography>
+                                        <Button
+                                            onClick={() => openTest(test.id)}
+                                            variant="contained"
+                                            color="primary"
+                                            fullWidth
+                                            style={{ marginTop: '8px' }}
+                                        >
+                                            Открыть тест
+                                        </Button>
+                                        <Button
+                                            variant="contained"
+                                            color="error"
+                                            fullWidth
+                                            style={{ marginTop: '8px' }}
+                                            onClick={() => {
+                                                handleRemoveFromCategory(test.id);
+                                            }}
+                                        >
+                                            Убрать из категории
+                                        </Button>
+                                        <br />
                                     </CardContent>
                                 </Card>
                             </Grid>
@@ -183,6 +225,7 @@ const TestsPage = () => {
                     />
                 )}
             </div>
+            <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
         </div>
     );
 };

@@ -2,9 +2,7 @@ import React, { useState } from 'react';
 import Modal from '../../../helpers/Modal';
 import { TextField, Select, MenuItem, Button, FormControl, InputLabel, FormControlLabel, Radio } from '@mui/material';
 import { toast } from 'react-toastify';
-import { createTestCategory, updateTestCategory } from '../../../utils/apiService';
-
-
+import { createTestCategory, updateTestCategory, deleteTestCategory } from '../../../utils/apiService';
 
 const TestCategoryCreationOrUpdateModal = ({ onClose, categoryData = null, isUpdate = false, onSuccess }) => {
     const [formData, setFormData] = useState({
@@ -15,7 +13,6 @@ const TestCategoryCreationOrUpdateModal = ({ onClose, categoryData = null, isUpd
         is_mandatory: categoryData ? categoryData.is_mandatory : false,
         is_profile: categoryData ? categoryData.is_profile : false,
     });
-
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -37,7 +34,7 @@ const TestCategoryCreationOrUpdateModal = ({ onClose, categoryData = null, isUpd
 
         if (!formData.is_mandatory && !formData.is_profile) {
             toast.error("Пожалуйста, выберите тип предмета (Обязательный или Профильный).");
-            return; // Prevent form submission
+            return;
         }
 
         try {
@@ -51,14 +48,8 @@ const TestCategoryCreationOrUpdateModal = ({ onClose, categoryData = null, isUpd
                 data.append('image', formData.image);
             }
 
-
-            console.log("Form data being sent:");
-            for (let [key, value] of data.entries()) {
-                console.log(`${key}: ${value}`);
-            }
-
             if (isUpdate && categoryData) {
-                await updateTestCategory(categoryData.id, data); // Assume updateTestCategory is a function that handles the update
+                await updateTestCategory(categoryData.id, data);
                 toast.success('Категория успешно обновлена!');
             } else {
                 await createTestCategory(data);
@@ -73,6 +64,22 @@ const TestCategoryCreationOrUpdateModal = ({ onClose, categoryData = null, isUpd
             toast.error('Не удалось создать категорию.');
         }
     };
+
+    const handleDelete = async () => {
+        if (!categoryData) return;
+
+        try {
+            await deleteTestCategory(categoryData.id);
+            toast.success('Категория успешно удалена!');
+            onClose();
+            if (onSuccess) {
+                onSuccess();
+            }
+        } catch (error) {
+            toast.error('Не удалось удалить категорию.');
+        }
+    };
+
     return (
         <Modal onClose={onClose}>
             <form onSubmit={handleSubmit}>
@@ -151,7 +158,7 @@ const TestCategoryCreationOrUpdateModal = ({ onClose, categoryData = null, isUpd
                                             setFormData((prev) => ({
                                                 ...prev,
                                                 is_mandatory: true,
-                                                is_profile: false, // disable the other
+                                                is_profile: false,
                                             }))
                                         }
                                         name="is_mandatory"
@@ -168,7 +175,7 @@ const TestCategoryCreationOrUpdateModal = ({ onClose, categoryData = null, isUpd
                                             setFormData((prev) => ({
                                                 ...prev,
                                                 is_profile: true,
-                                                is_mandatory: false, // disable the other
+                                                is_mandatory: false,
                                             }))
                                         }
                                         name="is_profile"
@@ -179,12 +186,22 @@ const TestCategoryCreationOrUpdateModal = ({ onClose, categoryData = null, isUpd
                             />
                         </div>
                     </FormControl>
-
                 </div>
                 <div style={{ marginTop: '16px' }}>
                     <Button type="submit" variant="contained" color="primary" fullWidth>
-                        Создать
+                        {isUpdate ? 'Обновить категорию' : 'Создать категорию'}
                     </Button>
+                    {isUpdate && (
+                        <Button
+                            variant="contained"
+                            color="error"
+                            fullWidth
+                            style={{ marginTop: '8px' }}
+                            onClick={handleDelete}
+                        >
+                            Удалить категорию
+                        </Button>
+                    )}
                 </div>
             </form>
         </Modal>

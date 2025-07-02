@@ -207,6 +207,23 @@ export const createTestCategory = async (formData) => {
   }
 };
 
+export const deleteTestCategory = async (id) => {
+  try {
+    const endpoint = `modo/test-categories/${id}/`;
+    const response = await instance.delete(endpoint);
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    if (error.response && error.response.status === 400) {
+      throw new Error(error.response.data.message || "Bad request");
+    } else if (error.response && error.response.status === 500) {
+      throw new Error("Server error. Please try again later.");
+    }
+    throw new Error(error.message || "Something went wrong");
+  }
+};
+
 export const updateTestCategory = async (id, formData) => {
   try {
     const endpoint = `modo/test-categories/${id}/`;
@@ -233,6 +250,25 @@ export const addTestToCategory = async (testId, categoryId) => {
     const endpoint = `modo/tests/${testId}/`;
     const response = await instance.patch(endpoint, {
       category: categoryId,
+    });
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    if (error.response && error.response.status === 400) {
+      throw new Error(error.response.data.message || "Bad request");
+    } else if (error.response && error.response.status === 500) {
+      throw new Error("Server error. Please try again later.");
+    }
+    throw new Error(error.message || "Something went wrong");
+  }
+};
+
+export const removeTestFromCategory = async (testId) => {
+  try {
+    const endpoint = `modo/tests/${testId}/`;
+    const response = await instance.patch(endpoint, {
+      category: null,
     });
     console.log(response.data);
     return response.data;
