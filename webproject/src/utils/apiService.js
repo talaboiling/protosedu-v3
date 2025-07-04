@@ -786,6 +786,7 @@ export const updateLesson = async (
   try {
     const endpoint = `/courses/${courseId}/sections/${sectionId}/chapters/${chapterId}/lessons/${lessonId}/`;
     const response = await instance.patch(endpoint, data);
+    console.log(endpoint);
     return response.data;
   } catch (error) {
     throw new Error(error || "Something went wrong");
