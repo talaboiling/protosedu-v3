@@ -54,14 +54,9 @@ import Complaints from "./pages/admin_sections/Complaints.jsx";
 import DashboardLayout from "./pages/DashboardLayout.jsx";
 import { ToastContainer } from "react-toastify";
 import SchoolCredentials from "./pages/admin_sections/SchoolCredentials.jsx";
-<<<<<<< HEAD
 import Tutor from "./pages/dashboard_sections/tutor/Tutor.jsx";
 import TestCategories from "./pages/admin_components/TestCategories.jsx"
 import TestCategoriesChild from "./pages/dashboard_sections/TestCategoriesChild.jsx";
-=======
-import Tutor from "./pages/dashboard_sections/Tutor.jsx";
-import TestPage from "./pages/admin_components/TestPage.jsx";
->>>>>>> 4d1c958 (Test update development)
 
 const router = createBrowserRouter([
   { path: "/", element: <App /> },

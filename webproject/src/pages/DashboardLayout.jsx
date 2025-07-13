@@ -44,9 +44,7 @@ const DashboardLayout = () => {
                 <Sidebar user={user} isMenuOpen={isMenuOpen}/>
                 <div className="rtdash dashMain">
                     <div className='content'>
-                        <div className='info'>
-                          <Outlet context={{isMenuOpen, setIsMenuOpen, user}}/>
-                        </div>
+                      <Outlet context={{isMenuOpen, setIsMenuOpen, user}}/>
                     </div>
                     <Profile 
                       user={user} 

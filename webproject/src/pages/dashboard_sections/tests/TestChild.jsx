@@ -36,33 +36,32 @@ const TestChild = () => {
   console.log("EEEEE")
   console.log(testId);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const childId = localStorage.getItem("child_id");
-      try {
-        setLoading(true);
-        console.log("childId", childId);
-        const userData = await fetchUserData(childId);
-        const testData = await fetchTest(testId);
-        setUser(userData);
-        setTest(testData);
-        if (testData.is_finished) {
-          setIsFinished(true);
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, [testId]);
+    useEffect(() => {
+        const fetchData = async () => {
+          const childId = localStorage.getItem("child_id");
+          try {
+            setLoading(true);
+            console.log("childId", childId);
+            const userData = await fetchUserData(childId);
+            const testData = await fetchTest(testId);
+            setUser(userData);
+            setTest(testData);
+            if (testData.is_finished){
+              setIsFinished(true);
+            }
+          } catch (error) {
+            console.error("Error fetching data:", error);
+          } finally {
+            setLoading(false);
+          }
+        };
+        fetchData();
+    }, [testId]);
 
   console.log(test);
 
-  return (
-    <div className="rtdash rtrat ratingPage">
-      <Sidebar isMenuOpen={isMenuOpen} />
+    return (
+    <div className="rtrat ratingPage">
       <div className="centralLessons">
         <div style={{ width: "fit-content" }}>
           <Navdash

@@ -22,7 +22,7 @@ const OVERLAY_STYLES = {
     zIndex: 1000
 }
 
-export default function Modal({children, onClose, extraStyles}) {
+export default function Modal({children, classname, onClose, extraStyles}) {
 
     const outsideRef = useRef(null);
 
@@ -44,7 +44,7 @@ export default function Modal({children, onClose, extraStyles}) {
     return createPortal(
       <>
         <div ref={outsideRef} style={OVERLAY_STYLES} />
-        <div style={{...MODAL_STYLES, ...extraStyles}}>
+        <div style={{...MODAL_STYLES, ...extraStyles}} className={classname}>
           <X style={{cursor: "pointer", position: "absolute", left: "20px", top: "20px"}} onClick={()=>onClose()}/>
           {children}
         </div>

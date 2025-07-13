@@ -39,10 +39,10 @@ const Sidebar = ({ isMenuOpen, user }) => {
   let grade = localStorage.getItem('grade') ? parseInt(localStorage.getItem('grade')) : user.grade;
   
   return (
-    <div className="">
+    <>
       {grade>4 && <SeniorSidebar isMenuOpen={isMenuOpen} sidebarType={"senior"} user={{...user, grade}} goBack={goBack} handleLogout={handleLogout}/>}
       {grade<=4 && <JuniorSidebar isMenuOpen={isMenuOpen} sidebarType={"junior"} user={{...user, grade}} goBack={goBack} handleLogout={handleLogout}/>}
-    </div>
+    </>
   );
 };
 

@@ -1,18 +1,11 @@
 .content{
     position: relative;
-    margin-left: 250px;
     z-index: 1;
-}
-
-.info{
-    width: 100%;
-    height: 100vh;
-    position: relative;
-    padding-inline: 30px;
+    flex: 3;
 }
 
 
-@media (max-width:768px) {
+@media (max-width:1024px) {
     .content{
         margin-left: 0;
     }

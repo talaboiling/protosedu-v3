@@ -1,0 +1,109 @@
+.edit-pen{
+
+}
+
+.form{
+    display: flex;
+    flex-direction: column;
+}
+  
+.inputField {
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+}
+  
+.inputField label {
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+  
+.inputField input,
+.inputField textarea {
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+
+.questionItem {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    background-color: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+  
+.questionHeading {
+  font-size: 1rem;
+  font-weight: bold;
+  margin-bottom: 0.75rem;
+  width: 80%;
+}
+  
+  /* Styling for the question image */
+.questionImage {
+    width: 100%;
+    max-height: 300px;
+    object-fit: cover;
+    margin-bottom: 0.75rem;
+    border-radius: 4px;
+}
+
+/* Container for the answers section */
+.answers {
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+  
+.answer {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fafafa;
+    text-align: center;
+}
+  
+  /* For text type answers: style the text input */
+.answerInput {
+    width: 80%;
+    padding: 0.25rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    outline: none;
+}
+  
+  /* For image type answers: style the file input button */
+.answerImageInput {
+    display: block;
+    padding: 0.5rem;
+    margin-top: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #eee;
+    cursor: pointer;
+}
+  
+  /* Preview image for the loaded answer image (optional) */
+.answerPreview {
+    width: 100%;
+    max-height: 100px;
+    object-fit: cover;
+    margin-top: 0.5rem;
+    border-radius: 4px;
+}
+
+
+

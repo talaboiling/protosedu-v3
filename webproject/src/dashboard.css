@@ -4,14 +4,15 @@
   background-color: #f8f4fa;
   border: none;
   margin: 0;
-  padding: 0;
+  padding: 0 25px;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-decoration: none;
-  display: grid;
-  grid-template-columns: 3fr 1fr;
+  display: flex;
+  width: calc(100vw - 250px);
+  margin-left: 250px;
 }
 
 .navdashboard {
@@ -105,6 +106,13 @@
   opacity: 0;
   cursor: pointer;
   z-index: 3;
+}
+
+.centralProg{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
 .knobs {
@@ -287,6 +295,7 @@
 }
 
 .dashProfile {
+  flex: 1;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -543,7 +552,6 @@
 
 .rtrat {
   display: grid;
-  grid-template-columns: 1fr 4fr;
 }
 
 .progcalendar {
@@ -896,10 +904,9 @@ img.childcard {
   background: white;
   padding: 30px;
   border-radius: 10px;
-  width: auto;
-  max-width: fit-content;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   position: relative;
+  width: min(900px, 80vw);
 }
 
 .studmodal-header {
@@ -1102,7 +1109,7 @@ img.childcard {
   position: relative;
   display: flex;
   flex-direction: column;
-  width: 900px;
+  width: auto;
   height: 500px;
   background-image: url(./assets/bgstudtask.webp);
   background-size: cover;
@@ -1115,6 +1122,8 @@ img.childcard {
 }
 
 .studTaskOptions {
+  margin: auto;
+  width: 80%;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
@@ -1383,6 +1392,7 @@ img.childcard {
 
 .questionTitle {
   max-width: 500px;
+  max-height:300px;
   font-size: 30px;
 }
 
@@ -1470,9 +1480,6 @@ img.childcard {
 
 /*  Additional  */
 @media (max-width: 1365px) {
-  .dashMain {
-    position: relative;
-  }
   .dashProfile {
     transition: 0.5s ease;
     padding: 50px 0 0 0;
@@ -1739,16 +1746,17 @@ img.childcard {
   }
   .mathLesson .studmodal-content {
     padding: 1rem;
-    width: 80vw;
-    height: 80vh;
+    max-width: 800px;
+    max-height: 80vh;
   }
   .mathLesson .studmodal-content .studtaskDetails {
-    width: fit-content;
+    width: auto;
     height: fit-content;
   }
   .mathLesson .studmodal-content .questionTitle {
     padding: 1rem 0;
     text-align: left;
+    font-size: 22px;
   }
   /*.mathLesson .studmodal-content .questionTitle {}*/
   .mathLesson .studmodal-content .questionContent ul {
@@ -2176,7 +2184,7 @@ img.childcard {
   }
 
   .mathLesson .studtaskDetails {
-    width: 80%;
+    width: 100%;
     height: 60vh;
     align-items: center;
     justify-content: center;
@@ -2201,7 +2209,6 @@ img.childcard {
   }
 
   .mathLesson .studtaskDetails .questionContent .studTaskOptions {
-    display: block;
     margin-top: 1rem;
   }
 
@@ -2300,7 +2307,7 @@ img.childcard {
   }
   .mathLesson .studmodal-content .questionTitle {
     text-align: left;
-    font-size: 1.2rem;
+    font-size: 18px;
   }
   .mathLesson .studmodal-content .questionContent ul li strong {
     margin: 0 !important;
@@ -2736,7 +2743,6 @@ img.childcard {
   }
 
   .mathLesson .studtaskDetails .questionContent .studTaskOptions {
-    display: block;
     margin-top: 1rem;
   }
 

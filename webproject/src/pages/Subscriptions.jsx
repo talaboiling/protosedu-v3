@@ -30,7 +30,7 @@ const Subscriptions = () => {
   }
 
   return (
-    <div className="rtdash rtrat">
+    <div className="rtrat">
       <Sidebar />
       <div className="centralLessons">
         <div style={{ width: "fit-content" }}>
