@@ -88,6 +88,7 @@ const QuestionStudent = ({currentQuestion, showFeedback, handleSubmit,
     console.log(userInputs);
 
     useEffect(() => {
+        console.log(currentQuestion)
         if (currentQuestion) {
             setContent(currentQuestion.content);
             if (currentQuestion.content) {
@@ -115,8 +116,10 @@ const QuestionStudent = ({currentQuestion, showFeedback, handleSubmit,
 
         const newCanvas = new fabric.StaticCanvas(canvasRef.current, {
             width: canvasElement?.clientWidth,
-            height: canvasElement?.clientHeight,
+            height: canvasElement?.parentElement?.clientHeight,
         });
+
+        console.log(canvasElement.clientHeight, canvasElement.clientWidth)
 
         console.log(canvasJson, dropZones);
 
@@ -185,7 +188,7 @@ const QuestionStudent = ({currentQuestion, showFeedback, handleSubmit,
                     checkCorrectAnswer={checkCorrectAnswer}
                 />
             </div>}
-            {currentQuestion.question_type === "click_image" && <div id="upper-content" style={{ position: "absolute", width: "100%", height: "100%" }}>
+            {currentQuestion.question_type === "click_image" && <div id="upper-content" style={{ position: "absolute",left:0,top:0, width: "100%", height: "100%" }}>
                 {outsideElements.map(outsideElement => {
                     return <Outside element={outsideElement} handleClick={checkCorrectAnswer} handleUserInput={handleUserInput} />
                 })}

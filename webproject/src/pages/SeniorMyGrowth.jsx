@@ -106,7 +106,7 @@ const SeniorMyGrowth = ({t, graphStyles}) => {
             </div>
             {showModal && (
                 <Modal onClose={()=>setShowModal(false)} extraStyles={{borderRadius: "20px"}}>
-                    <div style={{width: graphStyles && graphStyles.width ? `${graphStyles.width}` : `500px`, height: graphStyles && graphStyles.height ? `${graphStyles.height}` : `150px` }}>
+                    <div style={{width: `500px`, height: graphStyles && graphStyles.height ? `${graphStyles.height}` : `150px` }}>
                       <Line data={data} options={options}/>
                     </div>
                 </Modal>

@@ -263,6 +263,18 @@ export const updateTest = async (testData, id) => {
   }
 };
 
+export const updateTestData = async (testData, id) => {
+  try {
+    const endpoint = `modo/tests/${id}/`;
+    const response = await instance.patch(endpoint, testData);
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    throw new Error(error || "Something went wrong");
+  }
+};
+
 export const deleteTest = async (id) => {
   try {
     const endpoint = `modo/tests/${id}/`;
@@ -1680,5 +1692,54 @@ export const addTaskToNode = async (payload) => {
       "Error getting nodes"
     );
   }
-
 }
+
+
+export const deleteTestQuestion = async (
+  questionId, testId
+) => {
+  try {
+    const endpoint = `/modo/questions/${questionId}/?test_id=${testId}`;
+    const response = await instance.delete(endpoint);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    throw new Error(error || "Something went wrong");
+  }
+};
+
+export const editTestQuestion = async (
+  data, questionId
+) => {
+  console.log(data);
+  try {
+    const endpoint = `/modo/questions/${questionId}/?test_id=${data.test}`;
+    const response = await instance.patch(endpoint, data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    throw new Error(error || "Something went wrong");
+  }
+};
+
+export const createTestQuestion = async (
+  data
+) => {
+  console.log(data);
+  try {
+    const endpoint = `/modo/questions/`;
+    const response = await instance.post(endpoint, data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    throw new Error(error || "Something went wrong");
+  }
+};

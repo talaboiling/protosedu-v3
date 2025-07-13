@@ -157,7 +157,7 @@ const Pprogress = () => {
   }
 
   return (
-    <div className="rtdash progressPage">
+    <div className="progressPage">
       <div className="centralDash">
         <Navdash
           isMenuOpen={isMenuOpen}
@@ -169,11 +169,11 @@ const Pprogress = () => {
         <h2 className="progressText">Прогресс</h2>
         <div className="centralProg">
           <div style={{ width: "100%", height: "300px" }}>
-            <SeniorMyGrowth t={t} graphStyles={{height: "300px"}}/>
+            <SeniorMyGrowth t={t} graphStyles={{height: "300px", width:"100%"}}/>
           </div>
           <div className="progcalendar">
             <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DateCalendar value={selectedDate} onChange={handleDateChange} />
+              <DateCalendar value={selectedDate} onChange={handleDateChange}/>
             </LocalizationProvider>
 
             {dailyProgress !== null && (

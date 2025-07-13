@@ -60,8 +60,7 @@ const TestChild = () => {
     console.log(test);
 
     return (
-    <div className="rtdash rtrat ratingPage">
-      <Sidebar isMenuOpen={isMenuOpen} />
+    <div className="rtrat ratingPage">
       <div className="centralLessons">
         <div style={{ width: "fit-content" }}>
           <Navdash

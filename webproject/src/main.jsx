@@ -141,17 +141,17 @@ const router = createBrowserRouter([
             allowedRoles={["student", "parent"]}
           />
         ),
+      },
+      {
+        path: "/dashboard/tests/:testId",
+        element: (
+          <AuthRoute
+            element={<TestChild />}
+            allowedRoles={["student", "parent"]}
+          />
+        ),
       }
     ]
-  },
-  {
-    path: "/dashboard/tests/:testId",
-    element: (
-      <AuthRoute
-        element={<TestChild />}
-        allowedRoles={["student", "parent"]}
-      />
-    ),
   },
   {
     path: "/dashboard/ai-tutor",

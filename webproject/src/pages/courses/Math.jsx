@@ -489,7 +489,7 @@ const Math = ({config}) => {
   }
 
   return (
-    <div className="">
+    <div className="mathLesson">
       <div className="centralLessons">
         <div className="centralLessonsInner maths">
           <Navdash

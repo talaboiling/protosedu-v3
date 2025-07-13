@@ -60,7 +60,7 @@ const Lessons = () => {
     return <Loader></Loader>;
   }
   return (
-    <div className="rtdash centralDash certpage">
+    <div className="centralDash certpage">
       <div className="centralLessons">
         <div className="centralLessonsInner">
           <Navdash

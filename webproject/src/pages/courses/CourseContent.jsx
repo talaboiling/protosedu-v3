@@ -65,7 +65,7 @@ const CourseContent = () => {
     return <Loader />; // Display loader while fetching data
   }
   return (
-    <div className="rtdash dashMain">
+    <div className="dashMain">
       <div className="centralDash">
         <Navdash
           starCount={user.stars}

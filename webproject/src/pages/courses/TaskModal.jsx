@@ -19,6 +19,7 @@ import QuestionStudent from "./QuestionStudent";
 import click_audio from "../../assets/audio/click_sound.mp3";
 import { createComplaint } from "../../utils/apiService";
 import { ToastContainer, toast } from 'react-toastify';
+import Modal from "../../helpers/Modal";
 
 
 const TaskModal = ({
@@ -85,7 +86,8 @@ const TaskModal = ({
 
   return (
     <>
-      {currentQuestion && <dialog className="studmodal" open style={{ display: "flex", justifyContent: "center" }}>
+      {currentQuestion &&
+      <div className="studmodal" open style={{ display: "flex", justifyContent: "center" }}>
         <div className="studmodal-content">
           <div className="modalHeader" style={{ position: "relative" }}>
             <span style={{ display: "flex", flexDirection: "row", gap: "2rem", alignItems: "center" }}>
@@ -301,12 +303,11 @@ const TaskModal = ({
           </div>
         </div>
         <audio ref={clickSoundRef} src={click_audio}></audio>
-      </dialog>}
+      </div>}
 
       <ToastContainer />
-
     </>
-  );
+    )
 };
 
 export default TaskModal;
