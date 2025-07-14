@@ -173,16 +173,7 @@ const TestsPage = () => {
     let filteredTests = [...tests];
 
     async function openTest(testId) {
-        setTestLoading(true);
-        setIsModalOpen(true);
-        const currentTest = tests.filter((test) => test.id == testId)[0];
-        setTestData(currentTest);
-        setMode("update");
-        setSearchParams((prevParams) => {
-            const newParams = new URLSearchParams(prevParams);
-            newParams.set("test", testId); // Add or update the test parameter
-            return newParams;
-        });
+        navigate(`${testId}`);
     }
 
     function handleClose() {

@@ -124,7 +124,7 @@ const TestCategoriesChild = () => {
     };
 
     return (
-        <div className="rtdash rtrat ratingPage">
+        <div className="rtrat ratingPage">
             <div className="centralLessons">
                 <div style={{ width: "100%" }}>
                     <Navdash

@@ -57,6 +57,7 @@ import SchoolCredentials from "./pages/admin_sections/SchoolCredentials.jsx";
 import Tutor from "./pages/dashboard_sections/tutor/Tutor.jsx";
 import TestCategories from "./pages/admin_components/TestCategories.jsx"
 import TestCategoriesChild from "./pages/dashboard_sections/TestCategoriesChild.jsx";
+import TestPage from "./pages/admin_components/TestPage.jsx";
 
 const router = createBrowserRouter([
   { path: "/", element: <App /> },
@@ -146,17 +147,17 @@ const router = createBrowserRouter([
             allowedRoles={["student", "parent"]}
           />
         ),
-      }
+      },
+      {
+        path: "/dashboard/tests/:testId",
+        element: (
+          <AuthRoute
+            element={<TestChild />}
+            allowedRoles={["student", "parent"]}
+          />
+        ),
+      },
     ]
-  },
-  {
-    path: "/dashboard/tests/:testId",
-    element: (
-      <AuthRoute
-        element={<TestChild />}
-        allowedRoles={["student", "parent"]}
-      />
-    ),
   },
   {
     path: "/dashboard/ai-tutor",

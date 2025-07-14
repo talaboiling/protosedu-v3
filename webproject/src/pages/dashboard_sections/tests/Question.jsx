@@ -19,7 +19,7 @@ const Question = ({id, questionData, onSkip, selectedAnswer,
     console.log(correctAnswer);
     return (
         <div id={id ? id : 'question'} style={{position: "relative"}}>
-            <p style={{fontSize: "20px"}}>{questionData.order}. {questionData.title}</p>
+            <p style={{fontSize: "20px"}}>{index+1}. {questionData.title}</p>
             {questionData?.contents && questionData.contents.map(content=>{
                 if (content?.content_type==="text"){
                     return <p style={{fontSize:"16px"}}>{content.text}</p>

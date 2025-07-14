@@ -85,7 +85,8 @@ const QuestionForm = ({mode, questionData, onSubmit, testId}) => {
             setCurrentQuestionData(questionData);
         }
     }, [mode, questionData]);
-
+    console.log(questionData);
+    
     return (
         <div className={styles.questionItem}>
             <p>Question</p>

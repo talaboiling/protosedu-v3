@@ -16,7 +16,7 @@ export function buildFormDataForCreation(formData, data, parentKey = "") {
         const newKey = parentKey ? `${parentKey}[${k}]` : k;
         buildFormDataForCreation(formData, v, newKey);
       });
-    } else if (parentKey) {
+    } else if (parentKey && data!=null && data!=undefined) {
       formData.append(parentKey, String(data));
     }
 }
@@ -40,7 +40,7 @@ export function buildFormDataForUpdate(formData, data, parentKey = "") {
         const newKey = parentKey ? `${parentKey}[${k}]` : k;
         buildFormDataForUpdate(formData, v, newKey);
       });
-    } else if (parentKey) {
+    } else if (parentKey && data!==null && data!==undefined) {
       formData.append(parentKey, String(data));
     }
   }

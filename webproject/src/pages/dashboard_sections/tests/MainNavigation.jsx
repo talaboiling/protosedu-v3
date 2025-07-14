@@ -3,13 +3,11 @@ import classes from "./Quiz.module.css";
 
 const MainNavigation = ({questions, userAnswers, navigateToQuestion, 
     activeQuestionIndex, mode, navigateToQuestionInReview}) => {
-    console.log(questions, userAnswers);
     const indeces = userAnswers.map((answer,index)=>{
         if (answer){
             return index;
         }
     });
-    console.log(indeces)
     return (
         <div className={classes["main-navigation"]}>
             <h4 className={classes.title}>Навигация по тесту</h4>
@@ -38,7 +36,7 @@ const MainNavigation = ({questions, userAnswers, navigateToQuestion,
                             }}
                             onClick={()=>navigateToQuestion(index)}
                         >
-                            {question.order}
+                            {index+1}
                         </div>
                     )
                 })}

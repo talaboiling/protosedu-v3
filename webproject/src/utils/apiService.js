@@ -1798,3 +1798,72 @@ export const addTaskToNode = async (payload) => {
     throw new Error(error.response?.data?.message || "Error getting nodes");
   }
 };
+
+export const updateTestData = async (testData, id) => {
+  try {
+    const endpoint = `modo/tests/${id}/`;
+    const response = await instance.patch(endpoint, testData);
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    throw new Error(error || "Something went wrong");
+  }
+};
+
+export const deleteTestQuestion = async (
+  questionId, testId
+) => {
+  try {
+    const endpoint = `/modo/questions/${questionId}/?test_id=${testId}`;
+    const response = await instance.delete(endpoint);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    throw new Error(error || "Something went wrong");
+  }
+};
+
+export const editTestQuestion = async (
+  data, questionId
+) => {
+  const dataRequest = {};
+  for (let key of data){
+    dataRequest[key[0]] = key[1];
+  }
+  console.log(dataRequest);
+  try {
+    const endpoint = `/modo/questions/${questionId}/update-full/?test_id=${dataRequest.test}`;
+    const response = await instance.patch(endpoint, dataRequest, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    throw new Error(error || "Something went wrong");
+  }
+};
+
+export const createTestQuestion = async (
+  data
+) => {
+  const dataRequest = {};
+  for (let key of data){
+    dataRequest[key[0]] = key[1];
+  }
+  console.log(dataRequest);
+  try {
+    const endpoint = `/modo/questions/create-full/`;
+    const response = await instance.post(endpoint, dataRequest, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    throw new Error(error || "Something went wrong");
+  }
+};

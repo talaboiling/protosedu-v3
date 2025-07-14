@@ -24,6 +24,7 @@ const QuizReview = ({questionData, questions, userAnswers}) => {
       <div className={classes['quiz-content']}>
           {questions.map((question, index)=>{
               return <Question
+                  index={index}
                   id={`question${index}`}
                   questionData={question}
                   selectedAnswer={userAnswers[index]}
