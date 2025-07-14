@@ -287,7 +287,7 @@ const Chapters = () => {
                       }}
                     >
                       <Link
-                        to={`/admindashboard/tests?test=${chapter.before_diagnostic_test_detail.id}`}
+                        to={`/admindashboard/tests/${chapter.before_diagnostic_test_detail.id}`}
                         style={{
                           color: "#fff",
                           textDecoration: "none",
@@ -366,7 +366,7 @@ const Chapters = () => {
                       }}
                     >
                       <Link
-                        to={`/admindashboard/tests?test=${chapter.after_diagnostic_test_detail.id}`}
+                        to={`/admindashboard/tests/${chapter.after_diagnostic_test_detail.id}`}
                         style={{
                           color: "#fff",
                           textDecoration: "none",
@@ -436,7 +436,7 @@ const Chapters = () => {
           <div style={{ display: "flex", fontSize: "14px", gap: "1rem" }}>
             <p>Тест до:</p>
             {selectedChapter?.before_diagnostic_test_detail ? (
-              <Link to={`/admindashboard/tests?test=${selectedChapter.before_diagnostic_test_detail.id}`}>
+              <Link to={`/admindashboard/tests/${selectedChapter.before_diagnostic_test_detail.id}`}>
                 <button style={{ paddingInline: "5px" }}>
                   {selectedChapter.before_diagnostic_test_detail.title}
                 </button>
@@ -448,7 +448,7 @@ const Chapters = () => {
           <div style={{ display: "flex", fontSize: "14px", gap: "1rem" }}>
             <p>Тест после: </p>
             {selectedChapter?.after_diagnostic_test_detail ? (
-              <Link to={`/admindashboard/tests?test=${selectedChapter.after_diagnostic_test_detail.id}`}>
+              <Link to={`/admindashboard/tests/${selectedChapter.after_diagnostic_test_detail.id}`}>
                 <button style={{ paddingInline: "5px" }}>
                   {selectedChapter.after_diagnostic_test_detail.title}
                 </button>

@@ -9,7 +9,7 @@ import QuestionItemAdmin from './QuestionItemAdmin';
 import HPBs_Form from '../dashboard_sections/tests/HPBs_Form';
 import { buildFormDataForCreation, buildFormDataForUpdate } from '../../lib/helperFunctions';
 
-const QuestionsListAdmin = ({questions, testId}) => {
+const QuestionsListAdmin = ({questions, testId, getTest}) => {
   const [loading, setLoading] = useState();
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -19,14 +19,13 @@ const QuestionsListAdmin = ({questions, testId}) => {
     questionId: null
   });
 
-  console.log(questionDelete);
-
   async function handleDeleteQuestion(questionId){
     if (questionDelete.confirmed){
       setLoading(true);
       try{  
         const data = await deleteTestQuestion(questionId, testId);
         toast.success("Вопрос удален");
+        getTest();
       }catch(e){
         toast.error("Не получилось удалить вопрос");
       }finally{
@@ -47,6 +46,7 @@ const QuestionsListAdmin = ({questions, testId}) => {
       const data = await createTestQuestion(formData);
       toast.success("Вопрос добавлен");
       setShowAddModal(false);
+      getTest();
     }catch(e){
       toast.error("Не получилось добавить вопрос");
     }finally{
@@ -62,6 +62,7 @@ const QuestionsListAdmin = ({questions, testId}) => {
       const data = await editTestQuestion(formData, questionId);
       toast.success("Вопрос изменен");
       setShowEditModal(false);
+      getTest();
     }catch(e){
       toast.error("Не получилось отредактировать вопрос");
     }finally{
@@ -93,13 +94,13 @@ const QuestionsListAdmin = ({questions, testId}) => {
                 qIndex={qIndex} 
                 handleDeleteQuestion={handleDeleteQuestion}
               />
-              <button onClick={()=>handleOpenEditQuestionModal(question)}>Modify</button>
+              <button onClick={()=>handleOpenEditQuestionModal(question)}>Внести изменения</button>
             </div>
         ))}
   
         <div style={{display: "flex", gap:"1rem"}}>
           <button type="button" onClick={()=>setShowAddModal(true)}>
-            Add Question
+            Добавить вопрос
           </button>
         </div>
         {showAddModal && <Modal onClose={()=>setShowAddModal(false)} extraStyles={{maxHeight: "60vh", overflow: "scroll"}}>

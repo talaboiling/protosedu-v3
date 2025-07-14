@@ -13,21 +13,10 @@ const QuestionItemAdmin = ({question, qIndex, handleDeleteQuestion}) => {
     return (
         <div className={classes.item}>
           <div className={classes.header} onClick={toggleAccordion}>
-            <h3>Question {qIndex+1}</h3>
+            <h3 style={{color: "black"}}>{qIndex+1}. {question.title}</h3>
           </div>
           {isOpen && (
             <div className={classes.content}>
-                <div
-                    style={{
-                        position: "absolute", 
-                        right: "20px", 
-                        top: "20px", 
-                        cursor: "pointer"
-                    }}
-                    onClick={()=>handleDeleteQuestion(question.id)}
-                >
-                    <X size={28} color="red"/>
-                </div>
                 <textarea
                     placeholder="Question title"
                     value={question.title}
@@ -96,6 +85,16 @@ const QuestionItemAdmin = ({question, qIndex, handleDeleteQuestion}) => {
                 </div>
             </div>
           )}
+            <div style={{
+                    position: "absolute", 
+                    right: "20px", 
+                    top: "20px", 
+                    cursor: "pointer"
+                }}
+                onClick={()=>handleDeleteQuestion(question.id)}
+            >
+                <X size={28} color="red"/>
+            </div>
         </div>
     );
 }

@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { useEffect, useState } from 'react'
 import Loader from '../../Loader';
 import CloseIcon from "@mui/icons-material/Close";

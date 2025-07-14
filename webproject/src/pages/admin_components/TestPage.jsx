@@ -34,32 +34,33 @@ const TestPage = () => {
         }
     });
 
+    async function getTest(){
+        try {
+            setLoading(true);
+            const data = await fetchTest(testId);
+            if (data.title){
+                setValue('title',data.title);
+            }
+            if (data.description){
+                setValue('description',data.description);
+            }
+            if (data.test_type){
+                setValue('test_type',data.test_type);
+            }
+            if (data.shuffle_questions){
+                setValue('shuffle_questions', data.shuffle_questions ? "yes" : "no");
+            }
+            setTestData(data);
+        }catch(e){
+            setError(e);
+            toast.error(e.message || "Error happened");
+        }finally{
+            setLoading(false);
+        }
+    }
+
 
     useEffect(()=>{
-        async function getTest(){
-            try {
-                setLoading(true);
-                const data = await fetchTest(testId);
-                if (data.title){
-                    setValue('title',data.title);
-                }
-                if (data.description){
-                    setValue('description',data.description);
-                }
-                if (data.test_type){
-                    setValue('test_type',data.test_type);
-                }
-                if (data.shuffle_questions){
-                    setValue('shuffle_questions', data.shuffle_questions ? "yes" : "no");
-                }
-                setTestData(data);
-            }catch(e){
-                setError(e);
-                toast.error(e.message || "Error happened");
-            }finally{
-                setLoading(false);
-            }
-        }
         getTest();
     }, [testId]);
     console.log(testData);
@@ -172,7 +173,7 @@ const TestPage = () => {
                         </form>
                         <h2>Вопросы теста</h2>
                         <div className="superCont" style={{display: "flex", gap: "1rem", flexWrap: "wrap"}}>
-                            {!loading && testData && <QuestionsListAdmin questions={testData.questions} testId={testId}/>}
+                            {!loading && testData && <QuestionsListAdmin questions={testData.questions} testId={testId} getTest={getTest}/>}
                         </div>
                     </div> 
                 </div>
