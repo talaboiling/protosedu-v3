@@ -24,6 +24,8 @@
   font-size: 1rem;
   border: 1px solid #ccc;
   border-radius: 4px;
+  box-sizing: border-box;
+  max-width: 100%;
 }
 
 
@@ -36,6 +38,7 @@
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     position: relative;
     width: 600px;
+    box-sizing: border-box;
 }
   
 .questionHeading {

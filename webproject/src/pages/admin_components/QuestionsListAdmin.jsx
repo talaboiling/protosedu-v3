@@ -1,3 +1,5 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable react/jsx-key */
 import React, { useEffect, useState } from 'react'
 import styles from './TestPage.module.css';
 import { X } from "lucide-react";
@@ -39,6 +41,7 @@ const QuestionsListAdmin = ({questions, testId, getTest}) => {
 
   async function handleAddQuestion(qData){
     console.log(qData);
+    qData.order = questions.length+1;
     setLoading(true);
     const formData = new FormData();
     buildFormDataForCreation(formData, qData);
