@@ -109,6 +109,7 @@ const QuestionsCreator = ({questions, setQuestions}) => {
             style={{height: "200px", overflow:"auto", border: "1px solid black", padding: "1rem", fieldSizing: "normal"}}
             contentEditable={true}
             className={styles.questionHeading}
+            required
           />
 
           <div style={{ margin: "0.5rem 0" }}>
@@ -140,6 +141,7 @@ const QuestionsCreator = ({questions, setQuestions}) => {
                     onChange={(e) =>
                       handleQuestionAnswerTypeChange(qIndex, aIndex, "option_type", e.target.value)
                     }
+                    required
                   >
                     <option value="text">Text</option>
                     <option value="image">Image</option>
@@ -154,6 +156,7 @@ const QuestionsCreator = ({questions, setQuestions}) => {
                       handleAnswerChange(qIndex, aIndex, e.target.value)
                     }
                     className={styles.answerInput}
+                    required
                   />
                 ) : (
                   <>
@@ -164,6 +167,7 @@ const QuestionsCreator = ({questions, setQuestions}) => {
                         handleAnswerImageChange(qIndex, aIndex, e)
                       }
                       className={styles.answerImageInput}
+                      required
                     />
                     {answer_option.image && (
                       <img

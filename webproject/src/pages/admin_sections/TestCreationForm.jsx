@@ -39,30 +39,7 @@ const TestCreationForm = ({ mode, onClose, testData, categoryData }) => {
     }
   }
 
-  const mockQuestions = [
-    {
-      title: '',
-      contents: [],
-      answer_options: [
-        { text: '', option_type: 'text', is_correct: false },
-        { text: '', option_type: 'text', is_correct: false },
-        { text: '', option_type: 'text', is_correct: false },
-        { text: '', option_type: 'text', is_correct: false },
-      ],
-      order: 1,
-    },
-    {
-      title: '',
-      contents: [],
-      answer_options: [
-        { text: '', option_type: 'text', is_correct: false },
-        { text: '', option_type: 'text', is_correct: false },
-        { text: '', option_type: 'text', is_correct: false },
-        { text: '', option_type: 'text', is_correct: false },
-      ],
-      order: 2,
-    },
-  ]
+  const mockQuestions = [];
 
   const [loading, setLoading] = useState(null)
   const { register, handleSubmit } = useForm({
@@ -95,6 +72,9 @@ const TestCreationForm = ({ mode, onClose, testData, categoryData }) => {
   console.log(testData)
 
   async function onSave(data) {
+    if (questions.length===0){
+      return toast.error("Нельзя создать тест без вопросов");
+    }
     data['questions'] = [...questions]
     data['category'] = categoryData.id
     console.log(data)
@@ -176,6 +156,7 @@ const TestCreationForm = ({ mode, onClose, testData, categoryData }) => {
               {...register('title')}
               type="text"
               placeholder="Enter title"
+              required
             />
           </div>
           <div className={styles.inputField}>
@@ -183,6 +164,7 @@ const TestCreationForm = ({ mode, onClose, testData, categoryData }) => {
             <textarea
               {...register('description')}
               placeholder="Enter description"
+              required
             ></textarea>
           </div>
           <div className={styles.inputField}>
@@ -191,6 +173,7 @@ const TestCreationForm = ({ mode, onClose, testData, categoryData }) => {
               {...register('test_type')}
               name="test_type"
               style={{ width: 'fit-content' }}
+              required
             >
               <option value="modo">Modo</option>
               <option value="ent">Ent</option>
