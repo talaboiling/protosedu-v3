@@ -906,7 +906,10 @@ img.childcard {
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   position: relative;
-  width: min(900px, 80vw);
+  width: min(100vw);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .studmodal-header {
@@ -1110,7 +1113,7 @@ img.childcard {
   display: flex;
   flex-direction: column;
   width: auto;
-  height: 500px;
+  flex: 1;
   background-image: url(./assets/bgstudtask.webp);
   background-size: cover;
   border-radius: 35px;
@@ -1118,7 +1121,6 @@ img.childcard {
   padding: 0 40px;
   overflow: hidden;
   min-width: 170px;
-  min-height: 400px;
 }
 
 .studTaskOptions {

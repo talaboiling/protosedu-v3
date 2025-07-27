@@ -145,7 +145,6 @@ const TestCategories = () => {
                         Создать предмет
                     </button>
                 </div>
-                <h2>Обязательные предметы</h2>
                 <div className="superCont" style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
                     {mandatoryCategories.length > 0 && mandatoryCategories.map(category => (
                         <div key={category.id} className="addedCourses" style={{
@@ -192,7 +191,6 @@ const TestCategories = () => {
                         </div>
                     ))}
                 </div>
-                <h2>Профильные предметы</h2>
                 <div className="superCont" style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
                     {profileCategories.length > 0 && profileCategories.map(category => (
                         <div key={category.id} className="addedCourses" style={{

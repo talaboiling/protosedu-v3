@@ -166,7 +166,7 @@ const TestCategoriesChild = () => {
                             </FormControl>
                         </Grid> */}
 
-                        <Grid item>
+                        <Grid item sx={{marginBottom: "1rem"}}>
                             <FormControl variant="outlined" style={{ width: "150px" }}>
                                 <InputLabel>Language</InputLabel>
                                 <Select
@@ -191,17 +191,6 @@ const TestCategoriesChild = () => {
                             {/* Mandatory Categories Section */}
                             {mandatoryCategories.length > 0 && (
                                 <div style={{ marginBottom: "3rem" }}>
-                                    <h2
-                                        style={{
-                                            marginBottom: "1.5rem",
-                                            fontSize: "1.5rem",
-                                            color: "#077AC2",
-                                            borderBottom: "2px solid #077AC2",
-                                            paddingBottom: "0.5rem",
-                                        }}
-                                    >
-                                        Обязательные предметы
-                                    </h2>
                                     <div
                                         className="superCont"
                                         style={{
@@ -255,17 +244,6 @@ const TestCategoriesChild = () => {
                             {/* Profile Categories Section */}
                             {profileCategories.length > 0 && (
                                 <div>
-                                    <h2
-                                        style={{
-                                            marginBottom: "1.5rem",
-                                            fontSize: "1.5rem",
-                                            color: "#077AC2",
-                                            borderBottom: "2px solid #077AC2",
-                                            paddingBottom: "0.5rem",
-                                        }}
-                                    >
-                                        Профильные предметы
-                                    </h2>
                                     <div
                                         className="superCont"
                                         style={{
