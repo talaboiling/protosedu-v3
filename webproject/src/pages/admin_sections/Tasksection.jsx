@@ -555,30 +555,35 @@ const Tasksection = () => {
     return <Loader />;
   };
 
+  const seperateContents = contents.filter(content => {
+    return nodes.every(node => node.task !== content.id && node.lesson !== content.id)
+  });
+
   async function handleDragEnd(event) {
     const { active, over } = event;
-    console.log(active, over);
     if (!over) {
       return;
     }
 
     const draggableTaskIndex = active.data.current.index;
     const droppableTaskIndex = over.data.current.index;
-    const currentTasks = [...contents];
     active.data.index = droppableTaskIndex;
     over.data.index = draggableTaskIndex;
-    const draggableContent = currentTasks[draggableTaskIndex];
-    const droppableContent = currentTasks[droppableTaskIndex];
+    const draggableContent = seperateContents[draggableTaskIndex];
+    const droppableContent = seperateContents[droppableTaskIndex];
     draggableContent.order = droppableTaskIndex + 1;
     droppableContent.order = draggableTaskIndex + 1;
-    currentTasks[droppableTaskIndex] = draggableContent;
-    currentTasks[draggableTaskIndex] = droppableContent;
+    seperateContents[droppableTaskIndex] = draggableContent;
+    seperateContents[draggableTaskIndex] = droppableContent;
 
-    const previousTasks = [...contents];
-    setContents(currentTasks);
+    const previousTasks = [...seperateContents];
+    console.log(seperateContents);
+    console.log(active, over);
+    setContents(seperateContents);
 
     try {
-      const response = await updateChapterContents(courseId, sectionId, chapterId, contents);
+      console.log(seperateContents);
+      const response = await updateChapterContents(courseId, sectionId, chapterId, seperateContents);
       console.log(response);
       console.log('New order saved to backend');
       return true;
@@ -595,10 +600,6 @@ const Tasksection = () => {
   const yOffset = 150;
 
   console.log(contents);
-
-  const seperateContents = contents.filter(content => {
-    return nodes.every(node => node.task !== content.id && node.lesson !== content.id)
-  })
 
   const handleAddVideoButton = (node = null) => {
     if (node) {
