@@ -20,17 +20,17 @@ const TestPage = () => {
   const { register, handleSubmit, setValue } = useForm({
     defaultValues: testData
       ? {
-          title: testData.title,
-          description: testData.description,
-          test_type: testData.test_type,
-          shuffle_questions: testData.shuffle_questions,
-        }
+        title: testData.title,
+        description: testData.description,
+        test_type: testData.test_type,
+        shuffle_questions: testData.shuffle_questions,
+      }
       : {
-          title: '',
-          description: '',
-          test_type: '',
-          shuffle_questions: 'no',
-        },
+        title: '',
+        description: '',
+        test_type: '',
+        shuffle_questions: 'no',
+      },
   })
 
   async function getTest() {
@@ -49,7 +49,7 @@ const TestPage = () => {
       if (data.shuffle_questions) {
         setValue('shuffle_questions', data.shuffle_questions ? 'yes' : 'no')
       }
-      
+
       if (Array.isArray(data.questions)) {
         data.questions.sort((a, b) => a.id - b.id)
       }
@@ -163,7 +163,7 @@ const TestPage = () => {
                   >
                     <option value="modo">Modo</option>
                     <option value="ent">Ent</option>
-                    <option value="diagnostic">Диагностический</option>
+                    <option value="diagnostic">Функциональная грамотность</option>
                   </select>
                 </div>
                 <div className={classes.inputField}>

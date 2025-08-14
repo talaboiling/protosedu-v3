@@ -128,7 +128,7 @@ const TestCategories = () => {
                     <ul style={{ display: "flex", gap: 8, fontSize: "20px" }}>
                         <li style={{ backgroundColor: type == "modo" ? "orange" : "", padding: "5px", borderRadius: "10px" }}><NavLink to="?type=modo">Модо</NavLink></li>
                         <li style={{ backgroundColor: type == "ent" ? "orange" : "", padding: "5px", borderRadius: "10px" }}><NavLink to="?type=ent">Ент</NavLink></li>
-                        <li style={{ backgroundColor: type == "diagnostic" ? "orange" : "", padding: "5px", borderRadius: "10px" }}><NavLink to="?type=diagnostic">Диагностический тест</NavLink></li>
+                        <li style={{ backgroundColor: type == "diagnostic" ? "orange" : "", padding: "5px", borderRadius: "10px" }}><NavLink to="?type=diagnostic">Функциональная грамотность</NavLink></li>
                         <li style={{ backgroundColor: type == "pisa" ? "orange" : "", padding: "5px", borderRadius: "10px" }}><NavLink to="?type=pisa">Pisa</NavLink></li>
                         <li style={{ backgroundColor: type == "others" ? "orange" : "", padding: "5px", borderRadius: "10px" }}><NavLink to="?type=others">Другие</NavLink></li>
                     </ul>

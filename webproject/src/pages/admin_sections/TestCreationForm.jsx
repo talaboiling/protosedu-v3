@@ -20,7 +20,7 @@ const TestCreationForm = ({ mode, onClose, testData, categoryData }) => {
       case 'ent':
         return 'ЕНТ'
       case 'diagnostic':
-        return 'Диагностический'
+        return 'Функциональная грамотность'
       default:
         return testType
     }
@@ -46,15 +46,15 @@ const TestCreationForm = ({ mode, onClose, testData, categoryData }) => {
     defaultValues:
       mode === 'creation'
         ? {
-            title: '',
-            description: '',
-            test_type: '',
-          }
+          title: '',
+          description: '',
+          test_type: '',
+        }
         : {
-            title: testData.title,
-            description: testData.description,
-            test_type: testData.test_type,
-          },
+          title: testData.title,
+          description: testData.description,
+          test_type: testData.test_type,
+        },
   })
 
   const [questions, setQuestions] = useState([])
@@ -72,7 +72,7 @@ const TestCreationForm = ({ mode, onClose, testData, categoryData }) => {
   console.log(testData)
 
   async function onSave(data) {
-    if (questions.length===0){
+    if (questions.length === 0) {
       return toast.error("Нельзя создать тест без вопросов");
     }
     data['questions'] = [...questions]
@@ -185,9 +185,8 @@ const TestCreationForm = ({ mode, onClose, testData, categoryData }) => {
               <label htmlFor="category">Category</label>
               <input
                 type="text"
-                value={`${getTestTypeDisplayName(categoryData.test_type)}: ${
-                  categoryData.name
-                } (${getLanguageDisplayName(categoryData.language)})`}
+                value={`${getTestTypeDisplayName(categoryData.test_type)}: ${categoryData.name
+                  } (${getLanguageDisplayName(categoryData.language)})`}
                 readOnly
                 style={{ backgroundColor: '#f5f5f5', cursor: 'not-allowed' }}
               />

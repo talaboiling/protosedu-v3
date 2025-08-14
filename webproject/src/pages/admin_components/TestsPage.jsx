@@ -56,7 +56,7 @@ const TestsPage = () => {
       case 'ent':
         return 'ЕНТ'
       case 'diagnostic':
-        return 'Диагностический'
+        return 'Функциональная грамотность'
       case 'pisa':
         return 'PISA'
       default:

@@ -85,7 +85,7 @@ const TestCategoriesChild = () => {
             case 'ent':
                 return 'ЕНТ';
             case 'diagnostic':
-                return 'Диагностический';
+                return 'Функциональная грамотность';
             case 'pisa':
                 return 'PISA';
             default:
@@ -166,7 +166,7 @@ const TestCategoriesChild = () => {
                             </FormControl>
                         </Grid> */}
 
-                        <Grid item sx={{marginBottom: "1rem"}}>
+                        <Grid item sx={{ marginBottom: "1rem" }}>
                             <FormControl variant="outlined" style={{ width: "150px" }}>
                                 <InputLabel>Language</InputLabel>
                                 <Select
