@@ -109,8 +109,6 @@ const QuestionsList = ({ questions, handleEditQuestion, handleDeleteQuestion, se
         }
     };
 
-    console.log(questions);
-
     return (
         <DndContext
             sensors={sensors}

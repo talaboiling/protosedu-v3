@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
@@ -9,11 +10,229 @@ import {
   fetchTests,
   removeTestFromCategory,
   fetchTestCategory,
+  updateTestOrder,
 } from '../../utils/apiService'
 import Loader from '../Loader'
 import TestsListModal from './tests/TestsListModal'
 import { Card, CardContent, Typography, Button, Grid } from '@mui/material'
 import { ToastContainer, toast } from 'react-toastify'
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core'
+import { SortableContext, arrayMove, useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
+import { restrictToVerticalAxis } from '@dnd-kit/modifiers'
+
+// TestList Component with Drag and Drop functionality
+function SortableTestItem({
+  id,
+  children,
+  test,
+  openTest,
+  handleDeleteTest,
+  index,
+  handleRemoveFromCategory,
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    setActivatorNodeRef,
+    transform,
+    transition,
+  } = useSortable({ id })
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  }
+
+  return (
+    <div ref={setNodeRef} style={style}>
+      <li
+        key={index}
+        onClick={() => openTest(test.id)}
+        className="questions"
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          padding: '12px',
+          margin: '8px 0',
+          backgroundColor: '#f5f5f5',
+          borderRadius: '8px',
+          cursor: 'pointer',
+          border: '1px solid #ddd',
+          transition: 'all 0.2s ease',
+        }}
+        onMouseEnter={(e) => {
+          e.target.style.backgroundColor = '#e8f4fd'
+          e.target.style.borderColor = '#2196f3'
+        }}
+        onMouseLeave={(e) => {
+          e.target.style.backgroundColor = '#f5f5f5'
+          e.target.style.borderColor = '#ddd'
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <p className="defaultStyle" style={{ margin: 0, fontWeight: 'bold' }}>
+            {index + 1}.
+          </p>
+          <div>
+            <div style={{ fontWeight: 'bold', color: '#333' }}>
+              {test.title || `Тест ${index + 1}`}
+            </div>
+            <div style={{ fontSize: '14px', color: '#666' }}>
+              Описание: {test.description?.slice(0, 50) || 'Нет описания'}...
+            </div>
+          </div>
+        </div>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            gap: 8,
+          }}
+        >
+          <button
+            onClick={(e) => {
+              e.stopPropagation()
+              handleRemoveFromCategory(test.id)
+            }}
+            className="transBtn"
+            style={{
+              padding: '4px',
+              backgroundColor: '#ff4444',
+              border: 'none',
+              borderRadius: '4px',
+              color: 'white',
+              cursor: 'pointer',
+            }}
+            title="Убрать из категории"
+          >
+            <DeleteForeverIcon sx={{ fontSize: 16 }} />
+          </button>
+          <div
+            ref={setActivatorNodeRef}
+            {...listeners}
+            {...attributes}
+            style={{
+              cursor: 'grab',
+              padding: '4px',
+              userSelect: 'none',
+              fontSize: '18px',
+              color: '#666',
+            }}
+            title="Перетащить для изменения порядка"
+          >
+            &#9776;
+          </div>
+        </div>
+      </li>
+    </div>
+  )
+}
+
+const TestList = ({
+  tests,
+  openTest,
+  handleRemoveFromCategory,
+  setTests,
+  categoryId,
+  type,
+}) => {
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: { distance: 5 },
+    })
+  )
+
+  async function handleDragEnd(event) {
+    const { active, over } = event
+    console.log(active, over)
+
+    if (!over || !active) {
+      return
+    }
+
+    try {
+      const oldIndex = tests.findIndex((test) => test.id === active.id)
+      const newIndex = tests.findIndex((test) => test.id === over.id)
+
+      const updatedTests = arrayMove(tests, oldIndex, newIndex)
+
+      // Update order property for each test
+      updatedTests.forEach((test, index) => {
+        test.order = index + 1
+      })
+
+      setTests(updatedTests)
+
+      // Prepare data for API call
+      const testOrderData = updatedTests.map((test, index) => ({
+        id: test.id,
+        order: index + 1,
+      }))
+
+      // Call API to update test order in backend
+      await updateTestOrder(categoryId, testOrderData)
+      console.log('New test order saved to backend:', testOrderData)
+      toast.success('Порядок тестов обновлен!')
+    } catch (error) {
+      console.error('Error saving test order:', error)
+      toast.error('Ошибка при сохранении порядка тестов')
+      // Revert to original order on error
+      setTests(tests)
+    }
+  }
+
+  const handleDragOver = (event) => {
+    const { active, over } = event
+    if (over && active.id !== over.id) {
+      const oldIndex = tests.findIndex((test) => test.id === active.id)
+      const newIndex = tests.findIndex((test) => test.id === over.id)
+      const currentTests = [...tests];
+      [currentTests[oldIndex], currentTests[newIndex]] = [
+        currentTests[newIndex],
+        currentTests[oldIndex],
+      ]
+      setTests(currentTests)
+    }
+  }
+
+  return (
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCenter}
+      onDragEnd={handleDragEnd}
+      modifiers={[restrictToVerticalAxis]}
+      onDragOver={handleDragOver}
+    >
+      <SortableContext items={tests.map((test) => test.id)}>
+        <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+          {tests.map((test, index) => (
+            <SortableTestItem
+              key={test.id}
+              id={test.id}
+              index={index}
+              test={test}
+              openTest={openTest}
+              handleRemoveFromCategory={handleRemoveFromCategory}
+            >
+              {test}
+            </SortableTestItem>
+          ))}
+        </ul>
+      </SortableContext>
+    </DndContext>
+  )
+}
 
 const createTest = async (test) => console.log('Test Created:', test)
 const featuredTypes = ['modo', 'ent', 'diagnostic', 'pisa']
@@ -48,6 +267,7 @@ const TestsPage = () => {
   const [testLoading, setTestLoading] = useState()
   const [mode, setMode] = useState(null)
   const [currentTest, setCurrentTest] = useState(null)
+  const [showTestList, setShowTestList] = useState(false)
 
   const formatType = (type) => {
     switch (type) {
@@ -156,6 +376,17 @@ const TestsPage = () => {
     }
   }
 
+  const handleEditTest = (index) => {
+    const test = tests[index]
+    setTestData(test)
+    setMode('update')
+    setIsModalOpen(true)
+  }
+
+  const toggleTestList = () => {
+    setShowTestList(!showTestList)
+  }
+
   useEffect(() => {
     loadTests()
   }, [type, categoryId])
@@ -249,6 +480,13 @@ const TestsPage = () => {
           >
             Добавить существующий тест
           </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={toggleTestList}
+          >
+            {showTestList ? 'Скрыть список' : 'Показать список'}
+          </Button>
           <Button variant="contained" onClick={testCreationButton}>
             Создать тест
           </Button>
@@ -259,53 +497,73 @@ const TestsPage = () => {
         >
           Тип тестов: {formatType(type)}
         </Typography>
-        <Grid container spacing={2}>
-          {filteredTests.length > 0 &&
-            filteredTests.map((test) => (
-              <Grid item xs={12} sm={6} md={4} lg={3} key={test.id}>
-                <Card style={{ cursor: 'pointer', height: '100%' }}>
-                  <CardContent
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      height: '100%',
-                    }}
-                  >
-                    <Typography variant="h6" style={{ color: 'black' }}>
-                      {test.title}
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      style={{ color: '#666', flexGrow: 1 }}
-                    >
-                      Описание: {test.description}
-                    </Typography>
-                    <Button
-                      onClick={() => openTest(test.id)}
-                      variant="contained"
-                      color="primary"
-                      fullWidth
-                      style={{ marginTop: '8px' }}
-                    >
-                      Открыть тест
-                    </Button>
-                    <Button
-                      variant="contained"
-                      color="error"
-                      fullWidth
-                      style={{ marginTop: '8px' }}
-                      onClick={() => {
-                        handleRemoveFromCategory(test.id)
+
+        {showTestList ? (
+          <div>
+            <Typography
+              variant="h6"
+              style={{ marginBottom: '16px', color: '#333' }}
+            >
+              Список тестов (перетащите для изменения порядка)
+            </Typography>
+            <TestList
+              tests={filteredTests}
+              openTest={openTest}
+              handleRemoveFromCategory={handleRemoveFromCategory}
+              setTests={setTests}
+              categoryId={categoryId}
+              type={type}
+            />
+          </div>
+        ) : (
+          <Grid container spacing={2}>
+            {filteredTests.length > 0 &&
+              filteredTests.map((test) => (
+                <Grid item xs={12} sm={6} md={4} lg={3} key={test.id}>
+                  <Card style={{ cursor: 'pointer', height: '100%' }}>
+                    <CardContent
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        height: '100%',
                       }}
                     >
-                      Убрать из категории
-                    </Button>
-                    <br />
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
-        </Grid>
+                      <Typography variant="h6" style={{ color: 'black' }}>
+                        {test.title}
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        style={{ color: '#666', flexGrow: 1 }}
+                      >
+                        Описание: {test.description}
+                      </Typography>
+                      <Button
+                        onClick={() => openTest(test.id)}
+                        variant="contained"
+                        color="primary"
+                        fullWidth
+                        style={{ marginTop: '8px' }}
+                      >
+                        Открыть тест
+                      </Button>
+                      <Button
+                        variant="contained"
+                        color="error"
+                        fullWidth
+                        style={{ marginTop: '8px' }}
+                        onClick={() => {
+                          handleRemoveFromCategory(test.id)
+                        }}
+                      >
+                        Убрать из категории
+                      </Button>
+                      <br />
+                    </CardContent>
+                  </Card>
+                </Grid>
+              ))}
+          </Grid>
+        )}
         {isModalOpen && (
           <TestCreationModal
             mode={mode}

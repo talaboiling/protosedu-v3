@@ -399,6 +399,23 @@ export const deleteTest = async (id) => {
   }
 }
 
+export const updateTestOrder = async (categoryId, testOrderData) => {
+  try {
+    const endpoint = `modo/tests/update-test-order/?category_id=${categoryId}`
+    const response = await instance.patch(endpoint, testOrderData)
+    console.log(response.data)
+    return response.data
+  } catch (error) {
+    console.error('Error updating test order:', error)
+    if (error.response && error.response.status === 400) {
+      throw new Error(error.response.data.message || 'Bad request')
+    } else if (error.response && error.response.status === 500) {
+      throw new Error('Server error. Please try again later.')
+    }
+    throw new Error(error.message || 'Something went wrong')
+  }
+}
+
 export const createCourse = async (courseData) => {
   try {
     const response = await instance.post('/courses/', courseData)
