@@ -34,12 +34,12 @@ export const SidebarData = [
     link: "/dashboard/test-categories?type=pisa",
     isNew: true,
   },
-  // {
-  //   title: "ИИ Репетитор",
-  //   icon: <BrainCog alt="ai tutor" size={32} color="#8A8A8A" />,
-  //   link: "/dashboard/ai-tutor",
-  //   isNew: true
-  // },
+  {
+    title: "ИИ Репетитор",
+    icon: <BrainCog alt="ai tutor" size={32} color="#8A8A8A" />,
+    link: "/dashboard/ai-tutor",
+    isNew: true
+  },
   {
     title: "Рейтинг",
     icon: <Users alt="achievements" size={32} color="#8A8A8A" />,
