@@ -21,6 +21,8 @@ const TestCreationForm = ({ mode, onClose, testData, categoryData }) => {
         return 'ЕНТ'
       case 'diagnostic':
         return 'Функциональная грамотность'
+      case 'pisa':
+        return 'PISA'
       default:
         return testType
     }
@@ -151,38 +153,40 @@ const TestCreationForm = ({ mode, onClose, testData, categoryData }) => {
           }}
         >
           <div className={styles.inputField}>
-            <label htmlFor="title">Title</label>
+            <label htmlFor="title">Название</label>
             <input
               {...register('title')}
               type="text"
-              placeholder="Enter title"
+              placeholder="Введите название"
               required
             />
           </div>
           <div className={styles.inputField}>
-            <label htmlFor="description">Description</label>
+            <label htmlFor="description">Описание</label>
             <textarea
               {...register('description')}
-              placeholder="Enter description"
+              placeholder="Введите описание"
               required
             ></textarea>
           </div>
           <div className={styles.inputField}>
-            <label htmlFor="test_type">Type</label>
+            <label htmlFor="test_type">Тип</label>
             <select
               {...register('test_type')}
               name="test_type"
               style={{ width: 'fit-content' }}
               required
             >
-              <option value="modo">Modo</option>
-              <option value="ent">Ent</option>
-              <option value="diagnostic">Диагностический</option>
+              <option value="" disabled selected>Выберите тип теста (должен совпадать с категорией)</option>
+              <option value="modo">МОДО</option>
+              <option value="ent">ЕНТ</option>
+              <option value="diagnostic">Функциональная грамотность</option>
+              <option value="pisa">PISA</option>
             </select>
           </div>
           {categoryData && (
             <div className={styles.inputField}>
-              <label htmlFor="category">Category</label>
+              <label htmlFor="category">Категория</label>
               <input
                 type="text"
                 value={`${getTestTypeDisplayName(categoryData.test_type)}: ${categoryData.name
@@ -195,8 +199,8 @@ const TestCreationForm = ({ mode, onClose, testData, categoryData }) => {
           <QuestionsCreator questions={questions} setQuestions={setQuestions} />
         </div>
         <div style={{ display: 'flex', gap: '0.5rem' }}>
-          <button type="submit">Save</button>
-          <button onClick={onClose}>Close</button>
+          <button type="submit">Сохранить</button>
+          <button onClick={onClose}>Закрыть</button>
           {mode === 'update' && (
             <button
               style={{
