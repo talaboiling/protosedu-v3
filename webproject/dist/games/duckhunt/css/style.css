@@ -1,0 +1,280 @@
+html, body { 
+  height: 100%;
+  font-family: Arial, sans-serif; }
+
+.wrapper {
+  position: relative;
+  height: 100%;
+  background-color: #3cbcfc;
+}
+.gs {
+  background-image: url('../images/gs.png');
+  background-repeat: no-repeat;
+  background-position: 9999px 9999px;
+}
+
+* {
+  cursor: url('../images/aim.png'), crosshair;
+}
+.foot {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 226px;
+  background: url('../images/bg.png') 0 0 repeat-x;
+  z-index: 5;
+}
+.dog {
+  position: absolute;
+  bottom: 90px;
+  left: 0;
+  width: 166px;
+  height: 122px;
+  -ms-transform: translate(0px, 0px);
+      transform: translate(0px, 0px);
+  transition: transform 4s linear;
+
+}
+.dog_walk {
+  animation-name: dog-walk;
+  animation-duration: .6s;
+  animation-iteration-count: infinite;
+  animation-timing-function: steps(1, end);
+  animation-delay: 0s;
+  -ms-transform: translate(45vw, 0px);
+      transform: translate(45vw, 0px);
+  transition: transform 6s linear;
+  z-index: 10;
+}
+.dog_jump {
+  width: 161px;
+  height: 143px;
+  animation-name: dog-jump;
+  animation-duration: 1.5s;
+  animation-iteration-count: 1;
+  animation-timing-function: steps(1, end);
+  animation-delay: 0s;
+  -ms-transform: translate(48vw, -80px);
+      transform: translate(48vw, -80px);
+  transition: transform .5s linear .5s;
+  z-index: 10;
+}
+@keyframes dog-walk {
+  0% {
+    background-position: -24px -24px;
+  }
+  25% {
+    background-position: -206px -24px;
+  }
+  50% {
+    background-position: -388px -24px;
+  }
+  75% {
+    background-position: -570px -24px;
+  }
+  100% {
+    background-position: -24px -24px;
+  }
+}
+@keyframes dog-jump {
+  0% {
+    background-position: -746px -6px;
+  }
+  25% {
+    width: 101px;
+    height: 96px;
+    background-position: -932px -59px;
+  }
+  100% {
+    width: 101px;
+    height: 96px;
+    background-position: -932px -59px;
+  }
+}
+.duck {
+  position: absolute;
+  top: 85vh;
+  left: 50vw;
+  display: none;
+  z-index: 2;
+}
+.duck_fly {
+  display: block !important;
+  transition: left 2s linear, top 2s linear;
+}
+.duckShoot {
+  width: 104px;
+  height: 95px;
+  background-image: url('../images/duckSoot.png');
+  background-repeat: no-repeat;
+  background-position: 0px 0px;
+  transition: left 1s linear, top 1s linear;
+}
+.duck_fly_left,
+.duck_fly_top_left,
+.duck_fly_right,
+.duck_fly_top_right {
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+  animation-timing-function: steps(1, end);
+  animation-delay: 0s;
+}
+.duck_fly_left {
+  animation-name: duck-fly-left;
+}
+.duck_fly_top_left {
+  animation-name: duck-fly-top-left;
+}
+.duck_fly_right {
+  animation-name: duck-fly-right;
+}
+.duck_fly_top_right {
+  animation-name: duck-fly-top-right;
+}
+@keyframes duck-fly-left {
+  0% {
+    width: 102px;
+    height: 72px;
+    background-position: -542px -203px;
+  }
+  50% {
+    width: 104px;
+    height: 61px;
+    background-position: -956px -212px;
+  }
+  100% {
+    width: 102px;
+    height: 72px;
+    background-position: -542px -203px;
+  }
+}
+@keyframes duck-fly-top-left {
+  0% {
+    width: 74px;
+    height: 95px;
+    background-position: -116px -176px;
+  }
+  50% {
+    width: 104px;
+    height: 95px;
+    background-position: -434px -182px;
+  }
+  100% {
+    width: 74px;
+    height: 95px;
+    background-position: -116px -176px;
+  }
+}
+@keyframes duck-fly-right {
+  0% {
+    width: 102px;
+    height: 72px;
+    background-position: -680px -203px;
+  }
+  50% {
+    width: 104px;
+    height: 61px;
+    background-position: -818px -212px;
+  }
+  100% {
+    width: 102px;
+    height: 72px;
+    background-position: -680px -203px;
+  }
+}
+@keyframes duck-fly-top-right {
+  0% {
+    width: 74px;
+    height: 95px;
+    background-position: -218px -176px;
+  }
+  50% {
+    width: 104px;
+    height: 95px;
+    background-position: -323px -182px;
+  }
+  100% {
+    width: 74px;
+    height: 95px;
+    background-position: -218px -176px;
+  }
+}
+
+#start {
+  position: absolute;
+  top: 100px;
+  left: 45vw;
+  height: 50px;
+  width: 150px;
+  text-align: center;
+  line-height: 100%;
+  color:black;
+  background-color: aqua;
+  font-size: 20px;
+  border-color: skyblue;
+  border-radius: 20px;
+}
+.sky {
+  position: relative;
+  width: 100%;
+  height: calc(100% - 120px)
+}
+.patrons {
+  position: absolute;
+  bottom: 50px;
+  left: 50px;
+  z-index: 10;
+}
+.patron1, 
+.patron2, 
+.patron2, 
+.patron3, 
+.patron4, 
+.patron5, 
+.patron6,
+.patron7, 
+.patron8, 
+.patron9, 
+.patron10 {
+  float: left;
+  width: 30px;
+  height: 30px;
+  background-image: url('../images/gs.png');
+  background-position: -710px -750px;
+}
+
+.points {
+  position: absolute;
+  bottom: 20px;
+  right: 50px;
+  width: 100px;
+  height: 50px;
+  font-size: 25px;
+  text-align: center;
+  line-height: 100%;
+  color: white;
+}
+.window {
+  position: absolute;
+  width: 500px;
+  top: 200px;
+  left:34%;
+  font-size: 25px;
+  text-align: center;
+  line-height: 100%;
+  color: white;
+  z-index: 10;
+}
+.timer {
+  position: absolute;
+  top: 15px;
+  right: 5px;
+  width: 100px;
+  height: 50px;
+  font-size: 25px;
+  text-align: center;
+  line-height: 100%;
+  color: white;
+  z-index: 1;
+}

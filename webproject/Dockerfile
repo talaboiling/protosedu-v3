@@ -5,7 +5,7 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
-RUN npm run build
+# RUN npm run build
 
 # Use a Node.js image to serve the build files
 FROM node:18-alpine
